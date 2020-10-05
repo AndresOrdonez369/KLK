@@ -1,15 +1,16 @@
+import React, { PureComponent } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import PrincipalFlow from './principalFlow';
-const AppInitialNavigation = () => {
-    const Stack = createStackNavigator();
-    return (
+
+const Stack = createStackNavigator();
+class AppInitialNavigation extends PureComponent {
+    render(){
+        return (
         <NavigationContainer>
-            <Stack.Navigator headerMode='none'>
-               <PrincipalFlow />
-            </Stack.Navigator>
+          <PrincipalFlow />
         </NavigationContainer>
-    );
+    );}
 }
     
 export default AppInitialNavigation

@@ -1,3 +1,4 @@
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Icon } from 'react-native-elements';
 import Feed from '../screens/feed';
@@ -29,7 +30,7 @@ export default PrincipalFlow = () => {
                     );
                 },
             })}
-            initialRouteName={Inicio}
+            initialRouteName={"Inicio"}
             headerMode='none'
         >
             <Tab.Screen name={"Inicio"} component={Feed} />
