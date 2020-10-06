@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
     
-import vistaHome from '../screens/feed';
+import reducerHome from '../screens/feed/reducer';
     
 const combineReducer = combineReducers({
-    vistaHome,
+    reducerHome,
 });
     
 export default combineReducer;
