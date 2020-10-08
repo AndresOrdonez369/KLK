@@ -44,7 +44,7 @@ export default styles = StyleSheet.create({
         shadowOffset: { height: 2, width: 2 },
         shadowOpacity: 1,
         shadowRadius: 2,
-        elevation: 4,
+        elevation: 3,
     },
     socialStyle: {      
         height: height * 0.06,
@@ -54,7 +54,7 @@ export default styles = StyleSheet.create({
         shadowOffset: { height: 2, width: 2 },
         shadowOpacity: 1,
         shadowRadius: 2,
-        elevation: 4,
+        elevation: 3,
     },
     textButtons:{
         color:"white",
