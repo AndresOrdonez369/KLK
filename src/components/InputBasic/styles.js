@@ -27,6 +27,8 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     color: '#2672FF',
     marginBottom: 10,
+    marginLeft:width * 0.08,
+    marginRight:width * 0.1,
   },
 });
 export default styles;

@@ -63,6 +63,9 @@ const styles = StyleSheet.create({
     },
     textPass: {
         fontSize: 16,
+        alignSelf: 'flex-start',
+        marginLeft:width * 0.1,
+        marginRight:width * 0.1,
         marginTop: height*-0.01,
         marginBottom: height*0.01,
         color:"#2672FF"
