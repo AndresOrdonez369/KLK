@@ -4134,11 +4134,6 @@ klaw@^1.0.0:
   optionalDependencies:
     graceful-fs "^4.1.9"
 
-latches@^1.0.2:
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/latches/-/latches-1.0.9.tgz#fb6d1faa01945d86228d7735611170e662a294ed"
-  integrity sha1-+20fqgGUXYYijXc1YRFw5mKilO0=
-
 leven@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/leven/-/leven-3.1.0.tgz#77891de834064cccba82ae7842bb6b14a13ed7f2"
@@ -6344,12 +6339,10 @@ uuid@^7.0.3:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-7.0.3.tgz#c5c9f2c8cf25dc0a372c4df1441c41f5bd0c680b"
   integrity sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==
 
-validation.js@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/validation.js/-/validation.js-1.0.3.tgz#d534e10fa854e243c6c3beec30278f809f6caff1"
-  integrity sha1-1TThD6hU4kPGw77sMCePgJ9sr/E=
-  dependencies:
-    latches "^1.0.2"
+validate.js@^0.13.1:
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/validate.js/-/validate.js-0.13.1.tgz#b58bfac04a0f600a340f62e5227e70d95971e92a"
+  integrity sha512-PnFM3xiZ+kYmLyTiMgTYmU7ZHkjBZz2/+F0DaALc/uUtVzdCt1wAosvYJ5hFQi/hz8O4zb52FQhHZRC+uVkJ+g==
 
 vary@~1.1.2:
   version "1.1.2"

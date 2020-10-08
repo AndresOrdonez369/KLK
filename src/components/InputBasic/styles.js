@@ -9,22 +9,23 @@ const styles = StyleSheet.create({
   containerStyle: {
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 20,
-  },
+    borderRadius: 8,
+   },
   inputContainerStyle: (error) => ({
     alignItems: 'center',
     justifyContent: 'center',
     height: height * 0.06,
     width: width * 0.8,
-    borderRadius: 20,
-    backgroundColor: 'silver', // gainsboro
-    borderBottomWidth: error ? 1 : 0,
-    borderWidth: error ? 1 : 0,
-    borderColor: error ? 'red' : 'white',
+    borderRadius: 8,
+    backgroundColor: 'white', // gainsboro
+    borderBottomWidth: 1,
+    borderWidth: 1,
+    borderColor: error ? 'red' : '#2672FF',
+    color:"red",
   }),
   labelStyle: {
     alignSelf: 'flex-start',
-    color: 'white',
+    color: '#2672FF',
     marginBottom: 10,
   },
 });

@@ -119,6 +119,7 @@ const InputBasic = ({
       secureTextEntry={secureTextEntry}
       placeholderTextColor="snow"
       underlineColorAndroid="transparent"
+      placeholderTextColor="gray"
     />
 
   );
