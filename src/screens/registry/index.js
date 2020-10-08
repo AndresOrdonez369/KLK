@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { useState } from 'react';
 import { Dimensions, StyleSheet, View, Text, Image } from 'react-native';
 import InputBasic from '../../components/InputBasic/inputBasic';
 import ButtonBasic from  '../../components/ButtonBasic/ButtonBasic'; 
@@ -6,32 +6,56 @@ import Logo from '../../../assets/logo.png';
 
 const { height, width } = Dimensions.get('screen');
     
-class Registry extends PureComponent {
-    
-    render() {
-        return (
-            <View style={styles.container}>
-                
-                <Image source={Logo} style={styles.logo}/>
-                <InputBasic 
-                    placeholder="Correo electrónico" 
-                />
-                <InputBasic 
-                    placeholder="Nombre completo" 
-                />
-                <InputBasic 
-                    placeholder="Nombre de usuario" 
-                /><InputBasic 
-                    placeholder="Contraseña" 
-                />
-                <ButtonBasic text="Registrarse" buttonStyle={styles.buttonStyle} textStyle={styles.textButtons}/>
-                <Text style={styles.textTerms}>Al registrarte aceptas nuestras Condiciones y Politica de privacidad. </Text>
-                
-                
-                 
-            </View>
-        );
+const Registry = () => {
+    //state
+    const [input, setInput] = useState({
+        email: '',
+        name: '',
+        userName: '',
+        password: ''
+    });
+    const { email, password, name, userName } = input;
+    //Registrarse
+    const pressRegistry = (email, password, name, userName) => {
+        console.log(email, password, name, userName);
     }
+    return (
+        <View style={styles.container}>            
+            <Image source={Logo} style={styles.logo}/>
+            <InputBasic
+                keyboardType="email-address"
+                placeholder="Correo electrónico"
+                validation="email"
+                value={email}
+                changeText={(text, err) => setInput({...input, email: text})}
+            />
+            <InputBasic 
+                placeholder="Nombre completo"
+                validation="name"
+                value={name}
+                changeText={(text, err) => setInput({...input, name: text})}
+            />
+            <InputBasic 
+                placeholder="Nombre de usuario"
+                value={userName}
+                changeText={(text, err) => setInput({...input, userName: text})}
+            />
+            <InputBasic
+                secureTextEntry
+                placeholder="Contraseña"
+                validation="password"
+                value={password}
+                changeText={(text, err) => setInput({...input, password: text})}
+            />
+            <ButtonBasic
+                text="Registrarse"
+                buttonStyle={styles.buttonStyle}
+                textStyle={styles.textButtons}
+                onPress={() => pressRegistry(email, password, name, userName)}
+            />
+            <Text style={styles.textTerms}>Al registrarte aceptas nuestras Condiciones y Politica de privacidad. </Text>       
+        </View>
+    );
 }
     
 const styles = StyleSheet.create({
