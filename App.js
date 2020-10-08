@@ -18,7 +18,7 @@ class App extends PureComponent {
     return (
       <Provider store={store}>
         <Navigation />
-        </Provider>
+      </Provider>
     );
   }
 }
