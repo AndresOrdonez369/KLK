@@ -1,33 +1,69 @@
-import React, { PureComponent } from 'react';
-import { Dimensions, StyleSheet, View, Text, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import InputBasic from '../../components/InputBasic/inputBasic';
 import ButtonBasic from  '../../components/ButtonBasic/ButtonBasic'; 
 import { SocialIcon } from 'react-native-elements'
 import Logo from '../../../assets/logo.png';
-
-const { height, width } = Dimensions.get('screen');
+import styles from './styles';
     
-class Login extends PureComponent {
-    
-    render() {
-        return (
-            <View style={styles.container}>
-                
+const Login = ({navigation: {navigate}}) => {
+    //react-redux
+    const dispatch = useDispatch();
+    const state = useSelector(state => state.login);
+    //useState
+    const [input, setInput] = useState({
+        email: '',
+        password: ''
+    });
+    const { email, password } = input;
+    // loginEaP
+    const logInEaP = (email, password) => {
+        console.log(email, password);
+    }
+    // login fb
+    const loginFacebook = () => {
+        console.log('loginfb');
+    }
+    // login google
+    const loginGoogle = () => {
+        console.log('loginGoogle')
+    }
+    return (
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'silver' }}>
+            <View style={styles.container}>                
                 <Image source={Logo} style={styles.logo}/>
-                <InputBasic 
-                    placeholder="Correo electrónico" 
+                <InputBasic
+                    keyboardType="email-address"
+                    placeholder="Correo electrónico"
+                    validation="email"
+                    value={email}
+                    changeText={(text, err) => setInput({...input, email: text})}
                 />
                 <InputBasic 
-                    placeholder="Contraseña" 
+                    placeholder="Contraseña"
+                    validation="password"
+                    value={password}
+                    changeText={(text, err) => setInput({...input, password: text})}
+                    secureTextEntry
                 />
-                <Text style={styles.textPass}>Olvidé mi contraseña</Text>
-                <ButtonBasic text="Iniciar sesión" buttonStyle={styles.buttonStyle} textStyle={styles.textButtons}/>
+                <Text style={styles.textPass} onPress={() => navigate('PasswordRecovery')}>
+                    Olvidé mi contraseña
+                </Text>
+                <ButtonBasic
+                    text="Iniciar sesión"
+                    buttonStyle={styles.buttonStyle}
+                    textStyle={styles.textButtons}
+                    onPress={() => logInEaP(email, password)}
+                />
                 <SocialIcon
                     title='Iniciar con Facebook'
                     button
                     type='facebook'
                     style={styles.socialStyle}
-                    ontStyle={styles.textButtons}
+                    fontStyle={styles.textButtons}
+                    onPress={() => loginFacebook()}
                 />
                 <SocialIcon
                     title='Iniciar con Google'
@@ -35,66 +71,14 @@ class Login extends PureComponent {
                     type='google'
                     style={styles.socialStyle}
                     fontStyle={styles.textButtons}
+                    onPress={() => loginGoogle()}
                 />
-                <Text style={styles.textLogin}>¿ Aún no tienes cuenta ?</Text>
-                
-                
-                 
+                <Text style={styles.textLogin} onPress={() => navigate('Registry')}>
+                    ¿Aún no tienes cuenta?
+                </Text>
             </View>
-        );
-    }
+        </SafeAreaView>
+    );
 }
-    
-const styles = StyleSheet.create({
-    container: {
-        height,
-        width,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-   
-    logo: {
-        marginTop: height * 0.02, 
-        marginBottom: height * 0.09, 
-        height: height * 0.2,
-        width: width * 0.35,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    textPass: {
-        fontSize: 16,
-        alignSelf: 'flex-start',
-        marginLeft:width * 0.1,
-        marginRight:width * 0.1,
-        marginTop: height*-0.01,
-        marginBottom: height*0.01,
-        color:"#2672FF"
-    },
-    textLogin: {
-        fontSize: 18,
-        marginTop: height*0.12,
-        
-        color:"#2672FF"
-    },  
-    buttonStyle: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: height * 0.06,
-        width: width * 0.8,
-        borderRadius: 8,
-        backgroundColor: '#2672FF',
-      },
-      socialStyle: {      
-        height: height * 0.06,
-        width: width * 0.8,
-        borderRadius: 8,
-      },
-      textButtons:{
-        color:"white",
-        fontSize:14,
-        fontWeight: "bold",
-        },
-      
-});
-    
+
 export default Login;
