@@ -1,30 +1,35 @@
-import React, { PureComponent } from 'react';
+import React, { useState } from 'react';
 import { Dimensions, StyleSheet, View, Text} from 'react-native';
 import InputBasic from '../../components/InputBasic/inputBasic';
 import ButtonBasic from  '../../components/ButtonBasic/ButtonBasic'; 
 
 const { height, width } = Dimensions.get('screen');
     
-class PassRecovery extends PureComponent {
-    
-    render() {
-        return (
-            <View style={styles.container}>
-                
-                <Text style={styles.textStart}>¿ Tienes problemas para entrar ? </Text>
-                <Text style={styles.textInfo}>Introduce tu nombre de usuario o dirección de correo electrónico y enviaremos un enlace para que recuperes el acceso a tu cuenta. </Text>
-                <InputBasic 
-                    placeholder="Nombre de usuario o correo electrónico" 
-                />
-                <ButtonBasic text="Enviar" buttonStyle={styles.buttonStyle} textStyle={styles.textButtons}/>
-                <Text style={styles.textDiv}>----------------------------o----------------------------</Text>
-
-                
-                
-                 
-            </View>
-        );
+const PassRecovery = () => {
+    //state
+    const [input, setInput] = useState({user: ''});
+    //recuperar contraseña
+    const pressRecovery = (user) => {
+        console.log(user);
     }
+    return (
+        <View style={styles.container}>  
+            <Text style={styles.textStart}>¿Tienes problemas para entrar? </Text>
+            <Text style={styles.textInfo}>Introduce tu nombre de usuario o dirección de correo electrónico y enviaremos un enlace para que recuperes el acceso a tu cuenta. </Text>
+            <InputBasic 
+                placeholder="Nombre de usuario o correo electrónico"
+                value={input.user}
+                changeText={(text, err) => setInput({user: text})}
+            />
+            <ButtonBasic
+                text="Enviar"
+                buttonStyle={styles.buttonStyle}
+                textStyle={styles.textButtons}
+                onPress={() => pressRecovery(input.user)}
+            />
+            <Text style={styles.textDiv}>----------------------------o----------------------------</Text>
+        </View>
+    );
 }
     
 const styles = StyleSheet.create({
