@@ -14,7 +14,8 @@ const Login = () => {
     const { navigate } = useNavigation();
     //react-redux
     const dispatch = useDispatch();
-    const state = useSelector(state => state.login);
+    const state = useSelector(state => state.reducerLogin);
+    const { error } = state;
     //useState
     const [input, setInput] = useState({
         email: '',
@@ -23,7 +24,6 @@ const Login = () => {
     const { email, password } = input;
     // loginEaP
     const logInEaP = async (email, password) => {
-        const { error } = state
         if (error === false && email.trim() !== '' && email.trim() !== '' ) {
             await dispatch(loginEmailAndPassword(email, password));
         }

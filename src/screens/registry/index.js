@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { Dimensions, StyleSheet, View, Text, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDispatch, useSelector } from 'react-redux';
+import { register } from './actionCreator';
+import checkErrorType from './helperFirebaseError';
 import InputBasic from '../../components/InputBasic/inputBasic';
 import ButtonBasic from  '../../components/ButtonBasic/ButtonBasic'; 
 import Logo from '../../../assets/logo.png';
@@ -7,6 +11,10 @@ import Logo from '../../../assets/logo.png';
 const { height, width } = Dimensions.get('screen');
     
 const Registry = () => {
+    //redux
+    const dispatch = useDispatch();
+    const regitryState = useSelector(state => state.reducerRegistry)
+    const { error, errorCode } = regitryState;
     //state
     const [input, setInput] = useState({
         email: '',
@@ -16,45 +24,54 @@ const Registry = () => {
     });
     const { email, password, name, userName } = input;
     //Registrarse
-    const pressRegistry = (email, password, name, userName) => {
-        console.log(email, password, name, userName);
+    const checkEmptyInputs = (email, password, name, userName) => {
+        if (email.trim() === '' || password.trim() === '' ||
+         name.trim() === '' || userName.trim() === '') return true
+        return false;
+    }
+    const pressRegistry = (email, password, name, userName, error, errorCode) => {
+        if (checkEmptyInputs(email, password, name, userName)) return console.log('inputs vacíos');
+        if (error) return console.log('error db', checkErrorType(errorCode));
+        return dispatch(register(email, password, name, userName));
     }
     return (
-        <View style={styles.container}>            
-            <Image source={Logo} style={styles.logo}/>
-            <InputBasic
-                keyboardType="email-address"
-                placeholder="Correo electrónico"
-                validation="email"
-                value={email}
-                changeText={(text, err) => setInput({...input, email: text})}
-            />
-            <InputBasic 
-                placeholder="Nombre completo"
-                validation="name"
-                value={name}
-                changeText={(text, err) => setInput({...input, name: text})}
-            />
-            <InputBasic 
-                placeholder="Nombre de usuario"
-                value={userName}
-                changeText={(text, err) => setInput({...input, userName: text})}
-            />
-            <InputBasic
-                secureTextEntry
-                placeholder="Contraseña"
-                validation="password"
-                value={password}
-                changeText={(text, err) => setInput({...input, password: text})}
-            />
-            <ButtonBasic
-                text="Registrarse"
-                buttonStyle={styles.buttonStyle}
-                textStyle={styles.textButtons}
-                onPress={() => pressRegistry(email, password, name, userName)}
-            />
-            <Text style={styles.textTerms}>Al registrarte aceptas nuestras Condiciones y Política de privacidad. </Text>       
-        </View>
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'silver' }}>
+            <View style={styles.container}>            
+                <Image source={Logo} style={styles.logo}/>
+                <InputBasic
+                    keyboardType="email-address"
+                    placeholder="Correo electrónico"
+                    validation="email"
+                    value={email}
+                    changeText={(text, err) => setInput({...input, email: text})}
+                />
+                <InputBasic 
+                    placeholder="Nombre completo"
+                    validation="name"
+                    value={name}
+                    changeText={(text, err) => setInput({...input, name: text})}
+                />
+                <InputBasic 
+                    placeholder="Nombre de usuario"
+                    value={userName}
+                    changeText={(text, err) => setInput({...input, userName: text})}
+                />
+                <InputBasic
+                    secureTextEntry
+                    placeholder="Contraseña"
+                    validation="password"
+                    value={password}
+                    changeText={(text, err) => setInput({...input, password: text})}
+                />
+                <ButtonBasic
+                    text="Registrarse"
+                    buttonStyle={styles.buttonStyle}
+                    textStyle={styles.textButtons}
+                    onPress={() => pressRegistry(email, password, name, userName, error, errorCode)}
+                />
+                <Text style={styles.textTerms}>Al registrarte aceptas nuestras Condiciones y Política de privacidad. </Text>       
+            </View>
+        </SafeAreaView>
     );
 }
     
@@ -64,6 +81,7 @@ const styles = StyleSheet.create({
         width,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'white',
     },
     logo: {
         marginTop: height * 0.05, 
