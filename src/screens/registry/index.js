@@ -53,7 +53,7 @@ const Registry = () => {
                 textStyle={styles.textButtons}
                 onPress={() => pressRegistry(email, password, name, userName)}
             />
-            <Text style={styles.textTerms}>Al registrarte aceptas nuestras Condiciones y Politica de privacidad. </Text>       
+            <Text style={styles.textTerms}>Al registrarte aceptas nuestras Condiciones y Política de privacidad. </Text>       
         </View>
     );
 }
