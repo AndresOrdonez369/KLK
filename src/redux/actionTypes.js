@@ -7,4 +7,7 @@ export default {
     //Registry
     REGISTER_ERROR: 'REGISTER_ERROR',
     SET_LOADER_REGISTRY: 'SET_LOADER_REGISTRY',
+    //Password recovery
+    PASSWORD_RECOVERY: 'PASSWORD_RECOVERY',
+    PASSWORD_ERROR: 'PASSWORD_ERROR',
 };
