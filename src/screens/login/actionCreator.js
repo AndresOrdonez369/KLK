@@ -1,4 +1,5 @@
 import Actions from '../../redux/actionTypes';
+import firebase from '../../../firebase';
 
 export const loginEmailAndPassword = (email, password) => async (dispatch) => {
     await firebase.auth().signInWithEmailAndPassword(email, password)

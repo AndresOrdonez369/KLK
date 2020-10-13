@@ -60,21 +60,24 @@ const AppInitialNavigation = () => {
   const [verified, setVerified] = useState(false);
   //authChecker
   useEffect(() => {
-    const authState = firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        if (user.emailVerified) {
-          setLogged(true);
-          setVerified(true);
+    const authState = () => {
+      firebase.auth().onAuthStateChanged((user) => {
+        console.log('entreee')
+        if (user) {
+          if (user.emailVerified) {
+            setLogged(true);
+            setVerified(true);
+          } else {
+            setLogged(true);
+            setVerified(false);
+            user.sendEmailVerification();
+          }
         } else {
-          setLogged(true);
+          setLogged(false);
           setVerified(false);
-          user.sendEmailVerification();
         }
-      } else {
-        setLogged(false);
-        setVerified(false);
-      }
-    });
+      });
+    }
     authState();
   }, []);
   //EmailVerification
@@ -103,7 +106,7 @@ const AppInitialNavigation = () => {
       <Stack.Navigator headerMode="none">
         {(logged === true && verified === false) && <Stack.Screen name="VerificationEmail" component={EmailVerification} />}
         {(logged === false && verified === false) ? (<Stack.Screen name="Auth" component={AuthStack} />)
-          : (<Stack.Screen name={i18n.t('principalFlow')} component={LoggedStack} />)}
+          : (<Stack.Screen name="PrincipalFlow" component={LoggedStack} />)}
       </Stack.Navigator>
     </NavigationContainer>
   );

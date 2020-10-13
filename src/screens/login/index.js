@@ -24,8 +24,8 @@ const Login = () => {
     const { email, password } = input;
     // loginEaP
     const logInEaP = async (email, password) => {
+        await dispatch(loginEmailAndPassword(email, password));
         if (error === false && email.trim() !== '' && email.trim() !== '' ) {
-            await dispatch(loginEmailAndPassword(email, password));
         }
     }
     // login fb

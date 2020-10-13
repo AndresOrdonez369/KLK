@@ -1,5 +1,6 @@
 import Actions from '../../redux/actionTypes';
-import firebase from 'firebase';
+import firebase from '../../../firebase';
+import { loginEmailAndPassword } from '../login/actionCreator';
     
 export const register = (email, password, name, userName) => async (dispatch) => {
     dispatch(IsLoading(true));
