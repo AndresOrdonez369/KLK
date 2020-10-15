@@ -62,7 +62,6 @@ const AppInitialNavigation = () => {
   useEffect(() => {
     const authState = () => {
       firebase.auth().onAuthStateChanged((user) => {
-        console.log('entreee')
         if (user) {
           if (user.emailVerified) {
             setLogged(true);

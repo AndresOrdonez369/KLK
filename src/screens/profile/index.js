@@ -13,7 +13,6 @@ class Profile extends PureComponent {
         <Text style={styles.title}>
           Profile Start
         </Text>
-        <ProfilePicture />
       </View>
     );
   }
