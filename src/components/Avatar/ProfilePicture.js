@@ -34,7 +34,7 @@ const ProfilePicture = () => {
   const pickImage = async () => {
     const { granted } = await ImagePicker.requestCameraRollPermissionsAsync();
     if (!granted) {
-      showModalProfile(i18n.t('weNeedGalleryPerms'), 'error');
+      showModalProfile('Necesitamos permisos para acceder a la  galería');
       return;
     }
 
@@ -48,7 +48,7 @@ const ProfilePicture = () => {
       setImagen(result);
       setOverlayVisible(true);
     } else {
-      showModalProfile(i18n.t('galleryCancel'), 'error');
+      showModalProfile('Has cancelado la carga de imagen');
     }
   };
 
@@ -69,7 +69,7 @@ const ProfilePicture = () => {
 
   return (
     <>
-      {uploadPhotoError !== '' && showModalProfile(i18n.t('defaultError'), 'error')}
+      {uploadPhotoError !== '' && showModalProfile('Error desconocido, inténtalo más tarde', 'error')}
       <View style={styles.generalView}>
         <Avatar
           rounded
@@ -95,7 +95,7 @@ const ProfilePicture = () => {
           <View style={styles.overlayView}>
             <Avatar rounded size={160} source={imagen} />
             <Text style={styles.modalTextTitle}>
-              {i18n.t('uWannaSavePicture')}
+              ¿Quieres guardar esta imagen?
             </Text>
             <Divider />
             <View style={styles.buttonView}>
