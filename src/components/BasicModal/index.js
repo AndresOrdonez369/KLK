@@ -105,12 +105,12 @@ const BasicModal = ({
     buttons = (
       <View style={[styles.row, styles.spaceButton]}>
         <Button
-          title={textOk || i18n.t('yes')}
+          title={textOk || 'Si'}
           buttonStyle={styles.ok}
           onPress={onPressOk}
         />
         <Button
-          title={textCancel || i18n.t('no')}
+          title={textCancel || 'No'}
           buttonStyle={styles.cancel}
           onPress={onPressCancel}
         />
