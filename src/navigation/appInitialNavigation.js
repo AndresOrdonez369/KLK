@@ -95,7 +95,7 @@ const AppInitialNavigation = () => {
         </Text>
         <Button
           title="OK"
-          onPress={() => console.log('cerrar sesion')}
+          onPress={() => firebase.auth().signOut()}
           buttonStyle={styles.overlayButton}
         />
       </View>

@@ -1,13 +1,25 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { Icon } from 'react-native-elements';
 import Feed from '../screens/feed';
 import Perfil from '../screens/profile';
 import Friends from '../screens/friends';
 import Videos from '../screens/videoFeed';
 import Radio from '../screens/radio';
+import Post from '../screens/post';
     
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+function FeedStack() {
+    return (
+        <Stack.Navigator headerMode="none">
+            <Stack.Screen name="CreatePost" component={Post} />
+            <Stack.Screen name="Inicio" component={Feed} />
+        </Stack.Navigator>
+    );
+}
     
 export default PrincipalFlow = () => {
     return(
@@ -33,7 +45,7 @@ export default PrincipalFlow = () => {
             initialRouteName={"Inicio"}
             headerMode='none'
         >
-            <Tab.Screen name={"Inicio"} component={Feed} />
+            <Tab.Screen name={"FeedStack"} component={FeedStack} />
             <Tab.Screen name={'Perfil'} component={Perfil} />
             <Tab.Screen name={'Panas'} component={Friends} />
             <Tab.Screen name={'Videos'} component={Videos} />
