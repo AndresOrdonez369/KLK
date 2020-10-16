@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 import BasicModal from '../../components/BasicModal';
-import { submitPost } from './actionCreator';
+import { submitPost, uploadAudio, uploadVideo, uploadImage } from './actionCreator';
 import styles from './styles';
     
 const Post = () => {
@@ -28,7 +28,11 @@ const Post = () => {
     const { showModal, modalTitle, modalType, modalComponent, pressCancel, pressOk } = modal;
 
     const { navigate } = useNavigation();
+
+    // redux
     const dispatch = useDispatch();
+    const post = useSelector(state => state.reducerPost);
+    const profile = useSelector(state => state.reducerProfile);
 
     // handle data pickers
     const uploadStatus = (error) => {
@@ -82,8 +86,48 @@ const Post = () => {
         }
     }
     //submit
-    const submit = (body, image, video, audio, uploaded) => {
+    const submit = async (body, image, video, audio, uploaded) => {
+        const { imageURL, videoURL, audioURL, error, message } = post;
+        // const { uid, nickName } = profile; TODO: fetch data user
+        const nickName = 'Pancho Villa'
+        const uid = 2;
+        const date = new Date.now();
 
+        if (body.trim() === '' && uploaded === null) {
+            setModal({
+                ...modal,
+                showModal: true,
+                modalType: 'error',
+                modalTitle: 'La publicación no puede estar vacía',
+                pressCancel: () => setModal({ ...modal, showModal: false })
+            });
+        } else {
+            image !== null && await dispatch(uploadImage(image, uid));
+            video !== null && await dispatch(uploadVideo(video, uid));
+            audio !== null && await dispatch(uploadAudio(audio, uid));
+
+            if (error) {
+                setModal({
+                    ...modal,
+                    showModal: true,
+                    modalType: 'error',
+                    modalTitle: message,
+                    pressCancel: () => setModal({ ...modal, showModal: false })
+                });
+            } else {
+                await dispatch(submitPost(uid, nickName, body, imageURL, videoURL, audioURL, uploaded, date));
+                setModal({
+                    ...modal,
+                    showModal: true,
+                    modalType: 'confirmation',
+                    modalTitle: message,
+                    pressCancel: () => {
+                        setModal({ ...modal, showModal: false });
+                        navigate('Inicio');
+                    }
+                });
+            }
+        }
     }
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'silver' }}>
