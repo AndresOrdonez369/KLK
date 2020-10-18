@@ -27,7 +27,9 @@ export const submitPost = (
 
 export const uploadImage = (image, uid) => async (dispatch) => {
   try {
-    const userPhothoURL = `/posts/images/${uid}/${image.uri}.png`;
+    const random = Math.random().toString(36).substring(2)
+      .concat(Math.random().toString(36).substring(2));
+    const userPhothoURL = `/posts/images/${uid}/${random}.png`;
     const storage = firebase.storage().ref();
     const imagePath = storage.child(userPhothoURL);
     const response = await fetch(image);
@@ -52,7 +54,9 @@ export const uploadImage = (image, uid) => async (dispatch) => {
 
 export const uploadVideo = (video, uid) => async (dispatch) => {
   try {
-    const userVideoURL = `/posts/videos/${uid}/${video.uri}.png`;
+    const random = Math.random().toString(36).substring(2)
+      .concat(Math.random().toString(36).substring(2));
+    const userVideoURL = `/posts/videos/${uid}/${random}.mp4`;
     const storage = firebase.storage().ref();
     const imagePath = storage.child(userVideoURL);
     const response = await fetch(video);
@@ -77,7 +81,9 @@ export const uploadVideo = (video, uid) => async (dispatch) => {
 
 export const uploadAudio = (audio, uid) => async (dispatch) => {
   try {
-    const userAudioURL = `/posts/images/${uid}/${audio.uri}.png`;
+    const random = Math.random().toString(36).substring(2)
+      .concat(Math.random().toString(36).substring(2));
+    const userAudioURL = `/posts/audios/${uid}/${random}.mp3`;
     const storage = firebase.storage().ref();
     const imagePath = storage.child(userAudioURL);
     const response = await fetch(audio);

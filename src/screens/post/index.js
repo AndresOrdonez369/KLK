@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text } from 'react-native';
 import { Icon, Input, Avatar } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
@@ -91,7 +91,7 @@ const Post = () => {
         // const { uid, nickName } = profile; TODO: fetch data user
         const nickName = 'Pancho Villa'
         const uid = 2;
-        const date = new Date.now();
+        const date = Date.now();
 
         if (body.trim() === '' && uploaded === null) {
             setModal({
@@ -102,9 +102,9 @@ const Post = () => {
                 pressCancel: () => setModal({ ...modal, showModal: false })
             });
         } else {
-            image !== null && await dispatch(uploadImage(image, uid));
-            video !== null && await dispatch(uploadVideo(video, uid));
-            audio !== null && await dispatch(uploadAudio(audio, uid));
+            if (image !== null) await dispatch(uploadImage(image.uri, uid));
+            if (video !== null) await dispatch(uploadVideo(video.uri, uid));
+            if (audio !== null) await dispatch(uploadAudio(audio.uri, uid));
 
             if (error) {
                 setModal({
@@ -193,7 +193,7 @@ const Post = () => {
                         onPress={() => submit(body, image, video, audio, uploaded)}
                     >Publicar</Text>
                 </View>
-                {console.log(audio)}
+                {console.log(post)}
                 { uploaded !== null
                     && (
                         <View style={styles.preview}>
