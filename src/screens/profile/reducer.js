@@ -1,13 +1,12 @@
 import Actions from '../../redux/actionTypes';
 
 const STATE_INICIAL = {
-  input: '',
+  uploadPhotoError: '',
+  imageURL: '',
 };
 
 export default (state = STATE_INICIAL, action) => {
   switch (action.type) {
-    case Actions.ACTUALIZARINPUT:
-      return { ...state, input: action.carga };
     case Actions.USER_UPDATE_IMAGEN_URL:
       return {
         ...state,

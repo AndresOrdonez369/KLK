@@ -6,17 +6,17 @@ import ProfilePicture from '../../components/Avatar/ProfilePicture';
 
 const { height, width } = Dimensions.get('screen');
 
-class Profile extends PureComponent {
-  render() {
+const Profile=()=> {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>
           Profile Start
         </Text>
+        <ProfilePicture/>
       </View>
     );
   }
-}
+
 
 const styles = StyleSheet.create({
   container: {
