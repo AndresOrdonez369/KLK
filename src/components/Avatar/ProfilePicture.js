@@ -23,7 +23,6 @@ import {
   showModalProfile,
 } from '../../screens/profile/actionCreator';
 const requirePhoto = require('../../../assets/busyPosition.png');
-
 const { width, height } = Dimensions.get('window');
 
 const ProfilePicture = () => {
@@ -91,7 +90,7 @@ const ProfilePicture = () => {
         />
         <Overlay isVisible={overlayVisible} overlayStyle={styles.overlay}>
          <View style={styles.overlayView}>
-            <Avatar rounded size={160} source={imagen} />
+            <Avatar rounded size={160} source={imagen}/>
             <Text style={styles.modalTextTitle}>
               ¿Quieres guardar esta imagen?
             </Text>
