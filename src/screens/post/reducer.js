@@ -3,14 +3,14 @@ import Actions from '../../redux/actionTypes';
 const STATE_INICIAL = {
   error: false,
   message: '.',
-  imageURL: '',
-  videoURL: '',
-  audioURL: '',
+  mediaURL: '',
   isLoading: false,
 };
 
 export default (state = STATE_INICIAL, action) => {
   switch (action.type) {
+    case Actions.CLEAN_POST:
+      return STATE_INICIAL;
     case Actions.UPDATE_LOADER_POST:
       return {
         ...state,
@@ -22,23 +22,13 @@ export default (state = STATE_INICIAL, action) => {
         error: false,
         message: action.payload,
       };
+    case Actions.UPDATE_AUDIO_SUCCESS:
+    case Actions.UPDATE_PHOTO_SUCCESS:
     case Actions.UPDATE_VIDEO_SUCCESS:
       return {
         ...state,
         error: false,
-        videoURL: action.payload,
-      };
-    case Actions.UPDATE_AUDIO_SUCCESS:
-      return {
-        ...state,
-        error: false,
-        audioURL: action.payload,
-      };
-    case Actions.UPDATE_PHOTO_SUCCESS:
-      return {
-        ...state,
-        error: false,
-        imageURL: action.payload,
+        mediaURL: action.payload,
       };
     case Actions.UPDATE_POST_ERROR:
     case Actions.UPDATE_VIDEO_ERROR:

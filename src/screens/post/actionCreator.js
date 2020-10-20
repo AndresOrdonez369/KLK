@@ -111,3 +111,7 @@ export const uploadAudio = (audio, uid) => async (dispatch) => {
     });
   }
 };
+
+export const cleanNewPost = () => ({
+  type: Actions.CLEAN_POST,
+})

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, ActivityIndicator, Modal } from 'react-native';
-import { Icon, Input, Avatar } from 'react-native-elements';
+import { View, Text, ActivityIndicator } from 'react-native';
+import { Icon, Input, Avatar, Overlay } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 import BasicModal from '../../components/BasicModal';
-import { submitPost, uploadAudio, uploadVideo, uploadImage, updateLoader } from './actionCreator';
+import { submitPost, uploadAudio, uploadVideo, uploadImage, updateLoader, cleanNewPost } from './actionCreator';
 import styles from './styles';
     
 const Post = () => {
@@ -24,7 +24,7 @@ const Post = () => {
         pressOk: null,
         pressCancel: null
     });
-    const { showModal, modalTitle, modalType, modalComponent, pressCancel, pressOk } = modal;
+    const { showModal, modalTitle, modalType, pressCancel, pressOk } = modal;
 
     const { navigate } = useNavigation();
 
@@ -32,7 +32,8 @@ const Post = () => {
     const dispatch = useDispatch();
     const post = useSelector(state => state.reducerPost);
     const profile = useSelector(state => state.reducerProfile);
-    const { isLoading } = post;
+    const { isLoading, mediaURL, error, message } = post;
+    // const { uid, nickName } = profile; TODO: fetch data user
 
     // handle data pickers
     const uploadStatus = (error) => {
@@ -88,14 +89,15 @@ const Post = () => {
     }
     // Loader
     const loader = () => (
-        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <ActivityIndicator size="large" color="#f22" />
-            <Text>...Subiendo archivo, esto puede tardar algunos minutos</Text>
-        </View>
+        <Overlay isVisible={isLoading} overlayStyle={styles.overlay}>
+            <View style={styles.overlayView}>
+                <ActivityIndicator size="large" color="#f22" />
+                <Text style={styles.overlayText}>...Subiendo archivo, esto puede tardar un poco</Text>
+            </View>
+        </Overlay>
     )
     //submit
     const submit = async (body, image, video, audio, uploaded) => {
-        // const { uid, nickName } = profile; TODO: fetch data user
         const nickName = 'Pancho Villa'
         const uid = 2;
 
@@ -109,16 +111,15 @@ const Post = () => {
             });
         } else {
             dispatch(updateLoader(true));
-            if (image !== null) await dispatch(uploadImage(image.uri, uid));
-            if (video !== null) await dispatch(uploadVideo(video.uri, uid));
-            if (audio !== null) await dispatch(uploadAudio(audio.uri, uid));
+            if (video !== null && uploaded === 'video') await dispatch(uploadVideo(video.uri, uid));
+            if (image !== null && uploaded === 'image') await dispatch(uploadImage(image.uri, uid));
+            if (audio !== null && uploaded === 'audio') await dispatch(uploadAudio(audio.uri, uid));
 
             await postFirestore(uid, nickName);
             dispatch(updateLoader(false));
         }
     }
     const postFirestore = async (uid, nick) => {
-        const { imageURL, videoURL, audioURL, error, message } = post;
         const date = Date.now();
         if (error) {
             setModal({
@@ -129,7 +130,7 @@ const Post = () => {
                 pressCancel: () => setModal({ ...modal, showModal: false })
             });
         } else {
-            await dispatch(submitPost(uid, nick, body, imageURL, videoURL, audioURL, uploaded, date));
+            await dispatch(submitPost(uid, nick, body, mediaURL, uploaded, date));
             setModal({
                 ...modal,
                 showModal: true,
@@ -137,10 +138,19 @@ const Post = () => {
                 modalTitle: message,
                 pressCancel: () => {
                     setModal({ ...modal, showModal: false });
+                    cleanPost();
                     navigate('Inicio');
                 }
             });
         }
+    }
+    const cleanPost = () => {
+        setBody('');
+        setAudio(null);
+        setImage(null);
+        setVideo(null);
+        setUploaded(null);
+        dispatch(cleanNewPost());
     }
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'silver' }}>
@@ -237,6 +247,7 @@ const Post = () => {
                                     <Avatar
                                         source={image || video }
                                         size={120}
+                                        rounded
                                     />
                                 )}
                         </View>

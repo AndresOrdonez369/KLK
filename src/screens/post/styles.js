@@ -8,6 +8,23 @@ export default styles = StyleSheet.create({
     width,
     backgroundColor: 'white',
   },
+  overlay: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    height,
+    width,
+  },
+  overlayView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  overlayText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 30,
+    marginTop: 20,
+  },
   title: {
     fontSize: height * 0.02,
     color: 'black',
