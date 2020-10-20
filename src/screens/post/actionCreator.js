@@ -1,6 +1,11 @@
 import Actions from '../../redux/actionTypes';
 import firebase from '../../../firebase';
 
+export const updateLoader = (value) => ({
+  type: Actions.UPDATE_LOADER_POST,
+  value,
+});
+
 export const submitPost = (
   uid, nickName, body, imageURL, videoURL, audioURL, uploaded, date,
 ) => async (dispatch) => {
@@ -18,6 +23,7 @@ export const submitPost = (
   })
     .then(() => dispatch({
       type: Actions.UPDATE_POST_SUCCESS,
+      payload: 'Publicación cargada correctamente',
     }))
     .catch(() => dispatch({
       type: Actions.UPDATE_POST_ERROR,

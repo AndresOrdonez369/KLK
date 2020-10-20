@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ActivityIndicator, Modal } from 'react-native';
 import { Icon, Input, Avatar } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 import BasicModal from '../../components/BasicModal';
-import { submitPost, uploadAudio, uploadVideo, uploadImage } from './actionCreator';
+import { submitPost, uploadAudio, uploadVideo, uploadImage, updateLoader } from './actionCreator';
 import styles from './styles';
     
 const Post = () => {
@@ -21,7 +21,6 @@ const Post = () => {
         modalType: 'confirmation',
         showModal: false,
         modalTitle: '',
-        modalComponent: null,
         pressOk: null,
         pressCancel: null
     });
@@ -33,6 +32,7 @@ const Post = () => {
     const dispatch = useDispatch();
     const post = useSelector(state => state.reducerPost);
     const profile = useSelector(state => state.reducerProfile);
+    const { isLoading } = post;
 
     // handle data pickers
     const uploadStatus = (error) => {
@@ -77,6 +77,7 @@ const Post = () => {
         const audio = await DocumentPicker.getDocumentAsync({
             type: "audio/*"
         });
+        console.log(audio)
         if (!audio.cancelled) {
             setAudio(audio);
             uploadStatus(false);
@@ -85,13 +86,18 @@ const Post = () => {
             uploadStatus(true);
         }
     }
+    // Loader
+    const loader = () => (
+        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator size="large" color="#f22" />
+            <Text>...Subiendo archivo, esto puede tardar algunos minutos</Text>
+        </View>
+    )
     //submit
     const submit = async (body, image, video, audio, uploaded) => {
-        const { imageURL, videoURL, audioURL, error, message } = post;
         // const { uid, nickName } = profile; TODO: fetch data user
         const nickName = 'Pancho Villa'
         const uid = 2;
-        const date = Date.now();
 
         if (body.trim() === '' && uploaded === null) {
             setModal({
@@ -102,31 +108,38 @@ const Post = () => {
                 pressCancel: () => setModal({ ...modal, showModal: false })
             });
         } else {
+            dispatch(updateLoader(true));
             if (image !== null) await dispatch(uploadImage(image.uri, uid));
             if (video !== null) await dispatch(uploadVideo(video.uri, uid));
             if (audio !== null) await dispatch(uploadAudio(audio.uri, uid));
 
-            if (error) {
-                setModal({
-                    ...modal,
-                    showModal: true,
-                    modalType: 'error',
-                    modalTitle: message,
-                    pressCancel: () => setModal({ ...modal, showModal: false })
-                });
-            } else {
-                await dispatch(submitPost(uid, nickName, body, imageURL, videoURL, audioURL, uploaded, date));
-                setModal({
-                    ...modal,
-                    showModal: true,
-                    modalType: 'confirmation',
-                    modalTitle: message,
-                    pressCancel: () => {
-                        setModal({ ...modal, showModal: false });
-                        navigate('Inicio');
-                    }
-                });
-            }
+            await postFirestore(uid, nickName);
+            dispatch(updateLoader(false));
+        }
+    }
+    const postFirestore = async (uid, nick) => {
+        const { imageURL, videoURL, audioURL, error, message } = post;
+        const date = Date.now();
+        if (error) {
+            setModal({
+                ...modal,
+                showModal: true,
+                modalType: 'error',
+                modalTitle: message,
+                pressCancel: () => setModal({ ...modal, showModal: false })
+            });
+        } else {
+            await dispatch(submitPost(uid, nick, body, imageURL, videoURL, audioURL, uploaded, date));
+            setModal({
+                ...modal,
+                showModal: true,
+                modalType: 'confirmation',
+                modalTitle: message,
+                pressCancel: () => {
+                    setModal({ ...modal, showModal: false });
+                    navigate('Inicio');
+                }
+            });
         }
     }
     return (
@@ -137,7 +150,6 @@ const Post = () => {
                     type={modalType}
                     requiredHeight={0.5}
                     title={modalTitle}
-                    component={modalComponent || null}
                     onPressCancel={pressCancel}
                     onPressOk={pressOk}
                 />
@@ -228,7 +240,8 @@ const Post = () => {
                                     />
                                 )}
                         </View>
-                    )}
+                )}
+                { isLoading  && loader() }
             </View>
         </SafeAreaView>
         );
