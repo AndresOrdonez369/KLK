@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
 import { Icon, Input, Avatar, Overlay } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -17,6 +17,7 @@ const Post = () => {
     const [video, setVideo] = useState(null);
     const [audio, setAudio] = useState(null);
     const [uploaded, setUploaded] = useState(null);
+    const [postdb, setPostdb] = useState(false);
     const [modal, setModal] = useState({
         modalType: 'confirmation',
         showModal: false,
@@ -78,8 +79,7 @@ const Post = () => {
         const audio = await DocumentPicker.getDocumentAsync({
             type: "audio/*"
         });
-        console.log(audio)
-        if (!audio.cancelled) {
+        if (audio.type === 'success') {
             setAudio(audio);
             uploadStatus(false);
             setUploaded('audio');
@@ -92,13 +92,12 @@ const Post = () => {
         <Overlay isVisible={isLoading} overlayStyle={styles.overlay}>
             <View style={styles.overlayView}>
                 <ActivityIndicator size="large" color="#f22" />
-                <Text style={styles.overlayText}>...Subiendo archivo, esto puede tardar un poco</Text>
+                <Text style={styles.overlayText}>...Subiendo archivo</Text>
             </View>
         </Overlay>
     )
     //submit
     const submit = async (body, image, video, audio, uploaded) => {
-        const nickName = 'Pancho Villa'
         const uid = 2;
 
         if (body.trim() === '' && uploaded === null) {
@@ -111,39 +110,47 @@ const Post = () => {
             });
         } else {
             dispatch(updateLoader(true));
-            if (video !== null && uploaded === 'video') await dispatch(uploadVideo(video.uri, uid));
             if (image !== null && uploaded === 'image') await dispatch(uploadImage(image.uri, uid));
-            if (audio !== null && uploaded === 'audio') await dispatch(uploadAudio(audio.uri, uid));
+            if (video !== null && uploaded === 'video') await dispatch(uploadVideo(video.uri, uid));
+            if (audio !== null && uploaded === 'audio') await dispatch(uploadAudio(audio.uri, audio.name, uid));
 
-            await postFirestore(uid, nickName);
-            dispatch(updateLoader(false));
+            setPostdb(true);
         }
     }
-    const postFirestore = async (uid, nick) => {
-        const date = Date.now();
-        if (error) {
-            setModal({
-                ...modal,
-                showModal: true,
-                modalType: 'error',
-                modalTitle: message,
-                pressCancel: () => setModal({ ...modal, showModal: false })
-            });
-        } else {
-            await dispatch(submitPost(uid, nick, body, mediaURL, uploaded, date));
-            setModal({
-                ...modal,
-                showModal: true,
-                modalType: 'confirmation',
-                modalTitle: message,
-                pressCancel: () => {
-                    setModal({ ...modal, showModal: false });
-                    cleanPost();
-                    navigate('Inicio');
-                }
-            });
+    useEffect(() => {
+        const postFirestore = async () => {
+            const nick = 'Pancho Villa'
+            const uid = 2;
+            const date = Date.now();
+            if (error) {
+                setModal({
+                    ...modal,
+                    showModal: true,
+                    modalType: 'error',
+                    modalTitle: message,
+                    pressCancel: () => setModal({ ...modal, showModal: false })
+                });
+            } else {
+                await dispatch(submitPost(uid, nick, body, mediaURL, uploaded, date));
+                dispatch(updateLoader(false));
+                setModal({
+                    ...modal,
+                    showModal: true,
+                    modalType: 'confirmation',
+                    modalTitle: 'Publicación cargada correctamente',
+                    pressCancel: () => {
+                        setModal({ ...modal, showModal: false });
+                        cleanPost();
+                        navigate('Inicio');
+                    }
+                });
+            }
         }
-    }
+        if (postdb && mediaURL !== '') {
+           postFirestore();
+           setPostdb(false);
+        }
+    }, [postdb, mediaURL, message])
     const cleanPost = () => {
         setBody('');
         setAudio(null);
@@ -183,6 +190,7 @@ const Post = () => {
                         inputContainerStyle={styles.inputStyle}
                         containerStyle={styles.input}
                         onChange={(e) => setBody(e.nativeEvent.text)}
+                        value={body}
                         style={styles.placeholder}
                     />
                 </View>
@@ -215,7 +223,7 @@ const Post = () => {
                         onPress={() => submit(body, image, video, audio, uploaded)}
                     >Publicar</Text>
                 </View>
-                {console.log(post)}
+                {console.log(audio)}
                 { uploaded !== null
                     && (
                         <View style={styles.preview}>

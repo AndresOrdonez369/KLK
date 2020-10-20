@@ -7,19 +7,17 @@ export const updateLoader = (value) => ({
 });
 
 export const submitPost = (
-  uid, nickName, body, imageURL, videoURL, audioURL, uploaded, date,
+  uid, nickName, body, mediaURL, uploaded, date,
 ) => async (dispatch) => {
   const db = firebase.firestore();
   const collection = db.collection('posts');
   await collection.add({
-    audioURL,
     authorID: uid,
     authorNick: nickName,
     description: body,
-    imageURL,
+    mediaURL,
     type: uploaded,
     createdAt: date,
-    videoURL,
   })
     .then(() => dispatch({
       type: Actions.UPDATE_POST_SUCCESS,
@@ -62,7 +60,7 @@ export const uploadVideo = (video, uid) => async (dispatch) => {
   try {
     const random = Math.random().toString(36).substring(2)
       .concat(Math.random().toString(36).substring(2));
-    const userVideoURL = `/posts/videos/${uid}/${random}.mp4`;
+    const userVideoURL = `/posts/videos/${uid}/${random}.avi`;
     const storage = firebase.storage().ref();
     const imagePath = storage.child(userVideoURL);
     const response = await fetch(video);
@@ -85,11 +83,9 @@ export const uploadVideo = (video, uid) => async (dispatch) => {
   }
 };
 
-export const uploadAudio = (audio, uid) => async (dispatch) => {
+export const uploadAudio = (audio, name, uid) => async (dispatch) => {
   try {
-    const random = Math.random().toString(36).substring(2)
-      .concat(Math.random().toString(36).substring(2));
-    const userAudioURL = `/posts/audios/${uid}/${random}.mp3`;
+    const userAudioURL = `/posts/audios/${uid}/${name}.mp3`;
     const storage = firebase.storage().ref();
     const imagePath = storage.child(userAudioURL);
     const response = await fetch(audio);
@@ -114,4 +110,4 @@ export const uploadAudio = (audio, uid) => async (dispatch) => {
 
 export const cleanNewPost = () => ({
   type: Actions.CLEAN_POST,
-})
+});

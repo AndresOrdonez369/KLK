@@ -22,7 +22,8 @@ export default styles = StyleSheet.create({
   overlayText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 30,
+    alignSelf: 'center',
+    fontSize: 25,
     marginTop: 20,
   },
   title: {
