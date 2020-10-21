@@ -22,26 +22,26 @@ const SimpleAvatar = ({
         accessory={accessory}
         showAccessory={showAccessory}   
       />
-      <View style={styles.containerText}>
-        {name && <Text style={styles.name}>{name}</Text>}
-        {date && <Text style={styles.date}>{date}</Text>}
+      <View style={styles.containerText(size)}>
+        {name && <Text style={styles.name(size)}>{name}</Text>}
+        {date && <Text style={styles.date(size)}>{date}</Text>}
       </View>
     </View>
   );
 };
 const styles = StyleSheet.create({
-    name:{
-      fontSize: 25,
-      fontWeight:"bold",
+    name:(size) =>({
+      fontSize: size/6,
+      fontWeight:"500",
       
-    },
-    date:{
-      fontSize:20,
+    }),
+    date:(size)=>({
+      fontSize:size/7,
       color:"gray"
-    },
-    containerText:{
-      marginTop:30,
-    }
+    }),
+    containerText:(size)=>({
+      marginTop:size/4,
+    })
   
   });
 
