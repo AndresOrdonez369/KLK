@@ -1,13 +1,25 @@
 import Actions from '../../redux/actionTypes';
 const STATE_INICIAL = {
-    input: '',
+    error: false,
+    errorCode: '',
+    errorMessage: '',
+    isLoading: false,
 }
     
 export default ( state = STATE_INICIAL, action ) => {
+    const { isLoading } = action;
     switch(action.type){
-        case Actions.ACTUALIZARINPUT:
-            return {...state, input: action.carga  };
+        case Actions.REGISTER_ERROR:
+            return {
+                ...state,
+                error: true,
+                errorCode: action.payload.errorCode,
+                errorMessage: action.payload.errorMessage,
+                isLoading
+            };
+        case Actions.SET_LOADER_REGISTRY:
+            return { ...state, isLoading }
         default:
-            return {...state };
+            return { ...state };
     }
 }

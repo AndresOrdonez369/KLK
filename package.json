@@ -15,6 +15,7 @@
     "base-64": "^0.1.0",
     "expo": "~39.0.2",
     "expo-av": "^8.6.0",
+    "expo-document-picker": "^8.4.1",
     "expo-firebase-analytics": "^2.5.0",
     "expo-firebase-core": "^1.2.0",
     "expo-google-sign-in": "^8.3.0",
@@ -37,10 +38,16 @@
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
-    "validation.js": "^1.0.3"
+    "validate.js": "^0.13.1"
   },
   "devDependencies": {
-    "@babel/core": "~7.9.0"
+    "@babel/core": "~7.9.0",
+    "eslint": "^7.11.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-react": "^7.21.4",
+    "eslint-plugin-react-hooks": "^4.1.2"
   },
   "private": true
 }
