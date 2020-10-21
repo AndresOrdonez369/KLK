@@ -15,8 +15,8 @@ const Stack = createStackNavigator();
 function FeedStack() {
     return (
         <Stack.Navigator headerMode="none">
-            <Stack.Screen name="CreatePost" component={Post} />
             <Stack.Screen name="Inicio" component={Feed} />
+            <Stack.Screen name="CreatePost" component={Post} />
         </Stack.Navigator>
     );
 }
