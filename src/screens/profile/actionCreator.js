@@ -36,7 +36,8 @@ export const fetchUserData = () => async (dispatch) => {
 export const userUploadImagen = (imagenURL) => async (dispatch) => {
   try {
     const user = firebase.auth().currentUser;
-    const userPhothoURL = `/Users/profilePhotos/${user.uid}.png`;
+    const userPhothoURL = `/Users/profilePhotos/${user.displayName}.png`;
+    console.log(userPhothoURL,"BAND")
     const storage = firebase.storage().ref();
     const imagePath = storage.child(userPhothoURL);
     const response = await fetch(imagenURL);
@@ -54,12 +55,12 @@ export const userUploadImagen = (imagenURL) => async (dispatch) => {
 
     return dispatch({
       type: Actions.USER_UPDATE_IMAGEN_URL,
-      playload: url,
+      payload: url,
     });
   } catch (error) {
     return dispatch({
       type: Actions.USER_UPDATE_IMAGEN_ERROR,
-      playload: error,
+      payload: error,
     });
   }
 };
@@ -75,5 +76,5 @@ export const hideModalProfile = () => ({
 
 export const userUpdateImagenURL = (url) => ({
   type: Actions.USER_UPDATE_IMAGEN_URL,
-  playload: url,
+  payload: url,
 });

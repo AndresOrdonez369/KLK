@@ -22,7 +22,7 @@ import {
   userUploadImagen,
   showModalProfile,
 } from '../../screens/profile/actionCreator';
-
+const requirePhoto = require('../../../assets/busyPosition.png');
 const { width, height } = Dimensions.get('window');
 
 const ProfilePicture = () => {
@@ -54,13 +54,15 @@ const ProfilePicture = () => {
 
   const uploadProfileImage = async () => {
     setIsLoading(true);
+    console.log(imagen,"1")
     await dispatch(userUploadImagen(imagen.uri));
+    console.log(imagen,"bandera")
     setIsLoading(false);
     setOverlayVisible(!overlayVisible);
   };
 
   const { photoURL } = firebase.auth().currentUser;
-  const { uploadPhotoError } = useSelector((state) => state.profile);
+  const { uploadPhotoError } = useSelector((state) => state.reducerProfile);
   const imgUser = photoURL ? { uri: photoURL } : requirePhoto;
 
   if (isLoading) {
@@ -87,13 +89,8 @@ const ProfilePicture = () => {
           source={imgUser}
         />
         <Overlay isVisible={overlayVisible} overlayStyle={styles.overlay}>
-          <Image
-            resizeMode="center"
-            source={interactive}
-            style={styles.imgModal}
-          />
-          <View style={styles.overlayView}>
-            <Avatar rounded size={160} source={imagen} />
+         <View style={styles.overlayView}>
+            <Avatar rounded size={160} source={imagen}/>
             <Text style={styles.modalTextTitle}>
               ¿Quieres guardar esta imagen?
             </Text>
@@ -102,7 +99,7 @@ const ProfilePicture = () => {
               <Button
                 buttonStyle={styles.buttonSaveStyle}
                 type="outline"
-                title="Guarar foto"
+                title="Guardar foto"
                 titleStyle={{ color: 'white' }}
                 icon={(
                   <Icon
@@ -112,7 +109,7 @@ const ProfilePicture = () => {
                     type="material"
                   />
                   )}
-                onPress={uploadProfileImage}
+                onPress={()=>uploadProfileImage()}
               />
 
               <Button
