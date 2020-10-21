@@ -1,9 +1,37 @@
 import Actions from '../../redux/actionTypes';
+import firebase from '../../../firebase';
 
-export const ProfileInputUpdate = ({ prop, value }) => ({
-  type: Actions.ACTUALIZARINPUT,
-  payload: { prop, value },
+export const updateLoader = (value) => ({
+  type: Actions.SET_LOADER_PROFILE,
+  payload: value,
 });
+
+export const fetchUserData = () => async (dispatch) => {
+  const { uid, email, photoURL } = await firebase.auth().currentUser;
+  try {
+    const dbh = firebase.firestore();
+    const userCollection = dbh.collection('users').doc(uid);
+    const snapShot = await userCollection.get();
+    if (!snapShot) {
+      return dispatch({
+        type: Actions.USER_FETCH_FAILED,
+        payload: 'No se encontraron datos de usuario',
+      });
+    }
+    const { userName, name } = snapShot.data();
+    return dispatch({
+      type: Actions.USER_FETCH_DBASE,
+      payload: {
+        userName, name, uid, email, photoURL,
+      },
+    });
+  } catch (error) {
+    return dispatch({
+      type: Actions.USER_FETCH_FAILED,
+      error: 'Error trayendo datos de usuario',
+    });
+  }
+};
 
 export const userUploadImagen = (imagenURL) => async (dispatch) => {
   try {

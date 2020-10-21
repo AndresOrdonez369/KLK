@@ -5,10 +5,12 @@ import {
 import { Overlay, Button, Icon } from 'react-native-elements';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { useDispatch } from 'react-redux';
 import PrincipalFlow from './principalFlow';
 import Login from '../screens/login';
 import PasswordRecovery from '../screens/passwordRecovery';
 import Registry from '../screens/registry';
+import { fetchUserData } from '../screens/profile/actionCreator';
 import firebase from '../../firebase';
 
 const Stack = createStackNavigator();
@@ -60,6 +62,8 @@ const AppInitialNavigation = () => {
   // state
   const [logged, setLogged] = useState(false);
   const [verified, setVerified] = useState(false);
+
+  const dispatch = useDispatch();
   // authChecker
   useEffect(() => {
     const authState = () => {
@@ -68,6 +72,7 @@ const AppInitialNavigation = () => {
           if (user.emailVerified) {
             setLogged(true);
             setVerified(true);
+            dispatch(fetchUserData());
           } else {
             setLogged(true);
             setVerified(false);

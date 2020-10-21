@@ -34,7 +34,7 @@ const Post = () => {
     const post = useSelector(state => state.reducerPost);
     const profile = useSelector(state => state.reducerProfile);
     const { isLoading, mediaURL, error, message } = post;
-    // const { uid, nickName } = profile; TODO: fetch data user
+    const { uid, name } = profile;
 
     // handle data pickers
     const uploadStatus = (error) => {
@@ -98,7 +98,6 @@ const Post = () => {
     )
     //submit
     const submit = async (body, image, video, audio, uploaded) => {
-        const uid = 2;
 
         if (body.trim() === '' && uploaded === null) {
             setModal({
@@ -119,8 +118,6 @@ const Post = () => {
     }
     useEffect(() => {
         const postFirestore = async () => {
-            const nick = 'Pancho Villa'
-            const uid = 2;
             const date = Date.now();
             if (error) {
                 setModal({
@@ -131,7 +128,7 @@ const Post = () => {
                     pressCancel: () => setModal({ ...modal, showModal: false })
                 });
             } else {
-                await dispatch(submitPost(uid, nick, body, mediaURL, uploaded, date));
+                await dispatch(submitPost(uid, name, body, mediaURL, uploaded, date));
                 dispatch(updateLoader(false));
                 setModal({
                     ...modal,
@@ -223,7 +220,6 @@ const Post = () => {
                         onPress={() => submit(body, image, video, audio, uploaded)}
                     >Publicar</Text>
                 </View>
-                {console.log(audio)}
                 { uploaded !== null
                     && (
                         <View style={styles.preview}>
@@ -253,7 +249,7 @@ const Post = () => {
                                     </View>
                                 ) : (
                                     <Avatar
-                                        source={image || video }
+                                        source={ image || video }
                                         size={120}
                                         rounded
                                     />

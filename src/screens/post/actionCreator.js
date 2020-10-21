@@ -7,13 +7,13 @@ export const updateLoader = (value) => ({
 });
 
 export const submitPost = (
-  uid, nickName, body, mediaURL, uploaded, date,
+  uid, name, body, mediaURL, uploaded, date,
 ) => async (dispatch) => {
   const db = firebase.firestore();
   const collection = db.collection('posts');
   await collection.add({
     authorID: uid,
-    authorNick: nickName,
+    author: name,
     description: body,
     mediaURL,
     type: uploaded,
