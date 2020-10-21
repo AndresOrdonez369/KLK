@@ -110,6 +110,7 @@ const Post = () => {
             });
         } else {
             dispatch(updateLoader(true));
+            if (image === null && audio === null && video === null) setUploaded('text');
             if (image !== null && uploaded === 'image') await dispatch(uploadImage(image.uri, uid));
             if (video !== null && uploaded === 'video') await dispatch(uploadVideo(video.uri, uid));
             if (audio !== null && uploaded === 'audio') await dispatch(uploadAudio(audio.uri, audio.name, uid));
@@ -144,7 +145,7 @@ const Post = () => {
                 });
             }
         }
-        if (postdb && mediaURL !== '') {
+        if (postdb && (mediaURL !== '' || (uploaded === 'text' && body !== ''))) {
            postFirestore();
            setPostdb(false);
         }
