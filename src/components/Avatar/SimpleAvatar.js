@@ -12,20 +12,20 @@ const SimpleAvatar = ({
     : requirePhoto;
   return (
     <View style={{flexDirection: "row"}}>
-    < Avatar
-      rounded
-      size={size}
-      overlayContainerStyle={{ backgroundColor: 'gray', margin: 15 }}
-      titleStyle={{ color: 'green' }}
-      source={imgUser}
-      onPress={onPress}
-      accessory={accessory}
-      showAccessory={showAccessory}   
-    />
-    <View style={styles.containerText}>
-      {name && <Text style={styles.name}>{name}</Text>}
-      {date && <Text style={styles.date}>{date}</Text>}
-    </View>
+      <Avatar
+        rounded
+        size={size}
+        overlayContainerStyle={{ backgroundColor: 'gray', margin: 15 }}
+        titleStyle={{ color: 'green' }}
+        source={imgUser}
+        onPress={onPress}
+        accessory={accessory}
+        showAccessory={showAccessory}   
+      />
+      <View style={styles.containerText}>
+        {name && <Text style={styles.name}>{name}</Text>}
+        {date && <Text style={styles.date}>{date}</Text>}
+      </View>
     </View>
   );
 };

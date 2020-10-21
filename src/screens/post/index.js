@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
-import { Icon, Input, Avatar, Overlay } from 'react-native-elements';
+import { Icon, Input, Avatar, Overlay, Button } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
+import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
 import BasicModal from '../../components/BasicModal';
 import { submitPost, uploadAudio, uploadVideo, uploadImage, updateLoader, cleanNewPost } from './actionCreator';
 import styles from './styles';
@@ -34,7 +35,7 @@ const Post = () => {
     const post = useSelector(state => state.reducerPost);
     const profile = useSelector(state => state.reducerProfile);
     const { isLoading, mediaURL, error, message } = post;
-    const { uid, name } = profile;
+    const { uid, name, imageURL } = profile;
 
     // handle data pickers
     const uploadStatus = (error) => {
@@ -180,7 +181,11 @@ const Post = () => {
                         Crear publicación
                     </Text> 
                 </View>
-                {/*user component*/}
+                <SimpleAvatar
+                    size={styles.container.height * 0.12}
+                    url={imageURL}
+                    name={name || 'nombre'}
+                />
                 <View style={styles.inputContainer}>
                     <Input
                         placeholder=' ¿Klk estás pensando?'
@@ -215,10 +220,11 @@ const Post = () => {
                             iconStyle={styles.icons}
                         />
                     </View>
-                    <Text
-                        style={styles.submitStyle}
+                    <Button
+                        title="Publicar"
                         onPress={() => submit(body, image, video, audio, uploaded)}
-                    >Publicar</Text>
+                        buttonStyle={styles.buttonSubmit}
+                    />
                 </View>
                 { uploaded !== null
                     && (

@@ -1,15 +1,14 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import {
   Dimensions, StyleSheet, View, Text,
 } from 'react-native';
 import ProfilePicture from '../../components/Avatar/ProfilePicture';
-import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
 const { height, width } = Dimensions.get('screen');
 
 const Profile=()=> {
     return (
       <View style={styles.container}>
-        <SimpleAvatar name="Daniela Estefania Erazo" date="5 de octubre a las 20:16"/>
+        <ProfilePicture />
       </View>
     );
   }

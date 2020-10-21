@@ -60,7 +60,6 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 8,
-    marginTop: 20,
   },
   iconContainer: {
     flexDirection: 'row',
@@ -83,9 +82,10 @@ export default styles = StyleSheet.create({
   placeholder: {
     alignSelf: 'flex-start',
   },
-  submitStyle: {
-    color: '#f22',
-    fontSize: height * 0.023,
+  buttonSubmit: {
+    backgroundColor: '#f22',
+    borderRadius: 20,
+    width: width * 0.3,
   },
   preview: {
     flexDirection: 'row',
