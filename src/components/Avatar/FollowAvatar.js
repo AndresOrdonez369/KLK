@@ -70,7 +70,7 @@ const FollowAvatar = ({
           fontWeight:"500",
         }),
     date:(size)=>({
-          fontSize:size/7.5,
+          fontSize:size/7,
           color:"gray"
         }),
     containerText:(size)=>({
