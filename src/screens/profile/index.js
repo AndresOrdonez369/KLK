@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dimensions, StyleSheet, View, Text,
 } from 'react-native';
@@ -8,20 +8,66 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import InputBasic from '../../components/InputBasic/inputBasic';
+import BasicModal from '../../components/BasicModal';
 import ProfilePicture from '../../components/Avatar/ProfilePicture';
-import { updateDescription } from './actionCreator';
+import {
+  updateDescription, showModalProfile, hideModalProfile, setDataChange, updateDataUser
+} from './actionCreator';
 const { height, width } = Dimensions.get('screen');
 
-const Profile=()=> {
+const Profile = () => {
   //state
   const [input, showInput] = useState(false);
+  const [modalData, setModalData] = useState(false);
   //redux
   const dispatch = useDispatch();
   const profile = useSelector(state => state.reducerProfile);
-  const { description } = profile;
-  console.log(description)
+  const { dataChange, modalType, error, message, user, uid } = profile;
+  const { description } = user;
+  console.log(profile)
+  useEffect(() => {
+    return () => {
+      dataUpdate(dataChange);
+    };
+  }, [dataChange, user, uid]);
+
+  const dataUpdate = (dataChange) => {
+    if (dataChange) {
+      return () => {
+        dispatch(showModalProfile('Realizaste algunos cambios,\n¿deseas guardarlos?', 'interactive'));
+        setModalData(true);
+      }
+    }
+    return null;
+  }
+  const modalUpdate = async () => {
+    await dispatch(updateDataUser(user, uid));
+    setModalData(false);
+  }
+  const inputFnc = (input) => {
+    if (input) {
+      showInput(false);
+      dispatch(setDataChange(true));
+    } else {
+      showInput(true)
+    }
+  }
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#f22' }}>
+    <SafeAreaView style={styles.safeArea}>
+      {error &&
+        <BasicModal
+          requiredHeight={0.55}
+          title={message}
+          type={modalType}
+          onPressCancel={() => {
+            dispatch(hideModalProfile());
+            if (modalData) dispatch(setDataChange(false));
+          }}
+          onPressOk={async () => {
+            if (modalData) modalUpdate(); 
+            dispatch(hideModalProfile());
+          }}
+        />}
       <View style={styles.container}>
         <ProfilePicture type="cover" />
         <View style={styles.avatarView}>
@@ -59,7 +105,7 @@ const Profile=()=> {
                 changeText={(text) => dispatch(updateDescription(text))}
               />
             ) : (
-              <Text style={{ alignText: 'center', flexWrap: 'wrap', marginRight: 10 }}>
+              <Text style={{ flexWrap: 'wrap', marginRight: 10 }}>
                 { description || `¡Escribe una descripción para tu perfil!` }
               </Text>
             )}
@@ -68,7 +114,7 @@ const Profile=()=> {
               size={30}
               color="black"
               type="ant-design"
-              onPress={() => input ? showInput(false) : showInput(true)}
+              onPress={() => inputFnc(input)}
             />
           </View>
           <Button
@@ -83,6 +129,10 @@ const Profile=()=> {
 
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#f22'
+  },
   container: {
     height,
     width,

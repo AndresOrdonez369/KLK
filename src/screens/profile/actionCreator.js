@@ -6,6 +6,11 @@ export const updateLoader = (value) => ({
   payload: value,
 });
 
+export const setDataChange = (value) => ({
+  type: Actions.SET_DATA_CHANGE,
+  payload: value,
+});
+
 export const fetchUserData = () => async (dispatch) => {
   const { uid, email, photoURL } = await firebase.auth().currentUser;
   try {
@@ -18,11 +23,13 @@ export const fetchUserData = () => async (dispatch) => {
         payload: 'No se encontraron datos de usuario',
       });
     }
-    const { userName, name } = snapShot.data();
+    const {
+      userName, name, coverURL, description,
+    } = snapShot.data();
     return dispatch({
       type: Actions.USER_FETCH_DBASE,
       payload: {
-        userName, name, uid, email, photoURL,
+        userName, name, uid, email, photoURL, coverURL, description,
       },
     });
   } catch (error) {
@@ -31,6 +38,20 @@ export const fetchUserData = () => async (dispatch) => {
       error: 'Error trayendo datos de usuario',
     });
   }
+};
+
+export const userDataUpdate = (data, uid) => (dispatch) => {
+  const dbh = firebase.firestore();
+  const uidCollection = dbh.collection('users').doc(uid);
+  uidCollection
+    .update(data)
+    .then(() => dispatch({
+      type: Actions.USER_DB_UPDATE,
+    }))
+    .catch((error) => {
+      // eslint-disable-next-line no-console
+      console.log('error dbUpdate: ', error);
+    });
 };
 
 export const userUploadImagen = (imagenURL, type) => async (dispatch) => {
@@ -55,11 +76,14 @@ export const userUploadImagen = (imagenURL, type) => async (dispatch) => {
       });
     }
 
+    dispatch(setDataChange(true));
+
     return dispatch({
       type: type === 'picture' ? Actions.USER_UPDATE_IMAGEN_URL : Actions.USER_UPDATE_COVER_URL,
       payload: url,
     });
   } catch (error) {
+    dispatch(setDataChange(false));
     return dispatch({
       type: Actions.USER_UPDATE_IMAGEN_ERROR,
       payload: error,

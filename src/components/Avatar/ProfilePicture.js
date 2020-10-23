@@ -37,7 +37,7 @@ const ProfilePicture = ({ type }) => {
   const pickImage = async (type) => {
     const { granted } = await ImagePicker.requestCameraRollPermissionsAsync();
     if (!granted) {
-      showModalProfile('Necesitamos permisos para acceder a la  galería');
+      dispatch(showModalProfile('Necesitamos permisos para acceder a la  galería', 'error'));
       return;
     }
 
@@ -51,7 +51,7 @@ const ProfilePicture = ({ type }) => {
       type === 'cover' ? setCover(result) : setImagen(result);
       setOverlayVisible(true);
     } else {
-      showModalProfile('Has cancelado la carga de imagen');
+      dispatch(showModalProfile('Has cancelado la carga de imagen', 'error'));
     }
   };
 
@@ -74,7 +74,7 @@ const ProfilePicture = ({ type }) => {
 
   return (
     <>
-      {uploadPhotoError !== '' && showModalProfile('Error desconocido, inténtalo más tarde', 'error')}
+      {uploadPhotoError !== '' && dispatch(showModalProfile('Error desconocido, inténtalo más tarde', 'error'))}
       <View style={styles.generalView}>
         {type === 'picture'
           ? (
