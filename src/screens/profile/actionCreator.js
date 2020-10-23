@@ -33,11 +33,11 @@ export const fetchUserData = () => async (dispatch) => {
   }
 };
 
-export const userUploadImagen = (imagenURL) => async (dispatch) => {
+export const userUploadImagen = (imagenURL, type) => async (dispatch) => {
   try {
     const user = firebase.auth().currentUser;
-    const userPhothoURL = `/Users/profilePhotos/${user.displayName}.png`;
-    console.log(userPhothoURL,"BAND")
+    const userPhothoURL = type === 'picture'
+      ? `/Users/profilePhotos/${user.uid}.png` : `/Users/coverPhotos/${user.uid}.png`;
     const storage = firebase.storage().ref();
     const imagePath = storage.child(userPhothoURL);
     const response = await fetch(imagenURL);
@@ -48,13 +48,15 @@ export const userUploadImagen = (imagenURL) => async (dispatch) => {
       .child(userPhothoURL)
       .getDownloadURL();
 
-    await user.updateProfile({
-      displayName: user.displayName,
-      photoURL: url,
-    });
+    if (type === 'picture') {
+      await user.updateProfile({
+        displayName: user.displayName,
+        photoURL: url,
+      });
+    }
 
     return dispatch({
-      type: Actions.USER_UPDATE_IMAGEN_URL,
+      type: type === 'picture' ? Actions.USER_UPDATE_IMAGEN_URL : Actions.USER_UPDATE_COVER_URL,
       payload: url,
     });
   } catch (error) {
@@ -77,4 +79,9 @@ export const hideModalProfile = () => ({
 export const userUpdateImagenURL = (url) => ({
   type: Actions.USER_UPDATE_IMAGEN_URL,
   payload: url,
+});
+
+export const updateDescription = (text) => ({
+  type: Actions.UPDATE_DESCRIPTION_PROFILE,
+  payload: text,
 });

@@ -159,7 +159,7 @@ const Post = () => {
         dispatch(cleanNewPost());
     }
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: 'silver' }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#f22' }}>
             {showModal && (
                 <BasicModal
                     visible={showModal}

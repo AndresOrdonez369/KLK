@@ -13,7 +13,7 @@ import {
   ActivityIndicator,
   StyleSheet,
   Dimensions,
-  Image,
+  ImageBackground
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -23,15 +23,18 @@ import {
   showModalProfile,
 } from '../../screens/profile/actionCreator';
 const requirePhoto = require('../../../assets/busyPosition.png');
+const requireCover = require('../../../assets/defaultCover.png');
+
 const { width, height } = Dimensions.get('window');
 
-const ProfilePicture = () => {
+const ProfilePicture = ({ type }) => {
   const [imagen, setImagen] = useState(null);
+  const [cover, setCover] = useState(null);
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
-  const pickImage = async () => {
+  const pickImage = async (type) => {
     const { granted } = await ImagePicker.requestCameraRollPermissionsAsync();
     if (!granted) {
       showModalProfile('Necesitamos permisos para acceder a la  galería');
@@ -41,11 +44,11 @@ const ProfilePicture = () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [3, 3],
+      aspect: type === 'cover' ? [3, 2] : [3, 3],
       quality: 1,
     });
     if (!result.cancelled) {
-      setImagen(result);
+      type === 'cover' ? setCover(result) : setImagen(result);
       setOverlayVisible(true);
     } else {
       showModalProfile('Has cancelado la carga de imagen');
@@ -54,16 +57,16 @@ const ProfilePicture = () => {
 
   const uploadProfileImage = async () => {
     setIsLoading(true);
-    console.log(imagen,"1")
-    await dispatch(userUploadImagen(imagen.uri));
-    console.log(imagen,"bandera")
+    await dispatch(userUploadImagen(type === 'picture' ? imagen.uri : cover.uri, type));
     setIsLoading(false);
     setOverlayVisible(!overlayVisible);
   };
 
   const { photoURL } = firebase.auth().currentUser;
   const { uploadPhotoError } = useSelector((state) => state.reducerProfile);
+  const { coverURL } = useSelector((state) => state.reducerProfile);
   const imgUser = photoURL ? { uri: photoURL } : requirePhoto;
+  const imgCover = coverURL ? { uri: coverURL } : requireCover;
 
   if (isLoading) {
     return <ActivityIndicator size="large" />;
@@ -73,24 +76,43 @@ const ProfilePicture = () => {
     <>
       {uploadPhotoError !== '' && showModalProfile('Error desconocido, inténtalo más tarde', 'error')}
       <View style={styles.generalView}>
-        <Avatar
-          rounded
-          size={190}
-          overlayContainerStyle={{ backgroundColor: 'gray', margin: 10 }}
-          titleStyle={{ color: 'green' }}
-          showAccessory
-          accessory={{
-            onPress: () => pickImage(),
-            style: {
-              backgroundColor: 'silver',
-              borderRadius: 50,
-            },
-          }}
-          source={imgUser}
-        />
+        {type === 'picture'
+          ? (
+            <Avatar
+              rounded
+              size={140}
+              overlayContainerStyle={{ backgroundColor: 'gray', margin: 10 }}
+              titleStyle={{ color: 'green' }}
+              showAccessory
+              accessory={{
+                onPress: () => pickImage(type),
+                style: {
+                  backgroundColor: 'silver',
+                  borderRadius: 50,
+                },
+              }}
+              source={imgUser}
+            />
+          ) : (
+            <View>
+              <ImageBackground
+                source={imgCover}
+                style={styles.cover}
+              >
+                <Icon
+                name="edit"
+                size={30}
+                color="black"
+                type="font-awesome"
+                iconStyle={styles.coverIcon}
+                onPress={() => pickImage(type)}
+              />
+              </ImageBackground>
+            </View>
+          )}
         <Overlay isVisible={overlayVisible} overlayStyle={styles.overlay}>
          <View style={styles.overlayView}>
-            <Avatar rounded size={160} source={imagen}/>
+            <Avatar rounded={type === 'picture'} size={160} source={type === 'picture' ? imagen : cover}/>
             <Text style={styles.modalTextTitle}>
               ¿Quieres guardar esta imagen?
             </Text>
@@ -109,7 +131,7 @@ const ProfilePicture = () => {
                     type="material"
                   />
                   )}
-                onPress={()=>uploadProfileImage()}
+                onPress={() => uploadProfileImage()}
               />
 
               <Button
@@ -134,7 +156,6 @@ export default ProfilePicture;
 const styles = StyleSheet.create({
   generalView: {
     display: 'flex',
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -181,4 +202,13 @@ const styles = StyleSheet.create({
     top: height * -0.079,
     alignSelf: 'center',
   },
+  cover: {
+    width: width,
+    height: width * 0.66
+  },
+  coverIcon: {
+    alignSelf: 'flex-end',
+    marginRight: 10,
+    marginTop: 10
+  }
 });
