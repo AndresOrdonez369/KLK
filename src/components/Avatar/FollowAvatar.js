@@ -47,7 +47,7 @@ const FollowAvatar = ({
         alignItems: 'center',
         justifyContent: 'center',
         height:size/5,
-        width: flag ? size/1.75:size/1.25,
+        width: flag ? size/1.70:size/1.20,
         borderRadius: 4,
         backgroundColor: flag ?'#f22':'#F0F0F0',
         borderWidth: 0.3 ,
@@ -61,7 +61,7 @@ const FollowAvatar = ({
     }),
     textButtons:(size,flag)=>({
         color:flag ? 'white':'black', 
-        fontSize:size/7.8,
+        fontSize:size/8.2,
         fontWeight:'bold'
         }), 
     name:(size) =>({
