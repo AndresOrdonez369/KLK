@@ -6,15 +6,15 @@ const { height, width } = Dimensions.get('screen');
 const requirePhoto = require('../../../assets/busyPosition.png');
 
 const FollowAvatar = ({
-  url, size = 100, name, date, accessory = null, showAccessory = false, onPress,
+  urlImage, size = 100, name, date, accessory = null, showAccessory = false, onPress,
 }) => {
-  const imgUser = url
-    ? { uri: url }
+  const imgUser = urlImage
+    ? { uri: urlImage }
     : requirePhoto;
   const [flag,setFlag]=useState(false);
 
   return (
-    <View style={{flexDirection: "row", justifyContent:'space-evenly', width, marginLeft:width*0.1, marginRight:width*0.1 }}>
+    <View style={{flexDirection: "row", justifyContent:'space-evenly', width,  marginRight:width*0.1 }}>
       <Avatar
     
         rounded
