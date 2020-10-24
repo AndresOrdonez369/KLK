@@ -6,7 +6,7 @@ const { height, width } = Dimensions.get('screen');
 const requirePhoto = require('../../../assets/busyPosition.png');
 
 const FollowAvatar = ({
-  urlImage, size = 100, name, date, accessory = null, showAccessory = false, onPress,
+  urlImage, size = height*0.1, name, date, accessory = null, showAccessory = false, onPress,
 }) => {
   const imgUser = urlImage
     ? { uri: urlImage }
@@ -16,7 +16,6 @@ const FollowAvatar = ({
   return (
     <View style={{flexDirection: "row", justifyContent:'space-evenly', width,  marginRight:width*0.1 }}>
       <Avatar
-    
         rounded
         size={size}
         overlayContainerStyle={{ backgroundColor: 'gray', margin: 15 }}

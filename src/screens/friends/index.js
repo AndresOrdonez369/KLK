@@ -18,8 +18,8 @@ class Friends extends PureComponent {
             <View style={styles.container}>
                 <FlatList 
                     data={DATA}
-                     renderItem={renderFollow}
-                     keyExtractor={item => item.name}
+                    renderItem={renderFollow}
+                    keyExtractor={item => item.name}
             />
             </View>
         );
@@ -69,17 +69,22 @@ const DATA = [
     date: '@luvalecruz',
   },
   {
+    urlImage: "https://i.pinimg.com/564x/f1/40/4c/f1404c87f540b80b5fcf766e4c1f567d.jpg",
+    name: "Dylan Miguel Fernandez Gonzales",
+    date: '@dylanilan',
+  },
+  {
     urlImage: "https://i.pinimg.com/originals/21/09/02/210902457232e54775bc239033c4a88e.png",
     name: "Fernando Andrés Delgado",
     date: '@ferandres',
   }];
 const styles = StyleSheet.create({
     container: {
-        height,
-        width,
+        marginTop:height*0.1,
+        flex:1,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: StatusBar.currentHeight || 0,
+        
        
     },
     title: {
