@@ -10,7 +10,7 @@ import AudioComponent from '../Audio';
 
 import styles from './styles';
 const FeedPost = ({
-  mensaje, mediaLink, likes, type = 'audio', timestamp,
+  authorName, mensaje, mediaLink, likes, type = 'audio', timestamp,
 }) => {
   const {
     container, headerContainer, basicInfoContainer, dotsContainer,
@@ -23,7 +23,7 @@ const FeedPost = ({
         <Image
           resizeMode="cover"
           source={{
-            uri: 'https://media1.tenor.com/images/2f5349a8ca4737441a87465ff9fab2d0/tenor.gif?itemid=12763949',
+            uri: mediaLink,
           }}
           style={{ flex: 1 }}
         />
@@ -32,19 +32,17 @@ const FeedPost = ({
       // hacer await soundObject.unloadAsync(); al component
       return (
       <AudioComponent
-       mediaLink="https://firebasestorage.googleapis.com/v0/b/klk-messenger.appspot.com/o/posts%2Faudios%2F2%2FAnd%20It%20Was%20So.mp3?alt=media&token=a7301cb3-1bab-4ed6-883d-e18b8421bd31"
+       mediaLink={mediaLink}
        /> 
       );
     } if (type === 'video') {
       return (
         <Video
-          source={{ uri: 'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4' }}
+          source={{ uri: mediaLink }}
           rate={1.0}
           volume={1.0}
           isMuted={false}
           resizeMode="cover"
-          shouldPlay
-          isLooping
           style={{ flex: 1 }}
         />
       );
@@ -55,7 +53,7 @@ const FeedPost = ({
     <View style={container}>
       <View style={headerContainer}>
         <View style={basicInfoContainer}>
-          <Avatar size={80} name="JuanMa" date="20/10//20" />
+          <Avatar size={100} name={authorName} date={timestamp} />
         </View>
         <View style={dotsContainer}>
           <Button
@@ -68,7 +66,7 @@ const FeedPost = ({
       </View>
       <View style={bodyContainer}>
         <View style={messageContainer}>
-          <Text style={messageStyle}>ya quedo chavales!!!</Text>
+          <Text style={messageStyle}>{mensaje}</Text>
         </View>
         <View style={mediaContainer}>
           {renderMedia(type, mediaLink)}

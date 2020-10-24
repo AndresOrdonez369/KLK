@@ -26,7 +26,7 @@ export default PrincipalFlow = () => {
         <Tab.Navigator
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused, size }) => {
-                    const iconColor = focused ? 'silver' : '#f0edf6';
+                    const iconColor = focused ? '#F82121' : '#f0edf6';
                     if (route.name === 'Inicio') {
                         return <Icon name={"home"} type={"material-community"} color={iconColor} size={size} />;
                     }

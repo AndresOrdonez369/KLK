@@ -4,6 +4,7 @@ const { height, width } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
   container: {
+    height: height * 0.5,
     width,
     borderRadius: 20,
     alignItems: 'center',
@@ -13,6 +14,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 2,
     elevation: 4,
+    marginTop: 20,
   },
   title: {
     fontSize: 24,
@@ -26,10 +28,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   basicInfoContainer: {
-    height: height * 0.06,
+    height: height * 0.08,
     width: width * 0.8,
-    margin: 10,
-    flexDirection: 'row',
+    marginTop: -height * 0.02,
+    alignItems: 'flex-start',
   },
   fechaStyle: {
     color: 'silver',
@@ -61,6 +63,12 @@ const styles = StyleSheet.create({
     height: height * 0.3,
     width: width * 0.95,
     margin: 10,
+  },
+  mediaButtonStyle: {
+    height: height * 0.3,
+    width: width * 0.95,
+    backgroundColor: '#0667FF',
+
   },
   bottomContainer: {
     height: height * 0.06,
