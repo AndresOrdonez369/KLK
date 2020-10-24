@@ -6,6 +6,11 @@ export const updateLoader = (value) => ({
   payload: value,
 });
 
+export const setDataChange = (value) => ({
+  type: Actions.SET_DATA_CHANGE,
+  payload: value,
+});
+
 export const fetchUserData = () => async (dispatch) => {
   const { uid, email, photoURL } = await firebase.auth().currentUser;
   try {
@@ -18,11 +23,13 @@ export const fetchUserData = () => async (dispatch) => {
         payload: 'No se encontraron datos de usuario',
       });
     }
-    const { userName, name } = snapShot.data();
+    const {
+      userName, name, coverURL, description,
+    } = snapShot.data();
     return dispatch({
       type: Actions.USER_FETCH_DBASE,
       payload: {
-        userName, name, uid, email, photoURL,
+        userName, name, uid, email, photoURL, coverURL, description,
       },
     });
   } catch (error) {
@@ -33,11 +40,25 @@ export const fetchUserData = () => async (dispatch) => {
   }
 };
 
-export const userUploadImagen = (imagenURL) => async (dispatch) => {
+export const userDataUpdate = (data, uid) => (dispatch) => {
+  const dbh = firebase.firestore();
+  const uidCollection = dbh.collection('users').doc(uid);
+  uidCollection
+    .update(data)
+    .then(() => dispatch({
+      type: Actions.USER_DB_UPDATE,
+    }))
+    .catch((error) => {
+      // eslint-disable-next-line no-console
+      console.log('error dbUpdate: ', error);
+    });
+};
+
+export const userUploadImagen = (imagenURL, type) => async (dispatch) => {
   try {
     const user = firebase.auth().currentUser;
-    const userPhothoURL = `/Users/profilePhotos/${user.displayName}.png`;
-    console.log(userPhothoURL,"BAND")
+    const userPhothoURL = type === 'picture'
+      ? `/Users/profilePhotos/${user.uid}.png` : `/Users/coverPhotos/${user.uid}.png`;
     const storage = firebase.storage().ref();
     const imagePath = storage.child(userPhothoURL);
     const response = await fetch(imagenURL);
@@ -48,16 +69,21 @@ export const userUploadImagen = (imagenURL) => async (dispatch) => {
       .child(userPhothoURL)
       .getDownloadURL();
 
-    await user.updateProfile({
-      displayName: user.displayName,
-      photoURL: url,
-    });
+    if (type === 'picture') {
+      await user.updateProfile({
+        displayName: user.displayName,
+        photoURL: url,
+      });
+    }
+
+    dispatch(setDataChange(true));
 
     return dispatch({
-      type: Actions.USER_UPDATE_IMAGEN_URL,
+      type: type === 'picture' ? Actions.USER_UPDATE_IMAGEN_URL : Actions.USER_UPDATE_COVER_URL,
       payload: url,
     });
   } catch (error) {
+    dispatch(setDataChange(false));
     return dispatch({
       type: Actions.USER_UPDATE_IMAGEN_ERROR,
       payload: error,
@@ -77,4 +103,9 @@ export const hideModalProfile = () => ({
 export const userUpdateImagenURL = (url) => ({
   type: Actions.USER_UPDATE_IMAGEN_URL,
   payload: url,
+});
+
+export const updateDescription = (text) => ({
+  type: Actions.UPDATE_DESCRIPTION_PROFILE,
+  payload: text,
 });
