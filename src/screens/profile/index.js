@@ -5,6 +5,7 @@ import {
 import {
   Icon, Button
 } from 'react-native-elements';
+import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import InputBasic from '../../components/InputBasic/inputBasic';
@@ -27,6 +28,8 @@ const Profile = () => {
   const { dataChange, modalType, error, message, user, uid } = profile;
   const { description } = user;
   console.log(profile)
+  const { navigate } = useNavigation();
+
   useEffect(() => {
     return () => {
       dataUpdate(dataChange);
@@ -91,6 +94,7 @@ const Profile = () => {
             type="material-icons"
             size={30}
             color="black"
+            onPress={() => navigate('Configuraciones')}
           />
         </View>
         <View style={styles.generalInfo}>

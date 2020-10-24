@@ -20,6 +20,8 @@ const STATE_INICIAL = {
 
 export default (state = STATE_INICIAL, action) => {
   switch (action.type) {
+    case Actions.SIGN_OUT:
+      return STATE_INICIAL;
     case Actions.UPDATE_DESCRIPTION_PROFILE:
       return {
         ...state,

@@ -9,6 +9,7 @@ const STATE_INICIAL = {
 
 export default (state = STATE_INICIAL, action) => {
   switch (action.type) {
+    case Actions.SIGN_OUT:
     case Actions.CLEAN_POST:
       return STATE_INICIAL;
     case Actions.UPDATE_LOADER_POST:

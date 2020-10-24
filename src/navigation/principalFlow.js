@@ -8,6 +8,7 @@ import Friends from '../screens/friends';
 import Videos from '../screens/videoFeed';
 import Radio from '../screens/radio';
 import Post from '../screens/post';
+import Settings from '../screens/settings';
     
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -15,8 +16,17 @@ const Stack = createStackNavigator();
 function FeedStack() {
     return (
         <Stack.Navigator headerMode="none">
-            <Stack.Screen name="Inicio" component={Feed} />
+            <Stack.Screen name="Feed" component={Feed} />
             <Stack.Screen name="CreatePost" component={Post} />
+        </Stack.Navigator>
+    );
+}
+
+function profileStack() {
+    return (
+        <Stack.Navigator headerMode="none">
+            <Stack.Screen name="PerfilStack" component={Perfil} />
+            <Stack.Screen name="Configuraciones" component={Settings} />
         </Stack.Navigator>
     );
 }
@@ -45,8 +55,8 @@ export default PrincipalFlow = () => {
             initialRouteName={"Inicio"}
             headerMode='none'
         >
-            <Tab.Screen name={"FeedStack"} component={FeedStack} />
-            <Tab.Screen name={'Perfil'} component={Perfil} />
+            <Tab.Screen name={"Inicio"} component={FeedStack} />
+            <Tab.Screen name={'Perfil'} component={profileStack} />
             <Tab.Screen name={'Panas'} component={Friends} />
             <Tab.Screen name={'Videos'} component={Videos} />
             <Tab.Screen name={'Radio'} component={Radio} />
