@@ -80,11 +80,10 @@ const DATA = [
   }];
 const styles = StyleSheet.create({
     container: {
-        marginTop:height*0.1,
         flex:1,
         alignItems: 'center',
         justifyContent: 'center',
-        
+        marginTop: StatusBar.currentHeight || 0,
        
     },
     title: {
