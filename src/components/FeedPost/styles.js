@@ -62,12 +62,6 @@ const styles = StyleSheet.create({
     width: width * 0.95,
     margin: 10,
   },
-  mediaButtonStyle: {
-    height: height * 0.3,
-    width: width * 0.95,
-    backgroundColor: '#0667FF',
-
-  },
   bottomContainer: {
     height: height * 0.06,
     width,
