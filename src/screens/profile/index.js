@@ -26,7 +26,7 @@ const Profile = () => {
   const dispatch = useDispatch();
   const profile = useSelector(state => state.reducerProfile);
   const { dataChange, modalType, error, message, user, uid } = profile;
-  const { description } = user;
+  const { description, name, userName } = user;
   console.log(profile)
   const { navigate } = useNavigation();
 
@@ -86,7 +86,8 @@ const Profile = () => {
         <ProfilePicture type="cover" />
         <View style={styles.avatarView}>
           <ProfilePicture type="picture" />
-          <Icon />
+          <Text style={styles.name}>{name}</Text>
+          <Text style={styles.userName}>@{userName}</Text>
         </View>
         <View style={styles.settingsIcon}>
           <Icon
@@ -162,8 +163,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   avatarView: {
-    marginTop: -80,
-    height: 90,
+    marginTop: -90,
+    height: 100,
     backgroundColor: 'rgba(255, 0, 0, 0.5)',
     justifyContent: 'flex-end',
     borderTopLeftRadius: 15,
@@ -211,6 +212,18 @@ const styles = StyleSheet.create({
     width: width * 0.6,
     alignSelf: 'center',
     marginTop: height * 0.04
+  },
+  name: {
+    alignSelf: 'center',
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  userName: {
+    alignSelf: 'center',
+    color: 'white',
+    fontSize: 15,
+    marginBottom: 12
   },
 });
 
