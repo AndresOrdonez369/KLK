@@ -10,7 +10,7 @@ import AudioComponent from '../Audio';
 
 import styles from './styles';
 const FeedPost = ({
-  authorName, mensaje, mediaLink, likes, type = 'audio', timestamp,
+  authorName, mensaje, mediaLink, likes, type = 'audio', timestamp, url
 }) => {
   const {
     container, headerContainer, basicInfoContainer, dotsContainer,
@@ -53,7 +53,7 @@ const FeedPost = ({
     <View style={container}>
       <View style={headerContainer}>
         <View style={basicInfoContainer}>
-          <Avatar size={100} name={authorName} date={timestamp} />
+          <Avatar size={100} name={authorName} date={timestamp} url={url}/>
         </View>
         <View style={dotsContainer}>
           <Button

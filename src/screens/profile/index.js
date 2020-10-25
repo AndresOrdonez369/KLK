@@ -59,6 +59,7 @@ const Profile = () => {
   }
   const renderPost = ({ item }) => (
     <Post
+        url={item.urlAvatar}
         authorName={item.authorName}
         mensaje={item.mensaje}
         mediaLink={item.mediaLink}
@@ -230,28 +231,31 @@ const styles = StyleSheet.create({
 const DATA = [
   {
     id: 1,
-    authorName: "lizt",
-    mensaje: 'Yo vere que escribo',
-    mediaLink: "https://firebasestorage.googleapis.com/v0/b/klk-messenger.appspot.com/o/posts%2Faudios%2F2%2FAnd%20It%20Was%20So.mp3?alt=media&token=a7301cb3-1bab-4ed6-883d-e18b8421bd31",
-    type: "audio",
-    timestamp: "24/10/2020"
-},
-{
-    id: 2,
-    authorName: "El de la oreja mocha",
-    mensaje: 'Yo vere que escribo',
-    mediaLink: 'https://media1.tenor.com/images/2f5349a8ca4737441a87465ff9fab2d0/tenor.gif?itemid=12763949',
+    urlAvatar:"https://firebasestorage.googleapis.com/v0/b/klk-messenger.appspot.com/o/Users%2FprofilePhotos%2F1VK5QYny97VrexbCWMCKXtuocKa2.png?alt=media&token=fd6a0a47-7434-40b4-a5d0-e57dec556479",
+    authorName: "Santiago Llorente Rivadeneira",
+    mensaje: '',
+    mediaLink: "https://i.pinimg.com/originals/13/5e/a2/135ea2e7f5cd05fb418db8027c3e5f03.jpg",
     type: "image",
     timestamp: "24/10/2020"
 },
 {
-    urlAvatar: '',
-    id: 3,
-    authorName: "El sangrentino",
-    mensaje: 'Yo vere que escribo',
-    mediaLink:  'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
-    type: "video",
+    id: 2,
+    urlAvatar:"https://firebasestorage.googleapis.com/v0/b/klk-messenger.appspot.com/o/Users%2FprofilePhotos%2F1VK5QYny97VrexbCWMCKXtuocKa2.png?alt=media&token=fd6a0a47-7434-40b4-a5d0-e57dec556479",
+    authorName: "Santiago Llorente Rivadeneira",
+    mensaje: 'La amistad es algo que no se improvisa.',
+    mediaLink: 'https://thumbs.dreamstime.com/b/dos-modelos-relajados-del-var%C3%B3n-de-la-moda-36841614.jpg',
+    type: "image",
     timestamp: "24/10/2020"
+},
+{
+    id: 3,
+    urlAvatar:"https://firebasestorage.googleapis.com/v0/b/klk-messenger.appspot.com/o/Users%2FprofilePhotos%2F1VK5QYny97VrexbCWMCKXtuocKa2.png?alt=media&token=fd6a0a47-7434-40b4-a5d0-e57dec556479",
+    authorName: "Santiago Llorente Rivadeneira",
+    mensaje: 'República dominicana: el pais de tu sueños.',
+    mediaLink:  'https://www.descubra.info/wp-content/uploads/2010/03/republica-dominicana.jpg',
+    type: "image",
+    timestamp: "14/10/2020"
 }];
+
 
 export default Profile;
