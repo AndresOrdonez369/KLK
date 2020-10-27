@@ -12,28 +12,32 @@ const { height, width } = Dimensions.get('screen');
 const DATA = [
     {
         id: 1,
-        authorName: "lizt",
-        mensaje: 'Yo vere que escribo',
+        urlAvatar:'https://i.pinimg.com/564x/f1/40/4c/f1404c87f540b80b5fcf766e4c1f567d.jpg',
+        authorName: "Valentina Ruiz Carmona",
+        mensaje: 'La música es lo mejor de mi vida',
         mediaLink: "https://firebasestorage.googleapis.com/v0/b/klk-messenger.appspot.com/o/posts%2Faudios%2F2%2FAnd%20It%20Was%20So.mp3?alt=media&token=a7301cb3-1bab-4ed6-883d-e18b8421bd31",
         type: "audio",
         timestamp: "24/10/2020"
     },
     {
         id: 2,
-        authorName: "El de la oreja mocha",
-        mensaje: 'Yo vere que escribo',
+        urlAvatar:'https://www.eltiempo.com/files/article_multimedia/uploads/2019/11/07/5dc434e900e5f.jpeg',
+        authorName: "Sara Sofia Zarama Cifuentes",
+        mensaje: 'Eres lo mejor que me ha pasado en la vida @danielFernandez',
         mediaLink: 'https://media1.tenor.com/images/2f5349a8ca4737441a87465ff9fab2d0/tenor.gif?itemid=12763949',
         type: "image",
         timestamp: "24/10/2020"
     },
     {
         id: 3,
-        authorName: "El sangrentino",
-        mensaje: 'Yo vere que escribo',
+        urlAvatar:'https://www.spanishjournal.com/wp-content/uploads/2019/09/091919entertainment.jpg',
+        authorName: "Austin Agustin Santos",
+        mensaje: 'Aquí mi nueva canción.',
         mediaLink: 'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
         type: "video",
         timestamp: "24/10/2020"
     }];
+
 const Feed = () => {
     //redux
     const profile = useSelector(state => state.reducerProfile)
@@ -43,6 +47,7 @@ const Feed = () => {
 
     const renderPost = ({ item }) => (
         <Post
+            url={item.urlAvatar}
             authorName={item.authorName}
             mensaje={item.mensaje}
             mediaLink={item.mediaLink}
