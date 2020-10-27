@@ -12,7 +12,7 @@ import InputBasic from '../../components/InputBasic/inputBasic';
 import BasicModal from '../../components/BasicModal';
 import ProfilePicture from '../../components/Avatar/ProfilePicture';
 import {
-  updateDescription, showModalProfile, hideModalProfile, setDataChange, updateDataUser,
+  updateDescription, hideModalProfile, setDataChange, updateDataUser,
 } from './actionCreator';
 import Post from '../../components/FeedPost';
 
@@ -21,7 +21,6 @@ const { height, width } = Dimensions.get('screen');
 const Profile = () => {
   // state
   const [input, showInput] = useState(false);
-  const [modalData, setModalData] = useState(false);
   // redux
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.reducerProfile);
@@ -32,22 +31,15 @@ const Profile = () => {
   console.log(profile);
   const { navigate } = useNavigation();
 
-  useEffect(() => () => {
-    dataUpdate(dataChange);
-  }, [dataChange, user, uid]);
+  useEffect(() => {
+    dataUpdate();
+  }, [dataChange]);
 
-  const dataUpdate = (dataChanged) => {
-    if (dataChanged) {
-      return () => {
-        dispatch(showModalProfile('Realizaste algunos cambios,\n¿deseas guardarlos?', 'interactive'));
-        setModalData(true);
-      };
+  const dataUpdate = () => {
+    if (dataChange) {
+      return dispatch(updateDataUser(user, uid));
     }
     return null;
-  };
-  const modalUpdate = async () => {
-    await dispatch(updateDataUser(user, uid));
-    setModalData(false);
   };
   const inputFnc = (inputActive) => {
     if (inputActive) {
@@ -76,11 +68,6 @@ const Profile = () => {
           title={message}
           type={modalType}
           onPressCancel={() => {
-            dispatch(hideModalProfile());
-            if (modalData) dispatch(setDataChange(false));
-          }}
-          onPressOk={async () => {
-            if (modalData) modalUpdate();
             dispatch(hideModalProfile());
           }}
         />

@@ -20,6 +20,7 @@ module.exports = {
   rules: {
     'no-use-before-define': 'off',
     'react/prop-types': 'off',
+    'no-console': 'off',
     'react/jsx-filename-extension': 'off',
   },
 };
