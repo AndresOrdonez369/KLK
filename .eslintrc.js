@@ -1,16 +1,16 @@
 module.exports = {
   env: {
-    browser: true,
-    es2021: true,
+    es6: true,
   },
   extends: [
     'plugin:react/recommended',
     'airbnb',
   ],
+  globals: {
+    Atomics: 'readonly',
+    SharedArrayBuffer: 'readonly',
+  },
   parserOptions: {
-    ecmaFeatures: {
-      jsx: false,
-    },
     ecmaVersion: 12,
     sourceType: 'module',
   },
@@ -18,5 +18,8 @@ module.exports = {
     'react',
   ],
   rules: {
+    'no-use-before-define': 'off',
+    'react/prop-types': 'off',
+    'react/jsx-filename-extension': 'off',
   },
 };

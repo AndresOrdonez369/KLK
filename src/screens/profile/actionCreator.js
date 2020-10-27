@@ -40,7 +40,7 @@ export const fetchUserData = () => async (dispatch) => {
   }
 };
 
-export const userDataUpdate = (data, uid) => (dispatch) => {
+export const updateDataUser = (data, uid) => (dispatch) => {
   const dbh = firebase.firestore();
   const uidCollection = dbh.collection('users').doc(uid);
   uidCollection
