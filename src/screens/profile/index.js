@@ -28,7 +28,7 @@ const Profile = () => {
     dataChange, modalType, error, message, user, uid,
   } = profile;
   const { description, name, userName } = user;
-  console.log(profile);
+
   const { navigate } = useNavigation();
 
   useEffect(() => {
