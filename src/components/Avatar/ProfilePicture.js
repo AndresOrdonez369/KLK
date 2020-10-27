@@ -64,7 +64,7 @@ const ProfilePicture = ({ type }) => {
 
   const { photoURL } = firebase.auth().currentUser;
   const { uploadPhotoError } = useSelector((state) => state.reducerProfile);
-  const { coverURL } = useSelector((state) => state.reducerProfile);
+  const { coverURL } = useSelector((state) => state.reducerProfile.user);
   const imgUser = photoURL ? { uri: photoURL } : requirePhoto;
   const imgCover = coverURL ? { uri: coverURL } : requireCover;
 

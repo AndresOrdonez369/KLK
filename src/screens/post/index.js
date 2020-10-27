@@ -35,7 +35,8 @@ const Post = () => {
     const post = useSelector(state => state.reducerPost);
     const profile = useSelector(state => state.reducerProfile);
     const { isLoading, mediaURL, error, message } = post;
-    const { uid, name, imageURL } = profile;
+    const { uid, user, imageURL } = profile;
+    const { name } = user;
 
     // handle data pickers
     const uploadStatus = (error) => {

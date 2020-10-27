@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Dimensions, StyleSheet, View, Text,
+  Dimensions, StyleSheet, View, Text, FlatList, ScrollView
 } from 'react-native';
 import {
   Icon, Button
 } from 'react-native-elements';
+import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import InputBasic from '../../components/InputBasic/inputBasic';
@@ -13,6 +14,8 @@ import ProfilePicture from '../../components/Avatar/ProfilePicture';
 import {
   updateDescription, showModalProfile, hideModalProfile, setDataChange, updateDataUser
 } from './actionCreator';
+import Post from '../../components/FeedPost';
+
 const { height, width } = Dimensions.get('screen');
 
 const Profile = () => {
@@ -23,8 +26,10 @@ const Profile = () => {
   const dispatch = useDispatch();
   const profile = useSelector(state => state.reducerProfile);
   const { dataChange, modalType, error, message, user, uid } = profile;
-  const { description } = user;
+  const { description, name, userName } = user;
   console.log(profile)
+  const { navigate } = useNavigation();
+
   useEffect(() => {
     return () => {
       dataUpdate(dataChange);
@@ -52,6 +57,15 @@ const Profile = () => {
       showInput(true)
     }
   }
+  const renderPost = ({ item }) => (
+    <Post
+        authorName={item.authorName}
+        mensaje={item.mensaje}
+        mediaLink={item.mediaLink}
+        type={item.type}
+        timestamp={item.timestamp}
+    />
+  );
   return (
     <SafeAreaView style={styles.safeArea}>
       {error &&
@@ -68,11 +82,12 @@ const Profile = () => {
             dispatch(hideModalProfile());
           }}
         />}
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <ProfilePicture type="cover" />
         <View style={styles.avatarView}>
           <ProfilePicture type="picture" />
-          <Icon />
+          <Text style={styles.name}>{name}</Text>
+          <Text style={styles.userName}>@{userName}</Text>
         </View>
         <View style={styles.settingsIcon}>
           <Icon
@@ -80,6 +95,7 @@ const Profile = () => {
             type="material-icons"
             size={30}
             color="black"
+            onPress={() => navigate('Configuraciones')}
           />
         </View>
         <View style={styles.generalInfo}>
@@ -122,7 +138,12 @@ const Profile = () => {
             buttonStyle={styles.buttonSubmit}
           />
         </View>
-      </View>
+        <FlatList 
+          data={DATA}
+          renderItem={renderPost}
+          keyExtractor={item => item.id}
+        />
+      </ScrollView>
     </SafeAreaView>
   );
   }
@@ -137,14 +158,13 @@ const styles = StyleSheet.create({
     height,
     width,
     backgroundColor: 'white',
-    justifyContent: 'flex-start',
   },
   title: {
     fontSize: 24,
   },
   avatarView: {
-    marginTop: -80,
-    height: 90,
+    marginTop: -90,
+    height: 100,
     backgroundColor: 'rgba(255, 0, 0, 0.5)',
     justifyContent: 'flex-end',
     borderTopLeftRadius: 15,
@@ -193,6 +213,45 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: height * 0.04
   },
+  name: {
+    alignSelf: 'center',
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  userName: {
+    alignSelf: 'center',
+    color: 'white',
+    fontSize: 15,
+    marginBottom: 12
+  },
 });
+
+const DATA = [
+  {
+    id: 1,
+    authorName: "lizt",
+    mensaje: 'Yo vere que escribo',
+    mediaLink: "https://firebasestorage.googleapis.com/v0/b/klk-messenger.appspot.com/o/posts%2Faudios%2F2%2FAnd%20It%20Was%20So.mp3?alt=media&token=a7301cb3-1bab-4ed6-883d-e18b8421bd31",
+    type: "audio",
+    timestamp: "24/10/2020"
+},
+{
+    id: 2,
+    authorName: "El de la oreja mocha",
+    mensaje: 'Yo vere que escribo',
+    mediaLink: 'https://media1.tenor.com/images/2f5349a8ca4737441a87465ff9fab2d0/tenor.gif?itemid=12763949',
+    type: "image",
+    timestamp: "24/10/2020"
+},
+{
+    urlAvatar: '',
+    id: 3,
+    authorName: "El sangrentino",
+    mensaje: 'Yo vere que escribo',
+    mediaLink:  'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
+    type: "video",
+    timestamp: "24/10/2020"
+}];
 
 export default Profile;
