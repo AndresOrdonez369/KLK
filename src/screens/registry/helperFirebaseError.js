@@ -8,7 +8,7 @@ export default function checkErrorType(code) {
     case 'auth/invalid-email':
       return 'Dirección de correo electrónico no válida';
     case 'auth/uid-already-exists':
-      return  'El usuario ya existe';
+      return 'El usuario ya existe';
     case 'auth/internal-error':
       return 'Error interno, estamos trabajando para solucionar el problema';
     default:

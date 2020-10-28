@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, Text, StyleSheet, Dimensions
+  View, Text, StyleSheet, Dimensions,
 } from 'react-native';
 
 const { width, height } = Dimensions.get('screen');
@@ -13,15 +13,15 @@ const styles = StyleSheet.create({
     height: height * 0.03,
     backgroundColor: '#FA8D3B',
     borderRadius: 15,
-    padding: 2
+    padding: 2,
   },
   text: {
     color: 'white',
     fontSize: height * 0.015,
     alignSelf: 'center',
     justifyContent: 'center',
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 });
 
 const AlertMessage = ({ message }) => (

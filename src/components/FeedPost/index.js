@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image } from 'react-native';
-import { Icon, Button, } from 'react-native-elements';
+import { Icon, Button } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { Video } from 'expo-av';
@@ -9,15 +9,16 @@ import Avatar from '../Avatar/SimpleAvatar';
 import AudioComponent from '../Audio';
 
 import styles from './styles';
+
 const FeedPost = ({
-  authorName, mensaje, mediaLink, likes, type = 'audio', timestamp, url
+  authorName, mensaje, mediaLink, likes, type = 'audio', timestamp, url,
 }) => {
   const {
     container, headerContainer, basicInfoContainer, dotsContainer,
     bodyContainer, messageContainer, mediaContainer, bottomContainer, iconsContainer,
     dotsButtonStyle, messageStyle,
   } = styles;
-  const renderMedia =  (type, mediaLink) => {
+  const renderMedia = (type, mediaLink) => {
     if (type === 'image') {
       return (
         <Image
@@ -31,9 +32,9 @@ const FeedPost = ({
     } if (type === 'audio') {
       // hacer await soundObject.unloadAsync(); al component
       return (
-      <AudioComponent
-       mediaLink={mediaLink}
-       /> 
+        <AudioComponent
+          mediaLink={mediaLink}
+        />
       );
     } if (type === 'video') {
       return (
@@ -53,7 +54,7 @@ const FeedPost = ({
     <View style={container}>
       <View style={headerContainer}>
         <View style={basicInfoContainer}>
-          <Avatar size={100} name={authorName} date={timestamp} url={url}/>
+          <Avatar size={100} name={authorName} date={timestamp} url={url} />
         </View>
         <View style={dotsContainer}>
           <Button

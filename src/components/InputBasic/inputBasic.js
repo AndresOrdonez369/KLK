@@ -65,7 +65,7 @@ const InputBasic = ({
           greaterThan: 10,
           lessThan: 100,
         },
-      }
+      },
     };
     const newError = validate({ duration: age }, constraints);
     setError(!(newError === undefined));
@@ -119,7 +119,6 @@ const InputBasic = ({
       secureTextEntry={secureTextEntry}
       placeholderTextColor="snow"
       underlineColorAndroid="transparent"
-      placeholderTextColor="gray"
     />
 
   );

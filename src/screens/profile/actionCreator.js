@@ -40,7 +40,7 @@ export const fetchUserData = () => async (dispatch) => {
   }
 };
 
-export const userDataUpdate = (data, uid) => (dispatch) => {
+export const updateDataUser = (data, uid) => (dispatch) => {
   const dbh = firebase.firestore();
   const uidCollection = dbh.collection('users').doc(uid);
   uidCollection
@@ -49,7 +49,6 @@ export const userDataUpdate = (data, uid) => (dispatch) => {
       type: Actions.USER_DB_UPDATE,
     }))
     .catch((error) => {
-      // eslint-disable-next-line no-console
       console.log('error dbUpdate: ', error);
     });
 };
@@ -76,14 +75,17 @@ export const userUploadImagen = (imagenURL, type) => async (dispatch) => {
       });
     }
 
-    dispatch(setDataChange(true));
+    if (type === 'cover') {
+      const dbh = firebase.firestore();
+      const uidCollection = dbh.collection('users').doc(user.uid);
+      uidCollection.update({ coverURL: url });
+    }
 
     return dispatch({
       type: type === 'picture' ? Actions.USER_UPDATE_IMAGEN_URL : Actions.USER_UPDATE_COVER_URL,
       payload: url,
     });
   } catch (error) {
-    dispatch(setDataChange(false));
     return dispatch({
       type: Actions.USER_UPDATE_IMAGEN_ERROR,
       payload: error,

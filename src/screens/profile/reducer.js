@@ -77,7 +77,7 @@ export default (state = STATE_INICIAL, action) => {
         ...state,
         error: true,
         message: action.payload.message,
-        modalType: action.payload.message,
+        modalType: action.payload.type,
       };
     case Actions.HIDE_MODAL_PROFILE:
       return {

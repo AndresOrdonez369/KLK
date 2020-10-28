@@ -1,4 +1,5 @@
 import Actions from '../../redux/actionTypes';
+
 const INITIAL_STATE = {
   email: '',
   error: null,

@@ -1,9 +1,7 @@
 import React from 'react';
 import {
-  TouchableOpacity, Image, Text, View
+  TouchableOpacity, Image, Text, View,
 } from 'react-native';
-
-
 
 class ButtonBasic extends React.PureComponent {
   render() {
@@ -21,7 +19,7 @@ class ButtonBasic extends React.PureComponent {
           paddingHorizontal: 10,
           flexDirection: 'row',
           justifyContent: 'center',
-          alignItems: 'center'
+          alignItems: 'center',
         }}
         >
           { text && (<Text style={textStyle}>{text}</Text>) }
