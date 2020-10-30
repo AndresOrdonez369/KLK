@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Dimensions, StyleSheet, View, FlatList,
 } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Button, Icon } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import TimedSlideshow from 'react-native-timed-slideshow';
 import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
 import Post from '../../components/FeedPost';
+import Bubbles from '../../components/Stories/bubbles';
 
 const { height, width } = Dimensions.get('screen');
 const DATA = [
@@ -38,8 +40,28 @@ const DATA = [
     type: 'video',
     timestamp: '24/10/2020',
   }];
-
+const items = [
+  {
+    uri: 'http://www.lovethemountains.co.uk/wp-content/uploads/2017/05/New-Outdoor-Sports-and-Music-Festival-For-Wales-4.jpg',
+    title: 'Michael Malik',
+    text: 'Minnesota, USA',
+  },
+  {
+    uri: 'http://blog.adrenaline-hunter.com/wp-content/uploads/2018/05/bungee-jumping-barcelona-1680x980.jpg',
+    title: 'Victor Fallon',
+    text: 'Val di Sole, Italy',
+    duration: 3000,
+  },
+  {
+    uri: 'https://greatist.com/sites/default/files/Running_Mountain.jpg',
+    title: 'Mary Gomes',
+    text: 'Alps',
+    fullWidth: true,
+  },
+];
 const Feed = () => {
+  // state
+  const [stories, showStories] = useState(false);
   // redux
   const profile = useSelector((state) => state.reducerProfile);
   const { imageURL } = profile;
@@ -56,10 +78,21 @@ const Feed = () => {
       timestamp={item.timestamp}
     />
   );
-
+  if (stories) {
+    return (
+      <TimedSlideshow
+        items={items}
+        onClose={() => showStories(false)}
+      />
+    );
+  }
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#F82121' }}>
       <View style={styles.container}>
+        <Bubbles
+          stories={DATA}
+          pressStory={() => showStories(true)}
+        />
         <View style={styles.createView}>
           <SimpleAvatar
             url={imageURL}
