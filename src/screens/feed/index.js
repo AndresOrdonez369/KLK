@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dimensions, StyleSheet, View, FlatList, Modal,
 } from 'react-native';
 import { Button } from 'react-native-elements';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import TimedSlideshow from 'react-native-timed-slideshow';
+import { getStories } from './actionCreator';
 import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
 import Post from '../../components/FeedPost';
 import Bubbles from '../../components/Stories/bubbles';
@@ -63,10 +64,15 @@ const Feed = () => {
   // state
   const [stories, showStories] = useState(false);
   // redux
+  const dispatch = useDispatch();
   const profile = useSelector((state) => state.reducerProfile);
   const { imageURL } = profile;
 
   const { navigate } = useNavigation();
+
+  useEffect(() => {
+    dispatch(getStories());
+  }, []);
 
   const renderPost = ({ item }) => (
     <Post

@@ -1,10 +1,19 @@
 import Actions from '../../redux/actionTypes';
 import firebase from '../../../firebase';
 
-export const VideoFeedInputUpdate = ({ prop, value }) => ({
-  type: Actions.ACTUALIZARINPUT,
-  payload: { prop, value },
-});
+export const getStories = () => async (dispatch) => {
+  const db = firebase.firestore();
+  await db.collection('stories').get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => dispatch({
+        type: Actions.GET_STORIES,
+        payload: doc,
+      }));
+    })
+    .catch(() => dispatch({
+      type: Actions.GET_STORIES_ERROR,
+    }));
+};
 
 export const postStory = (image, uid, nick) => async (dispatch) => {
   try {
