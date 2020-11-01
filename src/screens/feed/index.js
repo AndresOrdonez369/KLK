@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import {
-  Dimensions, StyleSheet, View, FlatList,
+  Dimensions, StyleSheet, View, FlatList, Modal,
 } from 'react-native';
-import { Button, Icon } from 'react-native-elements';
+import { Button } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -80,14 +80,18 @@ const Feed = () => {
   );
   if (stories) {
     return (
-      <TimedSlideshow
-        items={items}
-        onClose={() => showStories(false)}
-      />
+      <Modal
+        visible={stories}
+      >
+        <TimedSlideshow
+          items={items}
+          onClose={() => showStories(false)}
+        />
+      </Modal>
     );
   }
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#F82121' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#F22' }}>
       <View style={styles.container}>
         <Bubbles
           stories={DATA}
