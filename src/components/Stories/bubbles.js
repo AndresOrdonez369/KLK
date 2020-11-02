@@ -16,7 +16,6 @@ const Bubbles = ({
   pressStory, stories,
 }) => {
   // state
-  const [image, setImage] = useState(null);
   const [modal, setModal] = useState({
     showModal: false,
     modalType: '',
@@ -57,7 +56,6 @@ const Bubbles = ({
       quality: 1,
     });
     if (!result.cancelled) {
-      setImage(result);
       const preview = (
         <Image
           style={styles.imgModal}
@@ -69,7 +67,7 @@ const Bubbles = ({
         'interactive',
         '¿Deseas subir esta historia?',
         () => setModal({ ...modal, showModal: false }),
-        () => post(image.uri, uid, user.userName),
+        () => post(result.uri, uid, user.userName),
         preview,
       );
     } else {
@@ -77,8 +75,9 @@ const Bubbles = ({
     }
   };
 
-  const post = (img, id, nick) => {
-    dispatch(postStory(img, id, nick));
+  const post = async (img, id, nick) => {
+    await dispatch(postStory(img, id, nick));
+    handleModal(false);
   };
 
   const handleModal = (show, type = '', text = '', cancel = null, ok = null, compo = null) => {
