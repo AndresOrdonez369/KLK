@@ -3,19 +3,22 @@ import firebase from '../../../firebase';
 
 export const getStories = () => async (dispatch) => {
   const db = firebase.firestore();
-  await db.collection('stories').get()
+  await db.collection('stories').orderBy('authorID', 'asc').get()
     .then((querySnapshot) => {
       querySnapshot.forEach((doc) => dispatch({
         type: Actions.GET_STORIES,
-        payload: doc,
+        payload: doc.data(),
       }));
     })
-    .catch(() => dispatch({
-      type: Actions.GET_STORIES_ERROR,
-    }));
+    .catch((error) => {
+      console.log(error);
+      return dispatch({
+        type: Actions.GET_STORIES_ERROR,
+      });
+    });
 };
 
-export const postStory = (image, uid, nick) => async (dispatch) => {
+export const postStory = (image, uid, nick, profileImg) => async (dispatch) => {
   try {
     const random = Math.random().toString(36).substring(2)
       .concat(Math.random().toString(36).substring(2));
@@ -37,6 +40,7 @@ export const postStory = (image, uid, nick) => async (dispatch) => {
       authorUsername: nick,
       mediaURL: url,
       createdAt: date,
+      authorProfileImg: profileImg,
     };
 
     const dbh = firebase.firestore();

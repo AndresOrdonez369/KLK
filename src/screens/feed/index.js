@@ -62,10 +62,13 @@ const items = [
 ];
 const Feed = () => {
   // state
-  const [stories, showStories] = useState(false);
+  const [showStories, setShowStories] = useState(false);
+  const [storiesObj, setStoriesObj] = useState(null);
   // redux
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.reducerProfile);
+  const feed = useSelector((state) => state.reducerHome);
+  const { stories } = feed;
   const { imageURL } = profile;
 
   const { navigate } = useNavigation();
@@ -74,6 +77,15 @@ const Feed = () => {
     dispatch(getStories());
   }, []);
 
+  // data
+  const uniqueID = stories.filter((value, index, self) => {
+    if (value !== undefined && index !== undefined && self !== undefined) {
+      return self.findIndex((p) => p.authorID === value.authorID) === index;
+    }
+    return null;
+  });
+  const bubbleData = uniqueID.filter((story) => story.authorID !== profile.uid);
+  // fnc
   const renderPost = ({ item }) => (
     <Post
       url={item.urlAvatar}
@@ -84,24 +96,50 @@ const Feed = () => {
       timestamp={item.timestamp}
     />
   );
-  if (stories) {
-    return (
-      <Modal
-        visible={stories}
-      >
-        <TimedSlideshow
-          items={items}
-          onClose={() => showStories(false)}
-        />
-      </Modal>
-    );
+  const onPressStory = (uid) => {
+    let story = [];
+    if (uid === profile.uid) {
+      story = stories.filter((item) => item.authorID === profile.uid);
+    } else {
+      const index = stories.findIndex((p) => p.authorID === uid);
+      story = stories.slice(index);
+    }
+    const data = story.map((item) => {
+      const date = new Date(item.createdAt);
+      const padm = date.getMinutes() > 9 ? '' : '0';
+      const padh = date.getHours() > 9 ? '' : '0';
+      const hour = `${padh}${date.getHours()} : ${padm}${date.getMinutes()}`;
+      return {
+        uri: item.mediaURL,
+        title: item.authorUsername,
+        text: hour,
+      };
+    });
+    setStoriesObj(data);
+    setShowStories(true);
+  };
+  if (showStories) {
+    if (storiesObj) {
+      return (
+        <Modal
+          visible={showStories}
+        >
+          <TimedSlideshow
+            items={storiesObj}
+            onClose={() => setShowStories(false)}
+            loop={false}
+          />
+        </Modal>
+      );
+    }
+    return console.log('no hay stories');
   }
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#F22' }}>
       <View style={styles.container}>
         <Bubbles
-          stories={DATA}
-          pressStory={() => showStories(true)}
+          stories={bubbleData}
+          pressStory={(uid) => onPressStory(uid)}
         />
         <View style={styles.createView}>
           <SimpleAvatar

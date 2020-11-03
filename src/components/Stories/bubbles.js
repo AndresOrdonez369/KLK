@@ -36,10 +36,10 @@ const Bubbles = ({
     <View style={styles.bubbleContainer}>
       <SimpleAvatar
         size={height * 0.1}
-        url={item.urlAvatar}
-        onPress={() => pressStory(item) || null}
+        url={item.authorProfileImg}
+        onPress={() => pressStory(item.authorID) || null}
       />
-      <Text style={styles.textContainer}>{item.authorName}</Text>
+      <Text style={styles.textContainer}>{item.authorUsername}</Text>
     </View>
   );
   const pickStory = async () => {
@@ -67,7 +67,7 @@ const Bubbles = ({
         'interactive',
         '¿Deseas subir esta historia?',
         () => setModal({ ...modal, showModal: false }),
-        () => post(result.uri, uid, user.userName),
+        () => post(result.uri, uid, user.userName, imageURL),
         preview,
       );
     } else {
@@ -75,9 +75,9 @@ const Bubbles = ({
     }
   };
 
-  const post = async (img, id, nick) => {
-    await dispatch(postStory(img, id, nick));
+  const post = async (img, id, nick, profileImg) => {
     handleModal(false);
+    await dispatch(postStory(img, id, nick, profileImg));
   };
 
   const handleModal = (show, type = '', text = '', cancel = null, ok = null, compo = null) => {
