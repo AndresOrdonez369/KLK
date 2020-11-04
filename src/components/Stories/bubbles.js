@@ -102,7 +102,7 @@ const Bubbles = ({
             onPressCancel={pressCancel}
             onPressOk={pressOk}
             component={component}
-            requiredHeight={0.55}
+            requiredHeight={modalType === 'interactive' ? 0.4 : 0.3}
           />
         )}
       <FlatList
