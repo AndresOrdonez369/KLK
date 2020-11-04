@@ -108,6 +108,11 @@ export const uploadAudio = (audio, name, uid) => async (dispatch) => {
   }
 };
 
+export const uploadYoutube = (value) => ({
+  type: Actions.UPLOAD_YOUTUBE_LINK,
+  payload: value,
+});
+
 export const cleanNewPost = () => ({
   type: Actions.CLEAN_POST,
 });

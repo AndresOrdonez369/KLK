@@ -23,6 +23,7 @@ export default (state = STATE_INICIAL, action) => {
         error: false,
         message: action.payload,
       };
+    case Actions.UPLOAD_YOUTUBE_LINK:
     case Actions.UPDATE_AUDIO_SUCCESS:
     case Actions.UPDATE_PHOTO_SUCCESS:
     case Actions.UPDATE_VIDEO_SUCCESS:

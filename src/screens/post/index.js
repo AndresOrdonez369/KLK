@@ -11,8 +11,9 @@ import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
 import BasicModal from '../../components/BasicModal';
+import InputBasic from '../../components/InputBasic/inputBasic';
 import {
-  submitPost, uploadAudio, uploadVideo, uploadImage, updateLoader, cleanNewPost,
+  submitPost, uploadAudio, uploadVideo, uploadImage, updateLoader, cleanNewPost, uploadYoutube,
 } from './actionCreator';
 import styles from './styles';
 
@@ -130,7 +131,7 @@ const Post = () => {
       });
     } else {
       dispatch(updateLoader(true));
-      if (imageObject === null && audioObject === null && videoObject === null) setUploaded('text');
+      if (imageObject === null && audioObject === null && videoObject === null && uploaded !== 'youtube') setUploaded('text');
       if (imageObject !== null && type === 'image') await dispatch(uploadImage(imageObject.uri, uid));
       if (videoObject !== null && type === 'video') await dispatch(uploadVideo(videoObject.uri, uid));
       if (audioObject !== null && type === 'audio') await dispatch(uploadAudio(audioObject.uri, audio.name, uid));
@@ -168,6 +169,15 @@ const Post = () => {
     if (postdb && (mediaURL !== '' || (uploaded === 'text' && body !== ''))) {
       postFirestore();
       setPostdb(false);
+    } else if (postdb && (uploaded === 'youtube' && mediaURL === '')) {
+      dispatch(updateLoader(false));
+      setModal({
+        ...modal,
+        showModal: true,
+        modalType: 'error',
+        modalTitle: 'El campo Youtube Link no puede estar vacío',
+        pressCancel: () => setModal({ ...modal, showModal: false }),
+      });
     }
   }, [postdb, mediaURL, message]);
   const cleanPost = () => {
@@ -178,13 +188,45 @@ const Post = () => {
     setUploaded(null);
     dispatch(cleanNewPost());
   };
+  // conditional render
+  let options;
+  if (uploaded === 'audio') {
+    options = (
+      <View style={{ alignItems: 'center' }}>
+        <Icon
+          name="music-box"
+          type="material-community"
+          size={120}
+          color="#f22"
+          iconStyle={styles.icons}
+        />
+        <Text>{audio.name}</Text>
+      </View>
+    );
+  } else if (uploaded === 'youtube') {
+    options = (
+      <InputBasic
+        placeholder="YouTube link"
+        value={mediaURL}
+        changeText={(text) => dispatch(uploadYoutube(text))}
+      />
+    );
+  } else {
+    options = (
+      <Avatar
+        source={image || video}
+        size={120}
+        rounded
+      />
+    );
+  }
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f22' }}>
       {showModal && (
         <BasicModal
           visible={showModal}
           type={modalType}
-          requiredHeight={0.5}
+          requiredHeight={0.4}
           title={modalTitle}
           onPressCancel={pressCancel}
           onPressOk={pressOk}
@@ -240,6 +282,13 @@ const Post = () => {
               onPress={() => uploaded === null && pickAudio()}
               iconStyle={styles.icons}
             />
+            <Icon
+              name="youtube-square"
+              type="font-awesome"
+              size={30}
+              onPress={() => uploaded === null && setUploaded('youtube')}
+              iconStyle={styles.icons}
+            />
           </View>
           <Button
             title="Publicar"
@@ -248,42 +297,25 @@ const Post = () => {
           />
         </View>
         { uploaded !== null
-                    && (
-                    <View style={styles.preview}>
-                      <Icon
-                        name="close-circle"
-                        type="material-community"
-                        size={40}
-                        onPress={() => {
-                          setImage(null);
-                          setAudio(null);
-                          setVideo(null);
-                          setUploaded(null);
-                        }}
-                        iconStyle={styles.icons}
-                      />
-                      { uploaded === 'audio'
-                        ? (
-                          <View style={{ alignItems: 'center' }}>
-                            <Icon
-                              name="music-box"
-                              type="material-community"
-                              size={120}
-                              color="#f22"
-                              iconStyle={styles.icons}
-                            />
-                            <Text>{audio.name}</Text>
-                          </View>
-                        ) : (
-                          <Avatar
-                            source={image || video}
-                            size={120}
-                            rounded
-                          />
-                        )}
-                    </View>
-                    )}
+          && (
+            <View style={styles.preview(uploaded)}>
+              <Icon
+                name="close-circle"
+                type="material-community"
+                size={40}
+                onPress={() => {
+                  setImage(null);
+                  setAudio(null);
+                  setVideo(null);
+                  setUploaded(null);
+                }}
+                iconStyle={styles.icons}
+              />
+              {options}
+            </View>
+          )}
         { isLoading && loader() }
+        {console.log(post)}
       </View>
     </SafeAreaView>
   );

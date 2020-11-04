@@ -87,9 +87,12 @@ export default styles = StyleSheet.create({
     borderRadius: 20,
     width: width * 0.3,
   },
-  preview: {
+  preview: (type) => ({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-  },
+    marginTop: 10,
+    marginLeft: type === 'youtube' ? width * 0.05 : 0,
+    marginRight: type === 'youtube' ? width * 0.05 : 0,
+  }),
 });
