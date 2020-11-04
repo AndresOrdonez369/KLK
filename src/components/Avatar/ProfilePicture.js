@@ -13,15 +13,16 @@ import {
   ActivityIndicator,
   StyleSheet,
   Dimensions,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-
+import * as Permissions from 'expo-permissions';
 import firebase from '../../../firebase';
 import {
   userUploadImagen,
   showModalProfile,
 } from '../../screens/profile/actionCreator';
+
 const requirePhoto = require('../../../assets/busyPosition.png');
 const requireCover = require('../../../assets/defaultCover.png');
 
@@ -34,9 +35,9 @@ const ProfilePicture = ({ type }) => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
-  const pickImage = async (type) => {
-    const { granted } = await ImagePicker.requestCameraRollPermissionsAsync();
-    if (!granted) {
+  const pickImage = async (pickType) => {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (status !== 'granted') {
       dispatch(showModalProfile('Necesitamos permisos para acceder a la  galería', 'error'));
       return;
     }
@@ -44,11 +45,11 @@ const ProfilePicture = ({ type }) => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: type === 'cover' ? [3, 2] : [3, 3],
+      aspect: pickType === 'cover' ? [3, 2] : [3, 3],
       quality: 1,
     });
     if (!result.cancelled) {
-      type === 'cover' ? setCover(result) : setImagen(result);
+      if (pickType === 'cover') setCover(result); else setImagen(result);
       setOverlayVisible(true);
     } else {
       dispatch(showModalProfile('Has cancelado la carga de imagen', 'error'));
@@ -100,19 +101,19 @@ const ProfilePicture = ({ type }) => {
                 style={styles.cover}
               >
                 <Icon
-                name="edit"
-                size={30}
-                color="black"
-                type="font-awesome"
-                iconStyle={styles.coverIcon}
-                onPress={() => pickImage(type)}
-              />
+                  name="edit"
+                  size={30}
+                  color="black"
+                  type="font-awesome"
+                  iconStyle={styles.coverIcon}
+                  onPress={() => pickImage(type)}
+                />
               </ImageBackground>
             </View>
           )}
         <Overlay isVisible={overlayVisible} overlayStyle={styles.overlay}>
-         <View style={styles.overlayView}>
-            <Avatar rounded={type === 'picture'} size={160} source={type === 'picture' ? imagen : cover}/>
+          <View style={styles.overlayView}>
+            <Avatar rounded={type === 'picture'} size={160} source={type === 'picture' ? imagen : cover} />
             <Text style={styles.modalTextTitle}>
               ¿Quieres guardar esta imagen?
             </Text>
@@ -203,12 +204,12 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   cover: {
-    width: width,
-    height: width * 0.66
+    width,
+    height: width * 0.66,
   },
   coverIcon: {
     alignSelf: 'flex-end',
     marginRight: 10,
-    marginTop: 10
-  }
+    marginTop: 10,
+  },
 });

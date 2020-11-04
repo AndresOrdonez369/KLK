@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Dimensions, StyleSheet, View, FlatList,
+  Dimensions, StyleSheet, View, FlatList, Modal,
 } from 'react-native';
 import { Button } from 'react-native-elements';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import TimedSlideshow from 'react-native-timed-slideshow';
+import { getStories } from './actionCreator';
 import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
 import Post from '../../components/FeedPost';
+import Bubbles from '../../components/Stories/bubbles';
 
 const { height, width } = Dimensions.get('screen');
 const DATA = [
@@ -38,14 +41,32 @@ const DATA = [
     type: 'video',
     timestamp: '24/10/2020',
   }];
-
 const Feed = () => {
+  // state
+  const [showStories, setShowStories] = useState(false);
+  const [storiesObj, setStoriesObj] = useState(null);
   // redux
+  const dispatch = useDispatch();
   const profile = useSelector((state) => state.reducerProfile);
+  const feed = useSelector((state) => state.reducerHome);
+  const { stories } = feed;
   const { imageURL } = profile;
 
   const { navigate } = useNavigation();
 
+  useEffect(() => {
+    dispatch(getStories());
+  }, []);
+
+  // data
+  const uniqueID = stories.filter((value, index, self) => {
+    if (value !== undefined && index !== undefined && self !== undefined) {
+      return self.findIndex((p) => p.authorID === value.authorID) === index;
+    }
+    return null;
+  });
+  const bubbleData = uniqueID.filter((story) => story.authorID !== profile.uid);
+  // fnc
   const renderPost = ({ item }) => (
     <Post
       url={item.urlAvatar}
@@ -56,10 +77,51 @@ const Feed = () => {
       timestamp={item.timestamp}
     />
   );
-
+  const onPressStory = (uid) => {
+    let story = [];
+    if (uid === profile.uid) {
+      story = stories.filter((item) => item.authorID === profile.uid);
+    } else {
+      const index = stories.findIndex((p) => p.authorID === uid);
+      story = stories.slice(index);
+    }
+    const data = story.map((item) => {
+      const date = new Date(item.createdAt);
+      const padm = date.getMinutes() > 9 ? '' : '0';
+      const padh = date.getHours() > 9 ? '' : '0';
+      const hour = `${padh}${date.getHours()} : ${padm}${date.getMinutes()}`;
+      return {
+        uri: item.mediaURL,
+        title: item.authorUsername,
+        text: hour,
+      };
+    });
+    setStoriesObj(data);
+    setShowStories(true);
+  };
+  if (showStories) {
+    if (storiesObj) {
+      return (
+        <Modal
+          visible={showStories}
+        >
+          <TimedSlideshow
+            items={storiesObj}
+            onClose={() => setShowStories(false)}
+            loop={false}
+          />
+        </Modal>
+      );
+    }
+    return console.log('no hay stories');
+  }
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#F82121' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#F22' }}>
       <View style={styles.container}>
+        <Bubbles
+          stories={bubbleData}
+          pressStory={(uid) => onPressStory(uid)}
+        />
         <View style={styles.createView}>
           <SimpleAvatar
             url={imageURL}

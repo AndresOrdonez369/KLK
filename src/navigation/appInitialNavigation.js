@@ -67,12 +67,12 @@ const AppInitialNavigation = () => {
   // authChecker
   useEffect(() => {
     const authState = () => {
-      firebase.auth().onAuthStateChanged((user) => {
+      firebase.auth().onAuthStateChanged(async (user) => {
         if (user) {
           if (user.emailVerified) {
             setLogged(true);
             setVerified(true);
-            dispatch(fetchUserData());
+            await dispatch(fetchUserData());
           } else {
             setLogged(true);
             setVerified(false);

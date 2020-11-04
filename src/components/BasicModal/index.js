@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Modal, View, Text, StyleSheet, Dimensions, Image
+  Modal, View, Text, StyleSheet, Dimensions,
 } from 'react-native';
 import { Button } from 'react-native-elements';
 
@@ -9,7 +9,7 @@ const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   modalText: {
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     width: width * 0.3,
     borderRadius: 20,
     marginRight: 20,
-    backgroundColor: '#6CA928',
+    backgroundColor: '#2672FF',
   },
   okNotification: {
     width: width * 0.5,
@@ -59,32 +59,20 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     backgroundColor: 'grey',
   },
-  imgModal: {
-    height: 170,
-    width: 170,
-    position: 'absolute',
-    top: height * -0.079,
-  },
-  imgView: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-  },
   container: {
     flex: 1,
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   contentContainer: {
-    marginTop: 100,
+    marginTop: height * 0.05,
   },
   modalViewStyle: (requiredHeight) => ({
-    backgroundColor: '#E7EBE1',
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: 50,
+    backgroundColor: 'white',
+    borderRadius: 20,
     justifyContent: 'space-between',
     alignItems: 'center',
-    width,
+    width: width * 0.85,
     height: height * requiredHeight,
   }),
 });
@@ -122,7 +110,7 @@ const BasicModal = ({
         title="Ok"
         buttonStyle={[
           styles.okNotification,
-          { backgroundColor: type === 'confirmation' ? '#6CA928' : '#BD1522' },
+          { backgroundColor: type === 'confirmation' ? '#2672FF' : '#BD1522' },
         ]}
         onPress={onPressCancel}
       />

@@ -6,6 +6,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
+import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
@@ -58,8 +59,8 @@ const Post = () => {
   };
 
   const pickMedia = async (type) => {
-    const { granted } = await ImagePicker.requestCameraRollPermissionsAsync();
-    if (!granted) {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (status !== 'granted') {
       setModal({
         ...modal,
         showModal: true,
@@ -86,6 +87,17 @@ const Post = () => {
     }
   };
   const pickAudio = async () => {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (status !== 'granted') {
+      setModal({
+        ...modal,
+        showModal: true,
+        modalType: 'error',
+        modalTitle: 'Necesitamos permisos para acceder a la galería',
+        pressCancel: () => setModal({ ...modal, showModal: false }),
+      });
+      return;
+    }
     const aud = await DocumentPicker.getDocumentAsync({
       type: 'audio/*',
     });

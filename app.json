@@ -24,7 +24,11 @@
       "favicon": "./assets/favicon.png"
     },
     "android": {
-      "package": "com.klk.klk_msn"
+      "package": "com.klk.klk_msn",
+      "permissions": [
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
     }
   }
 }
