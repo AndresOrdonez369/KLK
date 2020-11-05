@@ -1,32 +1,14 @@
-import React, { PureComponent } from 'react';
+import React, { useState } from 'react';
 import {
-  Dimensions, StyleSheet, View, Text, FlatList, StatusBar,
+  Dimensions, StyleSheet, View, FlatList,
 } from 'react-native';
+import { Button, SearchBar } from 'react-native-elements';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import FollowAvatar from '../../components/Avatar/FollowAvatar';
 
 const { height, width } = Dimensions.get('screen');
-const renderFollow = ({ item }) => (
-  <FollowAvatar
-    urlImage={item.urlImage}
-    name={item.name}
-    date={item.date}
-  />
-);
-class Friends extends PureComponent {
-  render() {
-    return (
-      <View style={styles.container}>
-        <FlatList
-          data={DATA}
-          renderItem={renderFollow}
-          keyExtractor={(item) => item.name}
-        />
-      </View>
-    );
-  }
-}
 
-const DATA = [
+const Following = [
   {
     urlImage: 'https://www.eltiempo.com/files/article_multimedia/uploads/2019/11/07/5dc434e900e5f.jpeg',
     name: 'Sara Sofia Zarama Cifuentes',
@@ -53,6 +35,8 @@ const DATA = [
     name: 'Jose Alvaro Osorio Balvin',
     date: '@jbalvin',
   },
+];
+const Followers = [
   {
     urlImage: 'https://i.pinimg.com/564x/f1/40/4c/f1404c87f540b80b5fcf766e4c1f567d.jpg',
     name: 'Valentina Ruiz Carmona ',
@@ -78,15 +62,108 @@ const DATA = [
     name: 'Fernando Andrés Delgado',
     date: '@ferandres',
   }];
+const Friends = () => {
+  // state
+  const [renderData, setRenderData] = useState(Followers);
+  const [search, setSearch] = useState('');
+  // fnc
+  const updateSearch = (searching) => {
+    setSearch(searching);
+  };
+  const renderFollow = ({ item }) => (
+    <FollowAvatar
+      urlImage={item.urlImage}
+      name={item.name}
+      date={item.date}
+    />
+  );
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <FlatList
+          data={renderData}
+          ListHeaderComponent={(
+            <View style={styles.headerContainer}>
+              <SearchBar
+                placeholder="Busca el nombre del usuario..."
+                onChangeText={(text) => updateSearch(text)}
+                value={search}
+                containerStyle={styles.containerSearch}
+                inputContainerStyle={styles.search}
+                cancelIcon
+                showCancel
+                lightTheme
+                onCancel={() => setSearch('')}
+              />
+              <View style={styles.iconContainer}>
+                <Button
+                  title="198 seguidores"
+                  buttonStyle={styles.buttonRender(renderData === Followers)}
+                  onPress={() => setRenderData(Followers)}
+                  titleStyle={styles.titleButton}
+                />
+                <Button
+                  title="220 seguidos"
+                  buttonStyle={styles.buttonRender(renderData === Following)}
+                  onPress={() => setRenderData(Following)}
+                  titleStyle={styles.titleButton}
+                />
+              </View>
+            </View>
+           )}
+          renderItem={renderFollow}
+          keyExtractor={(item) => item.name}
+        />
+      </View>
+    </SafeAreaView>
+  );
+};
+
 const styles = StyleSheet.create({
-  container: {
-    marginTop: StatusBar.currentHeight || 0,
+  safeArea: {
     flex: 1,
+    backgroundColor: '#f22',
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'white',
+  },
+  headerContainer: {
+    width,
+    justifyContent: 'center',
     alignItems: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+  },
+  buttonRender: (value) => ({
+    backgroundColor: 'transparent',
+    borderBottomWidth: value ? 2 : 0,
+    borderBottomColor: 'grey',
+    margin: 5,
+    height: height * 0.05,
+  }),
+  iconContainer: {
+    flexDirection: 'row',
+    height: height * 0.05 + 6,
+    width,
+    borderBottomWidth: 1,
+    borderBottomColor: 'gray',
     justifyContent: 'center',
   },
-  title: {
-    fontSize: 24,
+  titleButton: {
+    color: 'black',
+  },
+  containerSearch: {
+    width,
+    backgroundColor: 'transparent',
+    borderColor: '#f22',
+  },
+  search: {
+    backgroundColor: 'white',
+    borderBottomWidth: 2,
+    borderBottomColor: '#f22',
   },
 });
 

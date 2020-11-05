@@ -226,7 +226,7 @@ const Post = () => {
         <BasicModal
           visible={showModal}
           type={modalType}
-          requiredHeight={0.4}
+          requiredHeight={0.3}
           title={modalTitle}
           onPressCancel={pressCancel}
           onPressOk={pressOk}
