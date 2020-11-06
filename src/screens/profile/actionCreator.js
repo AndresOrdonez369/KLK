@@ -79,7 +79,7 @@ export const userUploadImagen = (imagenURL, type) => async (dispatch) => {
     if (type === 'cover') {
       const dbh = firebase.firestore();
       const uidCollection = dbh.collection('users').doc(user.uid);
-      uidCollection.update({ coverURL: url });
+      await uidCollection.update({ coverURL: url });
     }
 
     return dispatch({
@@ -112,3 +112,23 @@ export const updateDescription = (text) => ({
   type: Actions.UPDATE_DESCRIPTION_PROFILE,
   payload: text,
 });
+
+export const getExtraProfile = (uid) => async (dispatch) => {
+  const dbh = firebase.firestore();
+  const snapShot = await dbh.collection('users').doc(uid).get();
+  if (!snapShot) {
+    return dispatch({
+      type: Actions.ANOTHER_USER_FETCH_FAILED,
+      payload: 'No se encontraron datos de usuario',
+    });
+  }
+  const {
+    userName, name, coverURL, description, following, followers, photoURL,
+  } = snapShot.data();
+  return dispatch({
+    type: Actions.ANOTHER_USER_FETCH,
+    payload: {
+      userName, name, photoURL, coverURL, description, followers, following,
+    },
+  });
+};
