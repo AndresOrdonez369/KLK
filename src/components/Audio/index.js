@@ -1,58 +1,96 @@
-import React, { useState, useEffect } from 'react';
-import { Icon, Button } from 'react-native-elements';
-import { Audio } from 'expo-av';
+import React, { useState } from 'react';
+import { Icon, Button, } from 'react-native-elements';
+import { useDispatch, useSelector} from 'react-redux';
+import { View } from 'react-native';
+import { playerUpdate } from '../../components/Audio/audioAppActionCreator';
 import styles from './styles';
 
 const AudioComponent = (mediaLink) => {
   const [audio, setAudio] = useState({
-    audioActive: false,
-    audioError: false,
-    source: mediaLink,
-    objetosonido: null,
+    audioController: true,
+    mediaSource: mediaLink
   });
-  const {
-    audioActive, audioError, source, objetosonido,
-  } = audio;
-  const { mediaButtonStyle } = styles;
-  useEffect(() => {
-    const prueba = async () => {
+  const dispatch = useDispatch();
+  const { audioController, mediaSource} = audio;
+  const {  mediaButtonStyle, playButtonStyle, mediaContainerStyle } = styles;
+  const state = useSelector((state) => state.reducerAudio);
+  const { source } = state;
+  /* useEffect(() => {
+    const createSound = async () => {
       const { sound: soundObject, status } = await Audio.Sound.createAsync(
-        { uri: source.mediaLink },
-        { shouldPlay: false },
-      );
-      setAudio({ ...audio, objetosonido: soundObject });
-    };
-    prueba();
-    return () => {
-      async function CleanAudio() {
-        const response = await soundObject.unloadAsync();
-      }
-      CleanAudio();
-    };
-  }, []);
-  const renderOnPress = () => {
-    const play = async () => {
-      await objetosonido.playAsync();
-      setAudio({ ...audio, audioActive: true });
-      // await soundObject.pauseAsync();
-    };
-    const pause = async () => {
-      await objetosonido.pauseAsync();
-      setAudio({ ...audio, audioActive: false });
-    };
-    return audioActive ? pause() : play();
-  };
-  const renderIconName = () => (audioActive ? 'pause' : 'play');
-  return (
+      { uri: source.mediaLink },
+      { shouldPlay: false }
+    );
+    setAudio({...audio, objetosonido: soundObject})
+  }
+  createSound();
+}, []); */
+/* useEffect(() => () =>{
+    async function CleanAudio() {
+      console.log("entre al clean")
+      await objetosonido.stopAsync();
+      const response = await objetosonido.unloadAsync();
+      setAudio({ ...audio, objetosonido, audioController: false });
+      console.log("response clean", response)
+    }
+   return CleanAudio();
+}, []) */
+/* useEffect(() => {
+    const manejo = async () => {
+      console.log("estoy en el manejo")
+      await objetosonido.stopAsync()
+      setAudio({ ...audio, audioController false });           
+    }
+    const pausaGlobal = () => globalKey == cid ? null : manejo()
+    if(objetosonido != null) pausaGlobal();
+  }, [globalKey]); */
+  const playAudio = () => {
+    if (source != mediaSource) {
+    }
+    dispatch(playerUpdate('play'));
+    console.log('aqui se monta el audio');
+    setAudio({ audioController: !audioController });
+  }
+  const pauseAudio = () => {
+    dispatch(playerUpdate('pause'));
+    setAudio({ audioController: !audioController });
+  }
+  const stopAudio = () => {
+    dispatch(playerUpdate('stop'));
+    setAudio({ audioController: !audioController });
+  }
+  
+   const renderButtons = () => {
+    return audioController ? ( 
     <Button
       raised
-      onPress={() => renderOnPress()}
+      onPress={() => playAudio()}
+      buttonStyle={playButtonStyle}
+      icon={
+        <Icon name={'play'} type="material-community" color="black" size={150} />
+      }
+    />) : (
+      <View style={mediaContainerStyle}>
+         <Button
+      raised
+      onPress={() => stopAudio()}
       buttonStyle={mediaButtonStyle}
       icon={
-        <Icon name={renderIconName()} type="material-community" color="black" size={150} />
+        <Icon name={"stop"} type="material-community" color="black" size={120} />
       }
     />
-  );
+     <Button
+      raised
+      onPress={() => pauseAudio()}
+      buttonStyle={mediaButtonStyle}
+      icon={
+        <Icon name={"pause"} type="material-community" color="black" size={120} />
+      }
+    />
+      </View>
+    )
+  }
+  return renderButtons();
 };
 
 export default AudioComponent;

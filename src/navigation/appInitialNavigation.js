@@ -6,6 +6,7 @@ import { Overlay, Button, Icon } from 'react-native-elements';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useDispatch } from 'react-redux';
+import AudioApp from '../components/Audio/audioApp';
 import PrincipalFlow from './principalFlow';
 import Login from '../screens/login';
 import PasswordRecovery from '../screens/passwordRecovery';
@@ -62,7 +63,7 @@ const AppInitialNavigation = () => {
   // state
   const [logged, setLogged] = useState(false);
   const [verified, setVerified] = useState(false);
-
+  AudioApp();
   const dispatch = useDispatch();
   // authChecker
   useEffect(() => {

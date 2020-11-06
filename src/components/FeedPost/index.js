@@ -1,22 +1,21 @@
 /* eslint-disable react/jsx-filename-extension */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, Text, Image } from 'react-native';
-import { Icon, Button } from 'react-native-elements';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
+import { Icon, Button, } from 'react-native-elements';
 import { Video } from 'expo-av';
 import Avatar from '../Avatar/SimpleAvatar';
 import AudioComponent from '../Audio';
+import Youtube from '../Youtube'
 
 import styles from './styles';
 
 const FeedPost = ({
-  authorName, mensaje, mediaLink, likes, type = 'audio', timestamp, url,
+  authorName, mensaje, mediaLink, likes, type = 'audio', timestamp, url, key, id, liked=true,
 }) => {
   const {
     container, headerContainer, basicInfoContainer, dotsContainer,
     bodyContainer, messageContainer, mediaContainer, bottomContainer, iconsContainer,
-    dotsButtonStyle, messageStyle,
+    dotsButtonStyle, messageStyle, likesStyle, likesContainer
   } = styles;
   const renderMedia = (type, mediaLink) => {
     if (type === 'image') {
@@ -45,20 +44,32 @@ const FeedPost = ({
           isMuted={false}
           resizeMode="cover"
           style={{ flex: 1 }}
+          useNativeControls
         />
       );
     }
+    if (type === 'youtube') {
+      var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
+      let videoId = mediaLink.match(regExp);
+      videoId = videoId.pop();
+      return (
+       <Youtube id={videoId} />
+      );
+    }
+    if (type === 'text') {
+      return null;
+    }
   };
-
   return (
     <View style={container}>
       <View style={headerContainer}>
         <View style={basicInfoContainer}>
-          <Avatar size={100} name={authorName} date={timestamp} url={url} />
+          <Avatar size={94} name={authorName} date={timestamp} url={url}/>
         </View>
         <View style={dotsContainer}>
           <Button
             buttonStyle={dotsButtonStyle}
+            onPress={() =>console.log('esta es la key', key)}
             icon={
               <Icon name="dots-vertical" type="material-community" color="black" size={25} />
             }
@@ -78,21 +89,24 @@ const FeedPost = ({
           <Button
             buttonStyle={dotsButtonStyle}
             icon={
-              <Icon name="water-pump" type="material-community" color="black" size={25} />
+              <Icon name="radio-tower" type="material-community" color={liked ? "gray" : '#f22'  }size={25} />
             }
           />
           <Button
             buttonStyle={dotsButtonStyle}
             icon={
-              <Icon name="cards-heart" type="material-community" color="red" size={25} />
+              <Icon name="comment-multiple" type="material-community" color="gray" size={25} />
             }
           />
           <Button
             buttonStyle={dotsButtonStyle}
             icon={
-              <Icon name="fire" type="material-community" color="green" size={25} />
+              <Icon name="share" type="material-community" color= '#f22' size={25} />
             }
           />
+        </View>
+        <View style={likesContainer}>
+          <Text style={likesStyle}>{likes}</Text>
         </View>
       </View>
     </View>

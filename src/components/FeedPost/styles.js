@@ -4,7 +4,7 @@ const { height, width } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
   container: {
-    height: height * 0.5,
+    height: height * 0.47,
     width,
     borderRadius: 20,
     alignItems: 'center',
@@ -57,12 +57,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   messageStyle: {
-    fontSize: 20,
+    fontSize: 19,
   },
   mediaContainer: {
-    height: height * 0.3,
+    height: height * 0.25,
     width: width * 0.95,
     margin: 10,
+    marginBottom: 20,
   },
   mediaButtonStyle: {
     height: height * 0.3,
@@ -77,10 +78,19 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   iconsContainer: {
-    height: height * 0.06,
+    height: height * 0.048,
     width: width * 0.2,
     marginLeft: 10,
     flexDirection: 'row',
+  },
+  likesContainer: {
+    height: height * 0.02,
+    width: width * 0.15,
+    marginBottom: 10,
+  },
+  likesStyle: {
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 
