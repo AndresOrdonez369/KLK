@@ -1,118 +1,184 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Dimensions, StyleSheet, View, FlatList,
+  Dimensions, StyleSheet, View, FlatList, Platform, Text, ActivityIndicator, StatusBar,
 } from 'react-native';
-import { Button, SearchBar } from 'react-native-elements';
+import { Button, SearchBar, Overlay } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDispatch, useSelector } from 'react-redux';
+import { searcherFirestore } from './actionCreator';
+import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
 import FollowAvatar from '../../components/Avatar/FollowAvatar';
 
 const { height, width } = Dimensions.get('screen');
 
-const Following = [
-  {
-    urlImage: 'https://www.eltiempo.com/files/article_multimedia/uploads/2019/11/07/5dc434e900e5f.jpeg',
-    name: 'Sara Sofia Zarama Cifuentes',
-    date: '@Saritazama',
-
-  },
-  {
-    urlImage: 'https://assets.afcdn.com/story/20160810/951677_w800h720cx362cy320.jpg',
-    name: 'Luis Rivera Hernandez',
-    date: '@Luisriveres',
-  },
-  {
-    urlImage: 'https://pbs.twimg.com/profile_images/549851078880022528/8X7WyNT9_400x400.jpeg',
-    name: 'Sergio Hernandez Contreras',
-    date: '@sergiouyh',
-  },
-  {
-    urlImage: 'https://scontent.fclo8-1.fna.fbcdn.net/v/t1.0-1/p720x720/48362502_2498331116876254_6402442224126132224_n.jpg?_nc_cat=105&ccb=2&_nc_sid=dbb9e7&_nc_ohc=O3ivFCF4SYcAX8jVc62&_nc_ht=scontent.fclo8-1.fna&tp=6&oh=7e89b63e55d3f7250b8d4762ec606cba&oe=5FB84A0A',
-    name: 'Juan Camilo Delgado MOA',
-    date: '@moamusic',
-  },
-  {
-    urlImage: 'https://www.elcomercio.com/files/article_main/uploads/2019/09/23/5d8904a49a8b2.jpeg',
-    name: 'Jose Alvaro Osorio Balvin',
-    date: '@jbalvin',
-  },
-];
-const Followers = [
-  {
-    urlImage: 'https://i.pinimg.com/564x/f1/40/4c/f1404c87f540b80b5fcf766e4c1f567d.jpg',
-    name: 'Valentina Ruiz Carmona ',
-    date: '@valecarmon',
-  },
-  {
-    urlImage: 'https://www.spanishjournal.com/wp-content/uploads/2019/09/091919entertainment.jpg',
-    name: 'Austin Agustin Santos',
-    date: '@arcangelbaby',
-  },
-  {
-    urlImage: 'https://eslamoda.com/wp-content/uploads/sites/2/2015/11/fashion-selfie.jpg',
-    name: 'Luisa De la cruz Gonzales',
-    date: '@luvalecruz',
-  },
-  {
-    urlImage: 'https://i.pinimg.com/564x/f1/40/4c/f1404c87f540b80b5fcf766e4c1f567d.jpg',
-    name: 'Dylan Miguel Fernandez Gonzales',
-    date: '@dylanilan',
-  },
-  {
-    urlImage: 'https://i.pinimg.com/originals/21/09/02/210902457232e54775bc239033c4a88e.png',
-    name: 'Fernando Andrés Delgado',
-    date: '@ferandres',
-  }];
 const Friends = () => {
   // state
   const [renderData, setRenderData] = useState(Followers);
+  const [buttonSelected, setButtonSelected] = useState('followers');
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [loadingOverlay, setLoadingOverlay] = useState(false);
   const [search, setSearch] = useState('');
+
+  // redux
+  const dispatch = useDispatch();
+  const profile = useSelector((state) => state.reducerProfile);
+  const friends = useSelector((state) => state.reducerFriends);
+  const { error, message, searchResult } = friends;
+  console.log(friends);
+  const { followers, following } = profile.user;
+
+  // data
+  const Followers = followers ? Object.keys(followers).map((item) => ({
+    uid: item,
+    name: followers[item].name,
+    userName: followers[item].userName,
+    imageURL: followers[item].imageURL,
+  })) : [];
+  const Following = following ? Object.keys(following).map((item) => ({
+    uid: item,
+    name: following[item].name,
+    userName: following[item].userName,
+    imageURL: following[item].imageURL,
+  })) : [];
+  const follows = Following.length;
+  const follower = Followers.length;
+
   // fnc
-  const updateSearch = (searching) => {
-    setSearch(searching);
+  useEffect(() => {
+    setButtonSelected('followers');
+    setRenderData(Followers);
+  }, []);
+  const doSearch = async (string) => {
+    if (string.length > 0) {
+      setShowOverlay(true);
+      setLoadingOverlay(true);
+      await dispatch(searcherFirestore(string));
+      setLoadingOverlay(false);
+    }
   };
-  const renderFollow = ({ item }) => (
-    <FollowAvatar
-      urlImage={item.urlImage}
+
+  // components
+  const renderAvatar = ({ item }) => (
+    <SimpleAvatar
+      size={height * 0.1}
       name={item.name}
-      date={item.date}
+      date={item.userName}
     />
   );
+  const renderFollow = ({ item }) => (
+    <FollowAvatar
+      urlImage={item.imageURL}
+      name={item.name}
+      date={item.userName}
+    />
+  );
+  const header = (
+    <View style={styles.headerContainer}>
+      <SearchBar
+        placeholder="Busca el nombre del usuario..."
+        onChangeText={(text) => setSearch(text)}
+        searchIcon={{
+          color: '#f22',
+          onPress: () => doSearch(search),
+          size: styles.headerContainer.width * 0.08,
+        }}
+        value={search}
+        containerStyle={styles.containerSearch}
+        inputContainerStyle={styles.search}
+        cancelIcon={Platform.OS === 'android'}
+        showCancel={Platform.OS === 'ios'}
+        lightTheme
+        onCancel={() => setSearch('')}
+      />
+      <View style={styles.iconContainer}>
+        <Button
+          title={`${follower} seguidores`}
+          buttonStyle={styles.buttonRender(buttonSelected === 'followers')}
+          onPress={() => {
+            setRenderData(Followers);
+            setButtonSelected('followers');
+          }}
+          titleStyle={styles.titleButton}
+        />
+        <Button
+          title={`${follows} seguidos`}
+          buttonStyle={styles.buttonRender(buttonSelected === 'following')}
+          onPress={() => {
+            setRenderData(Following);
+            setButtonSelected('following');
+          }}
+          titleStyle={styles.titleButton}
+        />
+      </View>
+    </View>
+  );
+  let overlayContent;
+  if (loadingOverlay) {
+    overlayContent = (
+      <ActivityIndicator size="large" color="#f22" />
+    );
+  }
+  if (error) {
+    overlayContent = (
+      <Text style={styles.info}>{message}</Text>
+    );
+  }
+  if (searchResult.length < 1) {
+    overlayContent = (
+      <Text style={styles.info}>No se encontraron resultados para tu búsqueda</Text>
+    );
+  } else {
+    overlayContent = (
+      <FlatList
+        data={searchResult}
+        renderItem={renderAvatar}
+        keyExtractor={(item) => item.name}
+      />
+    );
+  }
+
+  if (buttonSelected === 'followers' && Followers.length < 1) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.centeredView}>
+          {header}
+          <Text style={styles.info}>No tienes seguidores de momento</Text>
+        </View>
+      </SafeAreaView>
+    );
+  } if (buttonSelected === 'following' && Following.length < 1) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.centeredView}>
+          {header}
+          <Text style={styles.info}>
+            No estás siguiendo a nadie, ¡encuentra a tus amigos en el buscador!
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
+        {showOverlay
+        && (
+          <Overlay
+            isVisible={showOverlay}
+            style={styles.overlay}
+            onBackdropPress={() => setShowOverlay(false)}
+          >
+            <View style={styles.centeredViewOverlay}>
+              {overlayContent}
+            </View>
+          </Overlay>
+        )}
         <FlatList
           data={renderData}
-          ListHeaderComponent={(
-            <View style={styles.headerContainer}>
-              <SearchBar
-                placeholder="Busca el nombre del usuario..."
-                onChangeText={(text) => updateSearch(text)}
-                value={search}
-                containerStyle={styles.containerSearch}
-                inputContainerStyle={styles.search}
-                cancelIcon
-                showCancel
-                lightTheme
-                onCancel={() => setSearch('')}
-              />
-              <View style={styles.iconContainer}>
-                <Button
-                  title="198 seguidores"
-                  buttonStyle={styles.buttonRender(renderData === Followers)}
-                  onPress={() => setRenderData(Followers)}
-                  titleStyle={styles.titleButton}
-                />
-                <Button
-                  title="220 seguidos"
-                  buttonStyle={styles.buttonRender(renderData === Following)}
-                  onPress={() => setRenderData(Following)}
-                  titleStyle={styles.titleButton}
-                />
-              </View>
-            </View>
-           )}
+          ListHeaderComponent={header}
           renderItem={renderFollow}
-          keyExtractor={(item) => item.name}
+          keyExtractor={(item) => item.uid}
         />
       </View>
     </SafeAreaView>
@@ -126,7 +192,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: 'white',
   },
   headerContainer: {
@@ -159,11 +225,36 @@ const styles = StyleSheet.create({
     width,
     backgroundColor: 'transparent',
     borderColor: '#f22',
+    height: 65,
   },
   search: {
     backgroundColor: 'white',
     borderBottomWidth: 2,
     borderBottomColor: '#f22',
+  },
+  info: {
+    flexWrap: 'wrap',
+    fontSize: 18,
+    color: '#2F4575',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  overlay: {
+    backgroundColor: 'white',
+    alignItems: 'center',
+    width,
+    justifyContent: 'flex-end',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  centeredViewOverlay: {
+    width,
+    height,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

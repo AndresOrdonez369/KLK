@@ -24,12 +24,12 @@ export const fetchUserData = () => async (dispatch) => {
       });
     }
     const {
-      userName, name, coverURL, description,
+      userName, name, coverURL, description, following, followers,
     } = snapShot.data();
     return dispatch({
       type: Actions.USER_FETCH_DBASE,
       payload: {
-        userName, name, uid, email, photoURL, coverURL, description,
+        userName, name, uid, email, photoURL, coverURL, description, followers, following,
       },
     });
   } catch (error) {
@@ -60,6 +60,7 @@ export const userUploadImagen = (imagenURL, type) => async (dispatch) => {
       ? `/Users/profilePhotos/${user.uid}.png` : `/Users/coverPhotos/${user.uid}.png`;
     const storage = firebase.storage().ref();
     const imagePath = storage.child(userPhothoURL);
+    // eslint-disable-next-line no-undef
     const response = await fetch(imagenURL);
     const imagenBlob = await response.blob();
     await imagePath.put(imagenBlob);

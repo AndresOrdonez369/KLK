@@ -25,7 +25,7 @@ export const register = (email, password, name, userName) => async (dispatch) =>
       const dbh = firebase.firestore();
       const usersCollection = dbh.collection('users');
       await usersCollection.doc(user.uid).set({
-        name, userName, coverURL: '', description: '',
+        name, userName, coverURL: '', description: '', following: {}, followers: {},
       })
         .catch((error) => {
           const errorCode = error.code;
