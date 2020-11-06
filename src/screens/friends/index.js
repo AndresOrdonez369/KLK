@@ -63,14 +63,14 @@ const Friends = () => {
     <SimpleAvatar
       size={height * 0.1}
       name={item.name}
-      date={item.userName}
+      date={`@${item.userName}`}
     />
   );
   const renderFollow = ({ item }) => (
     <FollowAvatar
       urlImage={item.imageURL}
       name={item.name}
-      date={item.userName}
+      date={`@${item.userName}`}
     />
   );
   const header = (
@@ -130,31 +130,53 @@ const Friends = () => {
     );
   } else {
     overlayContent = (
-      <FlatList
-        data={searchResult}
-        renderItem={renderAvatar}
-        keyExtractor={(item) => item.name}
-      />
+      <View styles={styles.overlayContent}>
+        <SearchBar
+          placeholder="Busca el nombre del usuario..."
+          onChangeText={(text) => setSearch(text)}
+          searchIcon={{
+            color: '#f22',
+            onPress: () => doSearch(search),
+            size: styles.headerContainer.width * 0.08,
+          }}
+          value={search}
+          containerStyle={styles.containerSearch}
+          inputContainerStyle={styles.search}
+          cancelIcon={Platform.OS === 'android'}
+          showCancel={Platform.OS === 'ios'}
+          lightTheme
+          onCancel={() => setSearch('')}
+        />
+        <FlatList
+          data={searchResult}
+          renderItem={renderAvatar}
+          keyExtractor={(item) => item.name}
+        />
+      </View>
     );
   }
 
   if (buttonSelected === 'followers' && Followers.length < 1) {
     return (
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.centeredView}>
+        <View style={styles.container}>
           {header}
-          <Text style={styles.info}>No tienes seguidores de momento</Text>
+          <View style={styles.centeredView}>
+            <Text style={styles.info}>No tienes seguidores de momento</Text>
+          </View>
         </View>
       </SafeAreaView>
     );
   } if (buttonSelected === 'following' && Following.length < 1) {
     return (
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.centeredView}>
+        <View style={styles.container}>
           {header}
-          <Text style={styles.info}>
-            No estás siguiendo a nadie, ¡encuentra a tus amigos en el buscador!
-          </Text>
+          <View style={styles.centeredView}>
+            <Text style={styles.info}>
+              No estás siguiendo a nadie, ¡encuentra a tus amigos en el buscador!
+            </Text>
+          </View>
         </View>
       </SafeAreaView>
     );
@@ -250,12 +272,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'white',
   },
   centeredViewOverlay: {
     width,
     height,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  overlayContent: {
+    alignItems: 'flex-start',
   },
 });
 

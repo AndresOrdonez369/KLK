@@ -27,13 +27,18 @@ const Profile = () => {
   const {
     dataChange, modalType, error, message, user, uid,
   } = profile;
-  const { description, name, userName } = user;
+  const {
+    description, name, userName, followers, following,
+  } = user;
 
   const { navigate } = useNavigation();
 
   useEffect(() => {
     dataUpdate();
   }, [dataChange]);
+
+  const totalFollowers = followers ? Object.keys(followers).length : 0;
+  const totalFollows = following ? Object.keys(following).length : 0;
 
   const dataUpdate = () => {
     if (dataChange) {
@@ -98,11 +103,11 @@ const Profile = () => {
               <Text style={styles.category}>posts</Text>
             </View>
             <View style={styles.textCategory}>
-              <Text style={styles.numbersInfo}>20</Text>
+              <Text style={styles.numbersInfo}>{totalFollowers}</Text>
               <Text style={styles.category}>seguidores</Text>
             </View>
             <View style={styles.textCategory}>
-              <Text style={styles.numbersInfo}>30</Text>
+              <Text style={styles.numbersInfo}>{totalFollows}</Text>
               <Text style={styles.category}>siguiendo</Text>
             </View>
           </View>
@@ -155,7 +160,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   avatarView: {
-    marginTop: -90,
+    marginTop: height * -0.105,
     height: 100,
     backgroundColor: 'rgba(255, 0, 0, 0.5)',
     justifyContent: 'flex-end',
@@ -164,13 +169,13 @@ const styles = StyleSheet.create({
   },
   settingsIcon: {
     alignSelf: 'flex-end',
-    marginTop: -80,
+    marginTop: height * -0.093,
     marginRight: 5,
   },
   generalInfo: {
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
-    marginTop: 38,
+    marginTop: height * 0.044,
     height: height * 0.4,
     backgroundColor: 'white',
   },
@@ -180,7 +185,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   numbersInfo: {
-    fontSize: 40,
+    fontSize: height * 0.05,
     fontWeight: 'bold',
     marginLeft: width * 0.07,
     marginRight: width * 0.07,
@@ -208,14 +213,14 @@ const styles = StyleSheet.create({
   name: {
     alignSelf: 'center',
     color: 'white',
-    fontSize: 20,
+    fontSize: height * 0.023,
     fontWeight: 'bold',
   },
   userName: {
     alignSelf: 'center',
     color: 'white',
-    fontSize: 15,
-    marginBottom: 12,
+    fontSize: height * 0.015,
+    marginBottom: height * 0.014,
   },
 });
 

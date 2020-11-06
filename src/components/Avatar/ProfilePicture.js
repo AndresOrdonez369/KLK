@@ -81,7 +81,7 @@ const ProfilePicture = ({ type }) => {
           ? (
             <Avatar
               rounded
-              size={140}
+              size={height * 0.14}
               overlayContainerStyle={{ backgroundColor: 'gray', margin: 10 }}
               titleStyle={{ color: 'green' }}
               showAccessory
