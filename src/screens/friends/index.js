@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Dimensions, StyleSheet, View, FlatList, Platform, Text, ActivityIndicator, StatusBar,
+  Dimensions, StyleSheet, View, FlatList, Platform, Text, ActivityIndicator,
 } from 'react-native';
 import { Button, SearchBar, Overlay } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
-import { searcherFirestore } from './actionCreator';
+import { searcherFirestore, cleanSearch } from './actionCreator';
 import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
 import FollowAvatar from '../../components/Avatar/FollowAvatar';
 
@@ -50,6 +50,7 @@ const Friends = () => {
   }, []);
   const doSearch = async (string) => {
     if (string.length > 0) {
+      dispatch(cleanSearch());
       setShowOverlay(true);
       setLoadingOverlay(true);
       await dispatch(searcherFirestore(string));

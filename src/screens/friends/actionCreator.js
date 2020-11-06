@@ -1,7 +1,6 @@
 import Actions from '../../redux/actionTypes';
 import firebase from '../../../firebase';
 
-// eslint-disable-next-line import/prefer-default-export
 export const searcherFirestore = (string) => async (dispatch) => {
   const db = firebase.firestore();
   const usersCollection = db.collection('users');
@@ -19,3 +18,7 @@ export const searcherFirestore = (string) => async (dispatch) => {
       });
     });
 };
+
+export const cleanSearch = () => ({
+  type: Actions.CLEAN_SEARCH,
+});

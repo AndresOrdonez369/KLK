@@ -46,4 +46,5 @@ export default {
   // Friends
   DATA_SEARCH: 'DATA_SEARCH',
   SEARCH_ERROR: 'SEARCH_ERROR',
+  CLEAN_SEARCH: 'CLEAN_SEARCH',
 };

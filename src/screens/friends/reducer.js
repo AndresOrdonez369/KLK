@@ -23,6 +23,11 @@ export default (state = STATE_INICIAL, action) => {
         error: true,
         message: 'Hubo un error en la consoluta',
       };
+    case Actions.CLEAN_SEARCH:
+      return {
+        ...state,
+        searchResult: [],
+      };
     default:
       return { ...state };
   }
