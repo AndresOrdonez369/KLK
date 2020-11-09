@@ -13,7 +13,6 @@ import Post from '../FeedPost';
 import SimpleAvatar from '../Avatar/SimpleAvatar';
 
 const requireCover = require('../../../assets/defaultCover.png');
-const requirePhoto = require('../../../assets/busyPosition.png');
 
 const { height, width } = Dimensions.get('screen');
 
@@ -26,7 +25,7 @@ const ExtraProfile = ({ route }) => {
   } = profile.anotherUser;
 
   const { navigate } = useNavigation();
-  const { uid } = route.params;
+  const { uid, prevScreen } = route.params;
 
   useEffect(() => {
     dispatch(getExtraProfile(uid));
@@ -34,7 +33,7 @@ const ExtraProfile = ({ route }) => {
 
   const totalFollowers = followers ? Object.keys(followers).length : 0;
   const totalFollows = following ? Object.keys(following).length : 0;
-  const imgUser = imageURL ? { uri: imageURL } : requirePhoto;
+  const imgUser = imageURL ? { uri: imageURL } : null;
   const imgCover = coverURL ? { uri: coverURL } : requireCover;
 
   const renderPost = ({ item }) => (
@@ -55,10 +54,11 @@ const ExtraProfile = ({ route }) => {
           style={styles.cover}
         >
           <Icon
-            name="edit"
-            size={30}
-            color="black"
+            name="arrow-left"
+            size={height * 0.04}
             type="font-awesome"
+            onPress={() => navigate(prevScreen)}
+            color="white"
             iconStyle={styles.coverIcon}
           />
         </ImageBackground>
@@ -73,7 +73,6 @@ const ExtraProfile = ({ route }) => {
             {userName}
           </Text>
         </View>
-        <View style={styles.settingsIcon} />
         <View style={styles.generalInfo}>
           <View style={styles.textInfo}>
             <View style={styles.textCategory}>
@@ -91,13 +90,19 @@ const ExtraProfile = ({ route }) => {
           </View>
           <View style={styles.descriptionView}>
             <Text style={{ flexWrap: 'wrap', marginRight: 10 }}>
-              { description || '¡Escribe una descripción para tu perfil!' }
+              {description || 'No hay descripción'}
             </Text>
           </View>
-          <Button
-            title="Mis chats"
-            buttonStyle={styles.buttonSubmit}
-          />
+          <View style={styles.buttonsView}>
+            <Button
+              title="Seguir"
+              buttonStyle={styles.buttonSubmit}
+            />
+            <Button
+              title="Mensaje"
+              buttonStyle={styles.buttonSubmit}
+            />
+          </View>
         </View>
         <FlatList
           data={DATA}
@@ -129,6 +134,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
+    alignItems: 'center',
   },
   settingsIcon: {
     alignSelf: 'flex-end',
@@ -138,7 +144,7 @@ const styles = StyleSheet.create({
   generalInfo: {
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
-    marginTop: height * 0.044,
+    marginTop: height * -0.012,
     height: height * 0.4,
     backgroundColor: 'white',
   },
@@ -169,9 +175,9 @@ const styles = StyleSheet.create({
   buttonSubmit: {
     backgroundColor: '#f22',
     borderRadius: 20,
-    width: width * 0.6,
+    width: width * 0.3,
     alignSelf: 'center',
-    marginTop: height * 0.04,
+    margin: height * 0.02,
   },
   name: {
     alignSelf: 'center',
@@ -190,9 +196,14 @@ const styles = StyleSheet.create({
     height: width * 0.66,
   },
   coverIcon: {
-    alignSelf: 'flex-end',
-    marginRight: 10,
+    alignSelf: 'flex-start',
+    marginLeft: 10,
     marginTop: 10,
+  },
+  buttonsView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

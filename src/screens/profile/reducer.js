@@ -107,7 +107,7 @@ export default (state = STATE_INICIAL, action) => {
           coverURL: action.payload.coverURL,
           following: action.payload.following,
           followers: action.payload.followers,
-          imageURL: action.payload.photoURL,
+          imageURL: action.payload.imageURL,
         },
       };
     default:

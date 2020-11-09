@@ -9,7 +9,7 @@ import Videos from '../screens/videoFeed';
 import Radio from '../screens/radio';
 import Post from '../screens/post';
 import Settings from '../screens/settings';
-import Comments from '../screens/comments';
+import AnotherProfile from '../components/ExtraProfile';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -66,8 +66,8 @@ function AppHide() {
   return (
     <Stack.Navigator headerMode="none">
       <Stack.Screen name="PrincipalFlow" component={PrincipalFlow} />
-      <Stack.Screen name="Comments" component={Comments} />
       <Stack.Screen name="CreatePost" component={Post} />
+      <Stack.Screen name="AnotherProfile" component={AnotherProfile} />
     </Stack.Navigator>
   );
 }
