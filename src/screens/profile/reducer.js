@@ -22,6 +22,8 @@ const STATE_INICIAL = {
     userName: '',
     description: '',
     imageURL: '',
+    following: '',
+    followers: '',
   },
 };
 

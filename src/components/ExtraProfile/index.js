@@ -25,11 +25,16 @@ const ExtraProfile = ({ route }) => {
   } = profile.anotherUser;
 
   const { navigate } = useNavigation();
-  const { uid, prevScreen } = route.params;
+  const { uid, actualScreen } = route.params;
+  console.log(profile);
 
   useEffect(() => {
-    dispatch(getExtraProfile(uid));
-  }, []);
+    const getData = async () => {
+      dispatch(getExtraProfile(uid));
+    };
+    getData();
+    return () => console.log('addd');
+  }, [uid]);
 
   const totalFollowers = followers ? Object.keys(followers).length : 0;
   const totalFollows = following ? Object.keys(following).length : 0;
@@ -57,7 +62,7 @@ const ExtraProfile = ({ route }) => {
             name="arrow-left"
             size={height * 0.04}
             type="font-awesome"
-            onPress={() => navigate(prevScreen)}
+            onPress={() => navigate(actualScreen)}
             color="white"
             iconStyle={styles.coverIcon}
           />

@@ -5,6 +5,7 @@ import {
 import { Button, SearchBar, Overlay } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 import { searcherFirestore, cleanSearch } from './actionCreator';
 import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
 import FollowAvatar from '../../components/Avatar/FollowAvatar';
@@ -25,6 +26,8 @@ const Friends = () => {
   const friends = useSelector((state) => state.reducerFriends);
   const { error, message, searchResult } = friends;
   const { followers, following } = profile.user;
+
+  const { navigate } = useNavigation();
 
   // data
   const Followers = followers ? Object.keys(followers).map((item) => ({
@@ -58,21 +61,35 @@ const Friends = () => {
   };
 
   // components
-  const renderAvatar = ({ item }) => (
-    <SimpleAvatar
-      size={height * 0.1}
-      url={item.imageURL}
-      name={item.name}
-      date={`@${item.userName}`}
-    />
-  );
-  const renderFollow = ({ item }) => (
-    <FollowAvatar
-      urlImage={item.imageURL}
-      name={item.name}
-      date={`@${item.userName}`}
-    />
-  );
+  const renderAvatar = ({ item }) => {
+    const {
+      uid, name, imageURL, userName,
+    } = item;
+    const actualScreen = 'Panas';
+    return (
+      <SimpleAvatar
+        size={height * 0.1}
+        url={imageURL}
+        name={name}
+        date={`@${userName}`}
+        onPress={() => navigate('AnotherProfile', { uid, actualScreen })}
+      />
+    );
+  };
+  const renderFollow = ({ item }) => {
+    const {
+      uid, name, imageURL, userName,
+    } = item;
+    const actualScreen = 'Panas';
+    return (
+      <FollowAvatar
+        urlImage={imageURL}
+        name={name}
+        date={`@${userName}`}
+        onPress={() => navigate('AnotherProfile', { uid, actualScreen })}
+      />
+    );
+  };
   const header = (
     <View style={styles.headerContainer}>
       <SearchBar

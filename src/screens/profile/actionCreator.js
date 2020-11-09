@@ -115,7 +115,8 @@ export const updateDescription = (text) => ({
 
 export const getExtraProfile = (uid) => async (dispatch) => {
   const dbh = firebase.firestore();
-  const snapShot = await dbh.collection('users').doc(uid).get();
+  const snapShot = await dbh.collection('users').doc(uid).get()
+    .catch((error) => console.log('error action', error));
   if (!snapShot) {
     return dispatch({
       type: Actions.ANOTHER_USER_FETCH_FAILED,
