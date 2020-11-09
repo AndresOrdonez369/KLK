@@ -12,6 +12,7 @@ import Chats from '../screens/chats';
 import Settings from '../screens/settings';
 import AnotherProfile from '../screens/ExtraProfile';
 import Chat from '../screens/chat';
+import Comments from '../screens/comments';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -75,5 +76,6 @@ function AppHide() {
     </Stack.Navigator>
   );
 }
+      <Stack.Screen name="Comments" component={Comments} />
 
 export default AppHide;
