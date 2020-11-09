@@ -22,10 +22,11 @@ export const register = (email, password, name, userName) => async (dispatch) =>
     // ...
     }).then(async ({ user }) => {
       dispatch(IsLoading(false));
+      const { uid, photoURL } = await firebase.auth().currentUser;
       const dbh = firebase.firestore();
       const usersCollection = dbh.collection('users');
       await usersCollection.doc(user.uid).set({
-        name, userName, coverURL: '', description: '', following: {}, followers: {},
+        name, userName, coverURL: '', description: '', following: {}, followers: {}, uid, imageURL: photoURL,
       })
         .catch((error) => {
           const errorCode = error.code;

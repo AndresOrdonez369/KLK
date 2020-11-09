@@ -4,7 +4,7 @@ import firebase from '../../../firebase';
 export const searcherFirestore = (string) => async (dispatch) => {
   const db = firebase.firestore();
   const usersCollection = db.collection('users');
-  await usersCollection.where('name', '>=', string).where('name', '<=', `${string}\uf8ff`).get()
+  await usersCollection.where('userName', '>=', string).where('userName', '<=', `${string}\uf8ff`).get()
     .then((querySnapshot) => {
       querySnapshot.forEach((doc) => dispatch({
         type: Actions.DATA_SEARCH,

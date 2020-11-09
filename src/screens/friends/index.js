@@ -24,7 +24,6 @@ const Friends = () => {
   const profile = useSelector((state) => state.reducerProfile);
   const friends = useSelector((state) => state.reducerFriends);
   const { error, message, searchResult } = friends;
-  console.log(friends);
   const { followers, following } = profile.user;
 
   // data
@@ -62,6 +61,7 @@ const Friends = () => {
   const renderAvatar = ({ item }) => (
     <SimpleAvatar
       size={height * 0.1}
+      url={item.imageURL}
       name={item.name}
       date={`@${item.userName}`}
     />
@@ -76,7 +76,7 @@ const Friends = () => {
   const header = (
     <View style={styles.headerContainer}>
       <SearchBar
-        placeholder="Busca el nombre del usuario..."
+        placeholder="Busca usuarios por su nick..."
         onChangeText={(text) => setSearch(text)}
         searchIcon={{
           color: '#f22',
@@ -132,7 +132,7 @@ const Friends = () => {
     overlayContent = (
       <View styles={styles.overlayContent}>
         <SearchBar
-          placeholder="Busca el nombre del usuario..."
+          placeholder="Busca usuarios por su nick..."
           onChangeText={(text) => setSearch(text)}
           searchIcon={{
             color: '#f22',
