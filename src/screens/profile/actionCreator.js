@@ -114,15 +114,16 @@ export const updateDescription = (text) => ({
 });
 
 export const getExtraProfile = (uid) => async (dispatch) => {
+  console.log(uid);
   const dbh = firebase.firestore();
-  const snapShot = await dbh.collection('users').doc(uid).get()
-    .catch((error) => console.log('error action', error));
+  const snapShot = await dbh.collection('users').doc(String(uid)).get();
   if (!snapShot) {
     return dispatch({
       type: Actions.ANOTHER_USER_FETCH_FAILED,
       payload: 'No se encontraron datos de usuario',
     });
   }
+  console.log('snap', snapShot.data());
   const {
     userName, name, coverURL, description, following, followers, imageURL,
   } = snapShot.data();
@@ -133,3 +134,7 @@ export const getExtraProfile = (uid) => async (dispatch) => {
     },
   });
 };
+
+export const cleanExtraProfile = () => ({
+  type: Actions.CLEAN_EXTRA_PROFILE,
+});

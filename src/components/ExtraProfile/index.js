@@ -8,7 +8,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getExtraProfile } from '../../screens/profile/actionCreator';
+import { getExtraProfile, cleanExtraProfile } from '../../screens/profile/actionCreator';
 import Post from '../FeedPost';
 import SimpleAvatar from '../Avatar/SimpleAvatar';
 
@@ -26,15 +26,14 @@ const ExtraProfile = ({ route }) => {
 
   const { navigate } = useNavigation();
   const { uid, actualScreen } = route.params;
-  console.log(profile);
 
   useEffect(() => {
     const getData = async () => {
-      dispatch(getExtraProfile(uid));
+      await dispatch(getExtraProfile(uid));
     };
-    getData();
-    return () => console.log('addd');
-  }, [uid]);
+    if (name === '') getData();
+  }, [uid, name]);
+  useEffect(() => () => dispatch(cleanExtraProfile()), []);
 
   const totalFollowers = followers ? Object.keys(followers).length : 0;
   const totalFollows = following ? Object.keys(following).length : 0;

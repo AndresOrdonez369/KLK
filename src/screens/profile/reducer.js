@@ -112,6 +112,8 @@ export default (state = STATE_INICIAL, action) => {
           imageURL: action.payload.imageURL,
         },
       };
+    case Actions.CLEAN_EXTRA_PROFILE:
+      return { ...state, anotherUser: STATE_INICIAL.anotherUser };
     default:
       return { ...state };
   }

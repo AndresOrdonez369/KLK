@@ -59,6 +59,10 @@ const Friends = () => {
       setLoadingOverlay(false);
     }
   };
+  const goSearch = (uid, actualScreen) => {
+    setShowOverlay(false);
+    navigate('AnotherProfile', { uid, actualScreen });
+  };
 
   // components
   const renderAvatar = ({ item }) => {
@@ -72,7 +76,7 @@ const Friends = () => {
         url={imageURL}
         name={name}
         date={`@${userName}`}
-        onPress={() => navigate('AnotherProfile', { uid, actualScreen })}
+        onPress={() => goSearch(String(uid), actualScreen)}
       />
     );
   };
@@ -86,7 +90,7 @@ const Friends = () => {
         urlImage={imageURL}
         name={name}
         date={`@${userName}`}
-        onPress={() => navigate('AnotherProfile', { uid, actualScreen })}
+        onPress={() => goSearch(uid, actualScreen)}
       />
     );
   };
