@@ -91,6 +91,7 @@ const Friends = () => {
         name={name}
         date={`@${userName}`}
         onPress={() => goSearch(uid, actualScreen)}
+        follow={Following.find((p) => p.uid === uid) !== undefined}
       />
     );
   };

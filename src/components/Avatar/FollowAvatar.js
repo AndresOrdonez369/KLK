@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Avatar } from 'react-native-elements';
 import {
   View, Text, StyleSheet, Dimensions,
@@ -9,12 +9,28 @@ const { height, width } = Dimensions.get('screen');
 const requirePhoto = require('../../../assets/busyPosition.png');
 
 const FollowAvatar = ({
-  urlImage, size = height * 0.1, name, date, accessory = null, showAccessory = false, onPress,
+  follow = true,
+  urlImage,
+  size = height * 0.1,
+  name,
+  date,
+  accessory = null,
+  showAccessory = false,
+  onPress,
+  pressFollow,
+  pressUnfollow,
 }) => {
   const imgUser = urlImage
     ? { uri: urlImage }
     : requirePhoto;
-  const [flag, setFlag] = useState(false);
+  const buttonPress = async (value) => {
+    if (value) {
+      if (pressFollow) await pressFollow();
+    }
+    if (!value) {
+      if (pressUnfollow) await pressUnfollow();
+    }
+  };
 
   return (
     <View style={{
@@ -37,10 +53,10 @@ const FollowAvatar = ({
       </View>
       <View style={styles.containerButton(size)}>
         <ButtonBasic
-          text={flag ? 'Seguir' : 'Siguiendo'}
-          buttonStyle={styles.buttonStyle(size, flag)}
-          textStyle={styles.textButtons(size, flag)}
-          onPress={() => setFlag((prevState) => !prevState)}
+          text={follow ? 'Seguir' : 'Siguiendo'}
+          buttonStyle={styles.buttonStyle(size, follow)}
+          textStyle={styles.textButtons(size, follow)}
+          onPress={() => buttonPress(follow)}
         />
       </View>
     </View>
