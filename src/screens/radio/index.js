@@ -5,8 +5,7 @@ import {
 
 const { height, width } = Dimensions.get('screen');
 
-class Radio extends PureComponent {
-  render() {
+const Radio = () => {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>
@@ -14,7 +13,6 @@ class Radio extends PureComponent {
         </Text>
       </View>
     );
-  }
 }
 
 const styles = StyleSheet.create({

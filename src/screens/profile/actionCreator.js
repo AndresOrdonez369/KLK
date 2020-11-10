@@ -24,12 +24,12 @@ export const fetchUserData = () => async (dispatch) => {
       });
     }
     const {
-      userName, name, coverURL, description,
+      userName, name, coverURL, description, following, followers,
     } = snapShot.data();
     return dispatch({
       type: Actions.USER_FETCH_DBASE,
       payload: {
-        userName, name, uid, email, photoURL, coverURL, description,
+        userName, name, uid, email, photoURL, coverURL, description, followers, following,
       },
     });
   } catch (error) {
@@ -60,6 +60,7 @@ export const userUploadImagen = (imagenURL, type) => async (dispatch) => {
       ? `/Users/profilePhotos/${user.uid}.png` : `/Users/coverPhotos/${user.uid}.png`;
     const storage = firebase.storage().ref();
     const imagePath = storage.child(userPhothoURL);
+    // eslint-disable-next-line no-undef
     const response = await fetch(imagenURL);
     const imagenBlob = await response.blob();
     await imagePath.put(imagenBlob);
@@ -78,7 +79,7 @@ export const userUploadImagen = (imagenURL, type) => async (dispatch) => {
     if (type === 'cover') {
       const dbh = firebase.firestore();
       const uidCollection = dbh.collection('users').doc(user.uid);
-      uidCollection.update({ coverURL: url });
+      await uidCollection.update({ coverURL: url });
     }
 
     return dispatch({
@@ -110,4 +111,30 @@ export const userUpdateImagenURL = (url) => ({
 export const updateDescription = (text) => ({
   type: Actions.UPDATE_DESCRIPTION_PROFILE,
   payload: text,
+});
+
+export const getExtraProfile = (uid) => async (dispatch) => {
+  console.log(uid);
+  const dbh = firebase.firestore();
+  const snapShot = await dbh.collection('users').doc(String(uid)).get();
+  if (!snapShot) {
+    return dispatch({
+      type: Actions.ANOTHER_USER_FETCH_FAILED,
+      payload: 'No se encontraron datos de usuario',
+    });
+  }
+  console.log('snap', snapShot.data());
+  const {
+    userName, name, coverURL, description, following, followers, imageURL,
+  } = snapShot.data();
+  return dispatch({
+    type: Actions.ANOTHER_USER_FETCH,
+    payload: {
+      userName, name, imageURL, coverURL, description, followers, following,
+    },
+  });
+};
+
+export const cleanExtraProfile = () => ({
+  type: Actions.CLEAN_EXTRA_PROFILE,
 });

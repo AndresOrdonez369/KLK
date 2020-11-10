@@ -16,6 +16,15 @@ const STATE_INICIAL = {
   email: '',
   modalType: '',
   dataChange: false,
+  anotherUser: {
+    coverURL: '',
+    name: '',
+    userName: '',
+    description: '',
+    imageURL: '',
+    following: '',
+    followers: '',
+  },
 };
 
 export default (state = STATE_INICIAL, action) => {
@@ -50,6 +59,8 @@ export default (state = STATE_INICIAL, action) => {
           userName: action.payload.userName,
           description: action.payload.description,
           coverURL: action.payload.coverURL,
+          following: action.payload.following,
+          followers: action.payload.followers,
         },
       };
     case Actions.USER_DB_UPDATE:
@@ -86,6 +97,23 @@ export default (state = STATE_INICIAL, action) => {
       };
     case Actions.SET_DATA_CHANGE:
       return { ...state, dataChange: action.payload };
+    case Actions.ANOTHER_USER_FETCH:
+      return {
+        ...state,
+        error: false,
+        anotherUser: {
+          ...state.anotherUser,
+          name: action.payload.name,
+          userName: action.payload.userName,
+          description: action.payload.description,
+          coverURL: action.payload.coverURL,
+          following: action.payload.following,
+          followers: action.payload.followers,
+          imageURL: action.payload.imageURL,
+        },
+      };
+    case Actions.CLEAN_EXTRA_PROFILE:
+      return { ...state, anotherUser: STATE_INICIAL.anotherUser };
     default:
       return { ...state };
   }

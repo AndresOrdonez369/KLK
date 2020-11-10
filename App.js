@@ -7,14 +7,12 @@ import store from './src/redux/store';
 if (!global.btoa) global.btoa = encode;
 if (!global.atob) global.atob = decode;
 
-class App extends PureComponent {
-  render() {
+const App = () => {
     return (
       <Provider store={store}>
         <Navigation />
       </Provider>
     );
-  }
 }
 
 export default App;

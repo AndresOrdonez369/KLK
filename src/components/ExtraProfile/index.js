@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
-  Dimensions, StyleSheet, View, Text, FlatList, ScrollView,
+  Dimensions, StyleSheet, View, Text, FlatList, ScrollView, ImageBackground,
 } from 'react-native';
 import {
   Icon, Button,
@@ -8,52 +8,38 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import InputBasic from '../../components/InputBasic/inputBasic';
-import BasicModal from '../../components/BasicModal';
-import ProfilePicture from '../../components/Avatar/ProfilePicture';
-import {
-  updateDescription, hideModalProfile, setDataChange, updateDataUser,
-} from './actionCreator';
-import Post from '../../components/FeedPost';
+import { getExtraProfile, cleanExtraProfile } from '../../screens/profile/actionCreator';
+import Post from '../FeedPost';
+import SimpleAvatar from '../Avatar/SimpleAvatar';
+
+const requireCover = require('../../../assets/defaultCover.png');
 
 const { height, width } = Dimensions.get('screen');
 
-const Profile = () => {
-  // state
-  const [input, showInput] = useState(false);
+const ExtraProfile = ({ route }) => {
   // redux
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.reducerProfile);
   const {
-    dataChange, modalType, error, message, user, uid,
-  } = profile;
-  const {
-    description, name, userName, followers, following,
-  } = user;
+    description, name, userName, followers, following, coverURL, imageURL,
+  } = profile.anotherUser;
 
   const { navigate } = useNavigation();
+  const { uid, actualScreen } = route.params;
 
   useEffect(() => {
-    dataUpdate();
-  }, [dataChange]);
+    const getData = async () => {
+      await dispatch(getExtraProfile(uid));
+    };
+    if (name === '') getData();
+  }, [uid, name]);
+  useEffect(() => () => dispatch(cleanExtraProfile()), []);
 
   const totalFollowers = followers ? Object.keys(followers).length : 0;
   const totalFollows = following ? Object.keys(following).length : 0;
+  const imgUser = imageURL ? { uri: imageURL } : null;
+  const imgCover = coverURL ? { uri: coverURL } : requireCover;
 
-  const dataUpdate = () => {
-    if (dataChange) {
-      return dispatch(updateDataUser(user, uid));
-    }
-    return null;
-  };
-  const inputFnc = (inputActive) => {
-    if (inputActive) {
-      showInput(false);
-      dispatch(setDataChange(true));
-    } else {
-      showInput(true);
-    }
-  };
   const renderPost = ({ item }) => (
     <Post
       url={item.urlAvatar}
@@ -66,35 +52,30 @@ const Profile = () => {
   );
   return (
     <SafeAreaView style={styles.safeArea}>
-      {error
-        && (
-        <BasicModal
-          requiredHeight={0.55}
-          title={message}
-          type={modalType}
-          onPressCancel={() => {
-            dispatch(hideModalProfile());
-          }}
-        />
-        )}
       <ScrollView style={styles.container}>
-        <ProfilePicture type="cover" />
+        <ImageBackground
+          source={imgCover}
+          style={styles.cover}
+        >
+          <Icon
+            name="arrow-left"
+            size={height * 0.04}
+            type="font-awesome"
+            onPress={() => navigate(actualScreen)}
+            color="white"
+            iconStyle={styles.coverIcon}
+          />
+        </ImageBackground>
         <View style={styles.avatarView}>
-          <ProfilePicture type="picture" />
+          <SimpleAvatar
+            url={imgUser}
+            size={height * 0.14}
+          />
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.userName}>
             @
             {userName}
           </Text>
-        </View>
-        <View style={styles.settingsIcon}>
-          <Icon
-            name="settings"
-            type="material-icons"
-            size={30}
-            color="black"
-            onPress={() => navigate('Configuraciones')}
-          />
         </View>
         <View style={styles.generalInfo}>
           <View style={styles.textInfo}>
@@ -112,29 +93,20 @@ const Profile = () => {
             </View>
           </View>
           <View style={styles.descriptionView}>
-            {input ? (
-              <InputBasic
-                placeholder=""
-                value={description}
-                changeText={(text) => dispatch(updateDescription(text))}
-              />
-            ) : (
-              <Text style={{ flexWrap: 'wrap', marginRight: 10 }}>
-                { description || '¡Escribe una descripción para tu perfil!' }
-              </Text>
-            )}
-            <Icon
-              name={input ? 'checksquare' : 'edit'}
-              size={30}
-              color="black"
-              type="ant-design"
-              onPress={() => inputFnc(input)}
+            <Text style={{ flexWrap: 'wrap', marginRight: 10 }}>
+              {description || 'No hay descripción'}
+            </Text>
+          </View>
+          <View style={styles.buttonsView}>
+            <Button
+              title="Seguir"
+              buttonStyle={styles.buttonSubmit}
+            />
+            <Button
+              title="Mensaje"
+              buttonStyle={styles.buttonSubmit}
             />
           </View>
-          <Button
-            title="Mis chats"
-            buttonStyle={styles.buttonSubmit}
-          />
         </View>
         <FlatList
           data={DATA}
@@ -166,6 +138,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
+    alignItems: 'center',
   },
   settingsIcon: {
     alignSelf: 'flex-end',
@@ -175,7 +148,7 @@ const styles = StyleSheet.create({
   generalInfo: {
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
-    marginTop: height * 0.044,
+    marginTop: height * -0.012,
     height: height * 0.4,
     backgroundColor: 'white',
   },
@@ -206,9 +179,9 @@ const styles = StyleSheet.create({
   buttonSubmit: {
     backgroundColor: '#f22',
     borderRadius: 20,
-    width: width * 0.6,
+    width: width * 0.3,
     alignSelf: 'center',
-    marginTop: height * 0.04,
+    margin: height * 0.02,
   },
   name: {
     alignSelf: 'center',
@@ -221,6 +194,20 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: height * 0.015,
     marginBottom: height * 0.014,
+  },
+  cover: {
+    width,
+    height: width * 0.66,
+  },
+  coverIcon: {
+    alignSelf: 'flex-start',
+    marginLeft: 10,
+    marginTop: 10,
+  },
+  buttonsView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
@@ -253,4 +240,4 @@ const DATA = [
     timestamp: '14/10/2020',
   }];
 
-export default Profile;
+export default ExtraProfile;

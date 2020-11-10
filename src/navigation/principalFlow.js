@@ -9,6 +9,7 @@ import Videos from '../screens/videoFeed';
 import Radio from '../screens/radio';
 import Post from '../screens/post';
 import Settings from '../screens/settings';
+import AnotherProfile from '../components/ExtraProfile';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -17,7 +18,6 @@ function FeedStack() {
   return (
     <Stack.Navigator headerMode="none">
       <Stack.Screen name="Feed" component={Feed} />
-      <Stack.Screen name="CreatePost" component={Post} />
     </Stack.Navigator>
   );
 }
@@ -62,4 +62,14 @@ const PrincipalFlow = () => (
   </Tab.Navigator>
 );
 
-export default PrincipalFlow;
+function AppHide() {
+  return (
+    <Stack.Navigator headerMode="none">
+      <Stack.Screen name="PrincipalFlow" component={PrincipalFlow} />
+      <Stack.Screen name="CreatePost" component={Post} />
+      <Stack.Screen name="AnotherProfile" component={AnotherProfile} />
+    </Stack.Navigator>
+  );
+}
+
+export default AppHide;
