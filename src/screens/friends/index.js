@@ -9,6 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import {
   searcherFirestore, cleanSearch, followFirestore, unfollowFirestore,
 } from './actionCreator';
+import BasicModal from '../../components/BasicModal';
 import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
 import FollowAvatar from '../../components/Avatar/FollowAvatar';
 
@@ -21,12 +22,20 @@ const Friends = () => {
   const [showOverlay, setShowOverlay] = useState(false);
   const [loadingOverlay, setLoadingOverlay] = useState(false);
   const [search, setSearch] = useState('');
+  const [modal, setModal] = useState({
+    showModal: false,
+    modalType: '',
+    title: '',
+    pressOk: null,
+  });
 
   // redux
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.reducerProfile);
   const friends = useSelector((state) => state.reducerFriends);
-  const { error, message, searchResult } = friends;
+  const {
+    error, message, searchResult, errorFollow, messageError,
+  } = friends;
   const { followers, following } = profile.user;
 
   const { navigate } = useNavigation();
@@ -52,6 +61,14 @@ const Friends = () => {
     setButtonSelected('followers');
     setRenderData(Followers);
   }, []);
+  useEffect(() => {
+    const operationFail = () => {
+      if (errorFollow) {
+        handleModal(true, 'error', messageError);
+      }
+    };
+    operationFail();
+  }, [errorFollow, messageError]);
   const doSearch = async (string) => {
     if (string.length > 0) {
       dispatch(cleanSearch());
@@ -64,6 +81,19 @@ const Friends = () => {
   const goSearch = (uid, actualScreen) => {
     setShowOverlay(false);
     navigate('AnotherProfile', { uid, actualScreen });
+  };
+  const handleModal = (showModal, modalType = 'error', title = '', pressOk = null) => {
+    setModal({
+      showModal, modalType, title, pressOk,
+    });
+  };
+  const handleUnfollow = (anotherUid, anotherUsername) => {
+    handleModal(
+      true,
+      'interactive',
+      `¿Deseas dejar de seguir a @${anotherUsername}?`,
+      () => dispatch(unfollowFirestore(profile.uid, anotherUid)),
+    );
   };
 
   // components
@@ -98,7 +128,7 @@ const Friends = () => {
           profile.uid, profile.imageURL, profile.user.name,
           profile.user.userName, uid, imageURL, name, userName,
         ))}
-        pressUnfollow={() => dispatch(unfollowFirestore(profile.uid, uid))}
+        pressUnfollow={() => handleUnfollow(uid, userName)}
       />
     );
   };
@@ -225,6 +255,16 @@ const Friends = () => {
               {overlayContent}
             </View>
           </Overlay>
+        )}
+        {modal.showModal && (
+          <BasicModal
+            visible={modal.showModal}
+            type={modal.modalType}
+            requiredHeight={0.25}
+            title={modal.title}
+            onPressCancel={() => handleModal(false)}
+            onPressOk={modal.pressOk}
+          />
         )}
         <FlatList
           data={renderData}
