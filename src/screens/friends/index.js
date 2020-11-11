@@ -6,7 +6,9 @@ import { Button, SearchBar, Overlay } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import { searcherFirestore, cleanSearch } from './actionCreator';
+import {
+  searcherFirestore, cleanSearch, followFirestore, unfollowFirestore,
+} from './actionCreator';
 import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
 import FollowAvatar from '../../components/Avatar/FollowAvatar';
 
@@ -91,7 +93,12 @@ const Friends = () => {
         name={name}
         date={`@${userName}`}
         onPress={() => goSearch(uid, actualScreen)}
-        follow={Following.find((p) => p.uid === uid) !== undefined}
+        follow={Following.find((p) => p.uid === uid) === undefined}
+        pressFollow={() => dispatch(followFirestore(
+          profile.uid, profile.imageURL, profile.user.name,
+          profile.user.userName, uid, imageURL, name, userName,
+        ))}
+        pressUnfollow={() => dispatch(unfollowFirestore(profile.uid, uid))}
       />
     );
   };

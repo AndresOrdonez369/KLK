@@ -62,15 +62,11 @@ export const unfollowFirestore = (myUid, uid) => async (dispatch) => {
     const usersCollection = db.collection('users');
 
     await usersCollection.doc(myUid).update({
-      following: {
-        [uid]: firebase.firestore.FieldValue.delete(),
-      },
+      [`following.${uid}`]: firebase.firestore.FieldValue.delete(),
     });
 
     await usersCollection.doc(uid).update({
-      followers: {
-        [myUid]: firebase.firestore.FieldValue.delete(),
-      },
+      [`followers.${myUid}`]: firebase.firestore.FieldValue.delete(),
     });
 
     return dispatch({
