@@ -5,6 +5,8 @@ const STATE_INICIAL = {
   error: false,
   searchResult: [],
   message: '',
+  errorFollow: false,
+  messageError: '',
 };
 
 export default (state = STATE_INICIAL, action) => {
@@ -21,12 +23,19 @@ export default (state = STATE_INICIAL, action) => {
       return {
         ...state,
         error: true,
-        message: 'Hubo un error en la consoluta',
+        message: 'Hubo un error haciendo la consoluta',
       };
     case Actions.CLEAN_SEARCH:
       return {
         ...state,
         searchResult: [],
+      };
+    case Actions.FOLLOW_SOMEONE_ERROR:
+    case Actions.UNFOLLOW_SOMEONE_ERROR:
+      return {
+        ...state,
+        errorFollow: true,
+        messageError: 'Hubo un error inténtalo nuevamente',
       };
     default:
       return { ...state };

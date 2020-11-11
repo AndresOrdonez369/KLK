@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions, StyleSheet, View, Text, FlatList, ScrollView, ImageBackground,
 } from 'react-native';
@@ -9,6 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getExtraProfile, cleanExtraProfile } from '../../screens/profile/actionCreator';
+import { followFirestore, unfollowFirestore } from '../../screens/friends/actionCreator';
 import Post from '../FeedPost';
 import SimpleAvatar from '../Avatar/SimpleAvatar';
 
@@ -17,6 +18,9 @@ const requireCover = require('../../../assets/defaultCover.png');
 const { height, width } = Dimensions.get('screen');
 
 const ExtraProfile = ({ route }) => {
+  // state
+  const [follow, setFollow] = useState(false);
+  const [temp, setTemp] = useState(0);
   // redux
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.reducerProfile);
@@ -33,13 +37,38 @@ const ExtraProfile = ({ route }) => {
     };
     if (name === '') getData();
   }, [uid, name]);
-  useEffect(() => () => dispatch(cleanExtraProfile()), []);
+  useEffect(() => () => {
+    dispatch(cleanExtraProfile());
+    setTemp(0);
+  }, []);
+  useEffect(() => {
+    const checkFollow = () => {
+      if (Object.keys(followers).find((p) => p === profile.uid) === undefined) {
+        setFollow(false);
+      } else {
+        setFollow(true);
+      }
+    };
+    checkFollow();
+  }, [followers]);
 
   const totalFollowers = followers ? Object.keys(followers).length : 0;
   const totalFollows = following ? Object.keys(following).length : 0;
   const imgUser = imageURL ? { uri: imageURL } : null;
   const imgCover = coverURL ? { uri: coverURL } : requireCover;
 
+  const followFnc = async () => {
+    if (follow) {
+      await dispatch(unfollowFirestore(profile.uid, uid));
+      setFollow(false);
+      setTemp(-1);
+    } else {
+      await dispatch(followFirestore(profile.uid, profile.imageURL, profile.user.name,
+        profile.user.userName, uid, imageURL, name, userName));
+      setFollow(true);
+      setTemp(1);
+    }
+  };
   const renderPost = ({ item }) => (
     <Post
       url={item.urlAvatar}
@@ -84,7 +113,7 @@ const ExtraProfile = ({ route }) => {
               <Text style={styles.category}>posts</Text>
             </View>
             <View style={styles.textCategory}>
-              <Text style={styles.numbersInfo}>{totalFollowers}</Text>
+              <Text style={styles.numbersInfo}>{totalFollowers + temp}</Text>
               <Text style={styles.category}>seguidores</Text>
             </View>
             <View style={styles.textCategory}>
@@ -99,8 +128,9 @@ const ExtraProfile = ({ route }) => {
           </View>
           <View style={styles.buttonsView}>
             <Button
-              title="Seguir"
+              title={follow ? 'Siguiendo' : 'Seguir'}
               buttonStyle={styles.buttonSubmit}
+              onPress={() => followFnc()}
             />
             <Button
               title="Mensaje"
