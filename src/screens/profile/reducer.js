@@ -6,6 +6,8 @@ const STATE_INICIAL = {
     name: '',
     userName: '',
     description: '',
+    followers: {},
+    following: {},
   },
   imageURL: '',
   uploadPhotoError: '',
@@ -114,6 +116,25 @@ export default (state = STATE_INICIAL, action) => {
       };
     case Actions.CLEAN_EXTRA_PROFILE:
       return { ...state, anotherUser: STATE_INICIAL.anotherUser };
+    case Actions.FOLLOW_SOMEONE:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          following: {
+            ...state.user.following,
+            [action.payload.uid]: {
+              name: action.payload.name,
+              userName: action.payload.userName,
+              imageURL: action.payload.imageURL,
+            },
+          },
+        },
+      };
+    case Actions.UNFOLLOW_SOMEONE:
+      // eslint-disable-next-line no-param-reassign
+      delete state.user.following[action.payload];
+      return { ...state };
     default:
       return { ...state };
   }
