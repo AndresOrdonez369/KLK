@@ -92,7 +92,10 @@ const Friends = () => {
       true,
       'interactive',
       `¿Deseas dejar de seguir a @${anotherUsername}?`,
-      () => dispatch(unfollowFirestore(profile.uid, anotherUid)),
+      async () => {
+        await dispatch(unfollowFirestore(profile.uid, anotherUid));
+        handleModal(false);
+      },
     );
   };
 
@@ -209,7 +212,7 @@ const Friends = () => {
         <FlatList
           data={searchResult}
           renderItem={renderAvatar}
-          keyExtractor={(item) => item.name}
+          keyExtractor={(item) => item.uid}
         />
       </View>
     );
