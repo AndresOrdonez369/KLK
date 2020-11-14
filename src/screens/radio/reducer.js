@@ -1,7 +1,6 @@
 import Actions from '../../redux/actionTypes';
 
 const STATE_INICIAL = {
-  input: '',
   sendState: '',
   messages: [],
 };

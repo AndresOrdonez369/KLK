@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet, View, Text, FlatList, Dimensions,
+  StyleSheet, View, Text, FlatList, Dimensions, KeyboardAvoidingView,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Input, Button, Icon } from 'react-native-elements';
@@ -17,12 +17,17 @@ const Radio = () => {
     message: '',
   });
   const { messages } = radioState;
-  const { uid } = profile;
+  useEffect(async () => {
+    dispatch(LoadMessages());
+  }, []);
+
+  console.log('mensaje', messages);
+  const { uid, user } = profile;
   const { message } = input;
   const renderItem = ({ item }) => (
-    item.uid === 'JuanMa'
-      ? <ItemUsuario usuario={item.uid} mensaje={item.mensaje} />
-      : <ItemInvitado usuario={item.uid} mensaje={item.mensaje} color={item.color}/>
+    item.uid === uid
+      ? <ItemUsuario usuario={item.name} mensaje={item.message} />
+      : <ItemInvitado usuario={item.name} mensaje={item.message} color={item.color} />
   );
   const ItemUsuario = ({ mensaje }) => (
     <View style={styles.itemUsuario}>
@@ -40,18 +45,27 @@ const Radio = () => {
       <Text style={styles.mensajeInvitado}>{mensaje}</Text>
     </View>
   );
+  const sendFunction = () => {
+    dispatch(Send(message, user.userName, uid));
+    setInput({ ...input, message: '' });
+  };
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior="padding"
+    >
       <Text style={styles.titulo}>Chat KLK Radio</Text>
       <View style={styles.chatContainer}>
         <FlatList
-          data={DATA}
+          inverted
+          data={messages}
           renderItem={renderItem}
-          keyExtractor={(item) => item.hora}
+          keyExtractor={(item) => item.time}
         />
       </View>
       <View style={styles.inputContainer}>
         <Input
+          value={message}
           placeholder="Escribe tu mensaje"
           containerStyle={styles.input}
           underlineColorAndroid="#A7A8AB"
@@ -59,76 +73,22 @@ const Radio = () => {
         />
         <Button
           raised
-          onPress={() => dispatch(Send(message))}
+          onPress={() => sendFunction()}
           buttonStyle={styles.sendButton}
           icon={
             <Icon name="send" type="material-community" color="white" size={30} />
       }
         />
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
-const DATA = [
-  {
-    uid: 'JuanMa',
-    mensaje: 'Hola!',
-    hora: '12:30',
-  },
-  {
-    uid: 'Pedro',
-    mensaje: 'Hola a todos',
-    hora: '12:31',
-    color: 'red',
-  },
-  {
-    uid: 'JuanMa',
-    mensaje: 'Que tal vas?',
-    hora: '12:32',
-  },
-  {
-    uid: 'Pedro',
-    mensaje: 'Bien y tu?',
-    hora: '12:33',
-    color: 'red',
-  },
-  {
-    uid: 'Jaime',
-    mensaje: 'Que tal vas?',
-    hora: '12:34',
-    color: 'green',
-  }, {
-    uid: 'Chucho',
-    mensaje: 'Hola',
-    hora: '12:35',
-    color: 'blue',
-  },
-  {
-    uid: 'JuanMa',
-    mensaje: 'Que tal vas?',
-    hora: '12:36',
-  },
-  {
-    uid: 'Pedro',
-    mensaje: 'Que tal vas jaime?',
-    hora: '12:37',
-    color: 'red',
-  }, {
-    uid: 'Polo Polo',
-    mensaje: 'Hola',
-    hora: '12:38',
-  },
-  {
-    uid: 'JuanMa',
-    mensaje: 'Que tal vas?',
-    hora: '12:39',
-  },
-];
 const styles = StyleSheet.create({
   container: {
     height: height * 0.9,
     backgroundColor: '#F7F7F7',
     marginTop: height * 0.05,
+    width,
   },
   titulo: {
     fontSize: 15,
@@ -140,17 +100,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   inputContainer: {
-    position: 'absolute',
     alignItems: 'center',
-    alignSelf: 'center',
-    marginTop: height * 0.83,
     backgroundColor: '#A7A8AB',
     flexDirection: 'row',
     paddingHorizontal: width * 0.03,
     borderRadius: 50,
     height: height * 0.06,
     width: width * 0.94,
-    marginBottom: 5,
     shadowColor: 'rgba(0,0,0, .4)',
     shadowOffset: { height: 2, width: 2 },
     shadowOpacity: 1,
@@ -171,9 +127,8 @@ const styles = StyleSheet.create({
   chatContainer: {
     paddingTop: 15,
     borderRadius: 40,
-    paddingBottom: height * 0.1,
-    height: height * 0.85,
-    width: '100%',
+    height: height * 0.75,
+    width,
     backgroundColor: '#F7F7F7',
   },
   itemUsuario: {

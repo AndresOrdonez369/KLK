@@ -1,15 +1,16 @@
 import Actions from '../../redux/actionTypes';
 import firebase from '../../../firebase';
 
-export const Send = (texto) => async (dispatch) => {
+export const Send = (texto, nick, user) => async (dispatch) => {
   const time = new Date().getTime();
   await firebase.firestore().collection('radios').doc('yLPys4sma3xh3zksZKrc').collection('chat')
-    .add(
-      {
-        timeStamp: time,
-        message: texto,
-      },
-    )
+    .add({
+      timePrueba: firebase.firestore.FieldValue.serverTimestamp(),
+      authorNickname: nick,
+      authorID: user,
+      timestamp: time,
+      text: texto,
+    })
     .then(() => dispatch({
       type: Actions.SEND,
       carga: 'exito',
@@ -21,21 +22,34 @@ export const Send = (texto) => async (dispatch) => {
 };
 
 export const LoadMessages = () => async (dispatch) => {
-  const messages = [];
-  await firebase.firestore().collection('radios').doc('yLPys4sma3xh3zksZKrc').collection('chat')
-    .get()
-    .then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        // console.log(doc.id, " => ", doc.data().message);
-        // console.log('este es el message', doc.data().message);
-        // doc.data() is never undefined for query doc snapshots
-        const message = { message: doc.data().message, time: doc.data().tiempo };
-        messages.push(message);
-      });
-      dispatch({
-        type: Actions.LOAD,
-        carga: messages,
-      });
+  const query = firebase.firestore()
+    .collection('radios').doc('yLPys4sma3xh3zksZKrc').collection('chat')
+    .orderBy('timestamp', 'desc')
+    .limit(20);
+  await query.onSnapshot((snapshot) => {
+    const messages = [];
+    snapshot.docs.forEach((doc) => {
+      function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      }
+      const message = doc.data();
+      const message0 = {
+        message: message.text,
+        time: message.timestamp,
+        name: message.authorNickname,
+        color: getRandomColor(),
+        uid: message.authorID,
+      };
+      messages.push(message0);
     });
+    return dispatch({
+      type: Actions.LOAD,
+      carga: messages,
+    });
+  });
 };
