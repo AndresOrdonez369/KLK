@@ -24,22 +24,19 @@ export const cleanSearch = () => ({
 });
 
 export const followFirestore = (
-  myUid, myImageURL, myName, myUserName, uid, imageURL, name, userName,
+  myUid, myUserName, uid, imageURL, name, userName,
 ) => async (dispatch) => {
   try {
     const db = firebase.firestore();
-    const usersCollection = db.collection('users');
+    const usersCollection = db.collection('users').doc(uid).collection('followers');
+    const followingCollection = db.collection('following').doc(myUid).collection('userFollowing');
 
-    await usersCollection.doc(myUid).update({
-      following: {
-        [uid]: { name, userName, imageURL },
-      },
+    await followingCollection.doc(uid).set({
+      uid, userName,
     });
 
-    await usersCollection.doc(uid).update({
-      followers: {
-        [myUid]: { name: myName, userName: myUserName, imageURL: myImageURL },
-      },
+    await usersCollection.doc(myUid).set({
+      uid: myUid, userName: myUserName,
     });
 
     return dispatch({
@@ -59,15 +56,12 @@ export const followFirestore = (
 export const unfollowFirestore = (myUid, uid) => async (dispatch) => {
   try {
     const db = firebase.firestore();
-    const usersCollection = db.collection('users');
+    const usersCollection = db.collection('users').doc;
+    const followingCollection = db.collection('following');
 
-    await usersCollection.doc(myUid).update({
-      [`following.${uid}`]: firebase.firestore.FieldValue.delete(),
-    });
+    await usersCollection.doc(uid).collection('followers').doc(myUid).delete();
 
-    await usersCollection.doc(uid).update({
-      [`followers.${myUid}`]: firebase.firestore.FieldValue.delete(),
-    });
+    await followingCollection.doc(myUid).collection('userFollowing').doc(uid).delete();
 
     return dispatch({
       type: Actions.UNFOLLOW_SOMEONE,

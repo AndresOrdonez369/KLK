@@ -24,12 +24,12 @@ export const fetchUserData = () => async (dispatch) => {
       });
     }
     const {
-      userName, name, coverURL, description, following, followers,
+      userName, name, coverURL, description,
     } = snapShot.data();
     return dispatch({
       type: Actions.USER_FETCH_DBASE,
       payload: {
-        userName, name, uid, email, photoURL, coverURL, description, followers, following,
+        userName, name, uid, email, photoURL, coverURL, description,
       },
     });
   } catch (error) {

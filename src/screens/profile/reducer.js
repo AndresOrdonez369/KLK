@@ -61,8 +61,6 @@ export default (state = STATE_INICIAL, action) => {
           userName: action.payload.userName,
           description: action.payload.description,
           coverURL: action.payload.coverURL,
-          following: action.payload.following,
-          followers: action.payload.followers,
         },
       };
     case Actions.USER_DB_UPDATE:
@@ -109,8 +107,6 @@ export default (state = STATE_INICIAL, action) => {
           userName: action.payload.userName,
           description: action.payload.description,
           coverURL: action.payload.coverURL,
-          following: action.payload.following,
-          followers: action.payload.followers,
           imageURL: action.payload.imageURL,
         },
       };

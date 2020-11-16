@@ -63,8 +63,9 @@ const ExtraProfile = ({ route }) => {
       setFollow(false);
       setTemp(-1);
     } else {
-      await dispatch(followFirestore(profile.uid, profile.imageURL, profile.user.name,
-        profile.user.userName, uid, imageURL, name, userName));
+      await dispatch(followFirestore(
+        profile.uid, profile.user.userName, uid, imageURL, name, userName,
+      ));
       setFollow(true);
       setTemp(1);
     }
