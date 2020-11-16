@@ -131,6 +131,66 @@ export default (state = STATE_INICIAL, action) => {
       // eslint-disable-next-line no-param-reassign
       delete state.user.following[action.payload];
       return { ...state };
+    case Actions.GET_FOLLOWERS:
+      return {
+        ...state,
+        anotherUser: {
+          ...state.anotherUser,
+          followers: {
+            ...state.anotherUser.followers,
+            [action.payload.uid]: {
+              name: action.payload.name,
+              userName: action.payload.userName,
+              imageURL: action.payload.imageURL,
+            },
+          },
+        },
+      };
+    case Actions.GET_FOLLOWINGS:
+      return {
+        ...state,
+        anotherUser: {
+          ...state.anotherUser,
+          followings: {
+            ...state.anotherUser.followings,
+            [action.payload.uid]: {
+              name: action.payload.name,
+              userName: action.payload.userName,
+              imageURL: action.payload.imageURL,
+            },
+          },
+        },
+      };
+    case Actions.GET_MY_FOLLOWINGS:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          followings: {
+            ...state.user.followings,
+            [action.payload.uid]: {
+              name: action.payload.name,
+              userName: action.payload.userName,
+              imageURL: action.payload.imageURL,
+            },
+          },
+        },
+      };
+    case Actions.GET_MY_FOLLOWERS:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          followers: {
+            ...state.user.followers,
+            [action.payload.uid]: {
+              name: action.payload.name,
+              userName: action.payload.userName,
+              imageURL: action.payload.imageURL,
+            },
+          },
+        },
+      };
     default:
       return { ...state };
   }

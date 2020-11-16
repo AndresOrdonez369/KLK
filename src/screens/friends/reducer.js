@@ -35,7 +35,13 @@ export default (state = STATE_INICIAL, action) => {
       return {
         ...state,
         errorFollow: true,
-        messageError: 'Hubo un error inténtalo nuevamente',
+        messageError: 'Hubo un error, inténtalo nuevamente',
+      };
+    case Actions.GET_FOLLOWS_ERROR:
+      return {
+        ...state,
+        errorFollow: true,
+        messageError: 'Hubo un error consultando los datos de tus amigos',
       };
     default:
       return { ...state };

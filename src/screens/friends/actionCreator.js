@@ -56,7 +56,7 @@ export const followFirestore = (
 export const unfollowFirestore = (myUid, uid) => async (dispatch) => {
   try {
     const db = firebase.firestore();
-    const usersCollection = db.collection('users').doc;
+    const usersCollection = db.collection('users');
     const followingCollection = db.collection('following');
 
     await usersCollection.doc(uid).collection('followers').doc(myUid).delete();
@@ -71,6 +71,59 @@ export const unfollowFirestore = (myUid, uid) => async (dispatch) => {
     console.log('error unfollowing', error);
     return dispatch({
       type: Actions.UNFOLLOW_SOMEONE_ERROR,
+    });
+  }
+};
+
+// eslint-disable-next-line consistent-return
+export const getFollowsByUid = (id) => async (dispatch) => {
+  try {
+    const user = await firebase.auth().currentUser;
+    const db = firebase.firestore();
+    const usersCollection = db.collection('users');
+    const followingCollection = db.collection('following');
+
+    await usersCollection.doc(id).collection('followers').get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach(async (doc) => {
+          const queryUid = doc.data().uid;
+          await usersCollection.doc(queryUid).get()
+            .then((ref) => {
+              const {
+                uid, name, userName, imageURL,
+              } = ref.data();
+              return dispatch({
+                type: user.uid === id ? Actions.GET_MY_FOLLOWERS : Actions.GET_FOLLOWERS,
+                payload: {
+                  uid, name, userName, imageURL,
+                },
+              });
+            });
+        });
+      });
+
+    await followingCollection.doc(id).collection('userFollowing').get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach(async (doc) => {
+          const queryUid = doc.data().uid;
+          await usersCollection.doc(queryUid).get()
+            .then((ref) => {
+              const {
+                uid, name, userName, imageURL,
+              } = ref.data();
+              return dispatch({
+                type: user.uid === id ? Actions.GET_MY_FOLLOWINGS : Actions.GET_FOLLOWINGS,
+                payload: {
+                  uid, name, userName, imageURL,
+                },
+              });
+            });
+        });
+      });
+  } catch (error) {
+    console.log('error getting follows', error);
+    return dispatch({
+      type: Actions.GET_FOLLOWS_ERROR,
     });
   }
 };
