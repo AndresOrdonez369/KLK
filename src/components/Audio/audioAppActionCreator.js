@@ -10,3 +10,8 @@ export const audioObjUpdate = (obj) => ({
   type: Actions.AUDIO_OBJ_UPDATE,
   payload: obj,
 });
+
+export const sourceUpdate = (source) => ({
+  type: Actions.UPDATE_SOURCE,
+  payload: source,
+});

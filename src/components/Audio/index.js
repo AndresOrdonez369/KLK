@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Icon, Button } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import { View } from 'react-native';
-import { playerUpdate } from './audioAppActionCreator';
+import { playerUpdate, sourceUpdate } from './audioAppActionCreator';
 import styles from './styles';
 
 const AudioComponent = (mediaLink) => {
@@ -15,40 +15,12 @@ const AudioComponent = (mediaLink) => {
   const { mediaButtonStyle, playButtonStyle, mediaContainerStyle } = styles;
   const audioState = useSelector((state) => state.reducerAudio);
   const { source } = audioState;
-  /* useEffect(() => {
-    const createSound = async () => {
-      const { sound: soundObject, status } = await Audio.Sound.createAsync(
-      { uri: source.mediaLink },
-      { shouldPlay: false }
-    );
-    setAudio({...audio, objetosonido: soundObject})
-  }
-  createSound();
-}, []); */
-  /* useEffect(() => () =>{
-    async function CleanAudio() {
-      console.log("entre al clean")
-      await objetosonido.stopAsync();
-      const response = await objetosonido.unloadAsync();
-      setAudio({ ...audio, objetosonido, audioController: false });
-      console.log("response clean", response)
-    }
-   return CleanAudio();
-}, []) */
-  /* useEffect(() => {
-    const manejo = async () => {
-      console.log("estoy en el manejo")
-      await objetosonido.stopAsync()
-      setAudio({ ...audio, audioController false });
-    }
-    const pausaGlobal = () => globalKey == cid ? null : manejo()
-    if(objetosonido != null) pausaGlobal();
-  }, [globalKey]); */
+
   const playAudio = () => {
-    if (source != mediaSource) {
+    if (source !== mediaSource) {
+      dispatch(sourceUpdate(mediaSource));
     }
     dispatch(playerUpdate('play'));
-    console.log('aqui se monta el audio');
     setAudio({ audioController: !audioController });
   };
   const pauseAudio = () => {
