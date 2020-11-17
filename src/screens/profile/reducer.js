@@ -61,8 +61,6 @@ export default (state = STATE_INICIAL, action) => {
           userName: action.payload.userName,
           description: action.payload.description,
           coverURL: action.payload.coverURL,
-          following: action.payload.following,
-          followers: action.payload.followers,
         },
       };
     case Actions.USER_DB_UPDATE:
@@ -109,8 +107,6 @@ export default (state = STATE_INICIAL, action) => {
           userName: action.payload.userName,
           description: action.payload.description,
           coverURL: action.payload.coverURL,
-          following: action.payload.following,
-          followers: action.payload.followers,
           imageURL: action.payload.imageURL,
         },
       };
@@ -135,6 +131,66 @@ export default (state = STATE_INICIAL, action) => {
       // eslint-disable-next-line no-param-reassign
       delete state.user.following[action.payload];
       return { ...state };
+    case Actions.GET_FOLLOWERS:
+      return {
+        ...state,
+        anotherUser: {
+          ...state.anotherUser,
+          followers: {
+            ...state.anotherUser.followers,
+            [action.payload.uid]: {
+              name: action.payload.name,
+              userName: action.payload.userName,
+              imageURL: action.payload.imageURL,
+            },
+          },
+        },
+      };
+    case Actions.GET_FOLLOWINGS:
+      return {
+        ...state,
+        anotherUser: {
+          ...state.anotherUser,
+          following: {
+            ...state.anotherUser.followings,
+            [action.payload.uid]: {
+              name: action.payload.name,
+              userName: action.payload.userName,
+              imageURL: action.payload.imageURL,
+            },
+          },
+        },
+      };
+    case Actions.GET_MY_FOLLOWINGS:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          following: {
+            ...state.user.followings,
+            [action.payload.uid]: {
+              name: action.payload.name,
+              userName: action.payload.userName,
+              imageURL: action.payload.imageURL,
+            },
+          },
+        },
+      };
+    case Actions.GET_MY_FOLLOWERS:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          followers: {
+            ...state.user.followers,
+            [action.payload.uid]: {
+              name: action.payload.name,
+              userName: action.payload.userName,
+              imageURL: action.payload.imageURL,
+            },
+          },
+        },
+      };
     default:
       return { ...state };
   }

@@ -128,8 +128,7 @@ const Friends = () => {
         onPress={() => goSearch(uid, actualScreen)}
         follow={Following.find((p) => p.uid === uid) === undefined}
         pressFollow={() => dispatch(followFirestore(
-          profile.uid, profile.imageURL, profile.user.name,
-          profile.user.userName, uid, imageURL, name, userName,
+          profile.uid, uid, imageURL, name, userName,
         ))}
         pressUnfollow={() => handleUnfollow(uid, userName)}
       />

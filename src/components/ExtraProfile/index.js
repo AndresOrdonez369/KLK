@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getExtraProfile, cleanExtraProfile } from '../../screens/profile/actionCreator';
-import { followFirestore, unfollowFirestore } from '../../screens/friends/actionCreator';
+import { followFirestore, unfollowFirestore, getFollowsByUid } from '../../screens/friends/actionCreator';
 import Post from '../FeedPost';
 import SimpleAvatar from '../Avatar/SimpleAvatar';
 
@@ -32,10 +32,11 @@ const ExtraProfile = ({ route }) => {
   const { uid, actualScreen } = route.params;
 
   useEffect(() => {
-    const getData = async () => {
-      await dispatch(getExtraProfile(uid));
+    const getData = async (id) => {
+      await dispatch(getExtraProfile(id));
+      await dispatch(getFollowsByUid(id));
     };
-    if (name === '') getData();
+    if (name === '') getData(uid);
   }, [uid, name]);
   useEffect(() => () => {
     dispatch(cleanExtraProfile());
@@ -63,8 +64,9 @@ const ExtraProfile = ({ route }) => {
       setFollow(false);
       setTemp(-1);
     } else {
-      await dispatch(followFirestore(profile.uid, profile.imageURL, profile.user.name,
-        profile.user.userName, uid, imageURL, name, userName));
+      await dispatch(followFirestore(
+        profile.uid, uid, imageURL, name, userName,
+      ));
       setFollow(true);
       setTemp(1);
     }

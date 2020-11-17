@@ -25,6 +25,10 @@ export const register = (email, password, name, userName) => async (dispatch) =>
       const { uid, photoURL } = await firebase.auth().currentUser;
       const dbh = firebase.firestore();
       const usersCollection = dbh.collection('users');
+      const followingCollection = dbh.collection('following');
+      const postsCollection = dbh.collection('posts');
+      await followingCollection.doc(user.uid).set({ lastUpdate: Date.now() });
+      await postsCollection.doc(user.uid).set({ uid: user.uid });
       await usersCollection.doc(user.uid).set({
         name, userName, coverURL: '', description: '', following: {}, followers: {}, uid, imageURL: photoURL,
       })

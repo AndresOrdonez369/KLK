@@ -24,23 +24,16 @@ export const cleanSearch = () => ({
 });
 
 export const followFirestore = (
-  myUid, myImageURL, myName, myUserName, uid, imageURL, name, userName,
+  myUid, uid, imageURL, name, userName,
 ) => async (dispatch) => {
   try {
     const db = firebase.firestore();
-    const usersCollection = db.collection('users');
+    const usersCollection = db.collection('users').doc(uid).collection('followers');
+    const followingCollection = db.collection('following').doc(myUid).collection('userFollowing');
 
-    await usersCollection.doc(myUid).update({
-      following: {
-        [uid]: { name, userName, imageURL },
-      },
-    });
+    await followingCollection.doc(uid).set({ uid });
 
-    await usersCollection.doc(uid).update({
-      followers: {
-        [myUid]: { name: myName, userName: myUserName, imageURL: myImageURL },
-      },
-    });
+    await usersCollection.doc(myUid).set({ uid: myUid });
 
     return dispatch({
       type: Actions.FOLLOW_SOMEONE,
@@ -60,14 +53,11 @@ export const unfollowFirestore = (myUid, uid) => async (dispatch) => {
   try {
     const db = firebase.firestore();
     const usersCollection = db.collection('users');
+    const followingCollection = db.collection('following');
 
-    await usersCollection.doc(myUid).update({
-      [`following.${uid}`]: firebase.firestore.FieldValue.delete(),
-    });
+    await usersCollection.doc(uid).collection('followers').doc(myUid).delete();
 
-    await usersCollection.doc(uid).update({
-      [`followers.${myUid}`]: firebase.firestore.FieldValue.delete(),
-    });
+    await followingCollection.doc(myUid).collection('userFollowing').doc(uid).delete();
 
     return dispatch({
       type: Actions.UNFOLLOW_SOMEONE,
@@ -77,6 +67,59 @@ export const unfollowFirestore = (myUid, uid) => async (dispatch) => {
     console.log('error unfollowing', error);
     return dispatch({
       type: Actions.UNFOLLOW_SOMEONE_ERROR,
+    });
+  }
+};
+
+// eslint-disable-next-line consistent-return
+export const getFollowsByUid = (id) => async (dispatch) => {
+  try {
+    const user = await firebase.auth().currentUser;
+    const db = firebase.firestore();
+    const usersCollection = db.collection('users');
+    const followingCollection = db.collection('following');
+
+    await usersCollection.doc(id).collection('followers').get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach(async (doc) => {
+          const queryUid = doc.data().uid;
+          await usersCollection.doc(queryUid).get()
+            .then((ref) => {
+              const {
+                uid, name, userName, imageURL,
+              } = ref.data();
+              return dispatch({
+                type: user.uid === id ? Actions.GET_MY_FOLLOWERS : Actions.GET_FOLLOWERS,
+                payload: {
+                  uid, name, userName, imageURL,
+                },
+              });
+            });
+        });
+      });
+
+    await followingCollection.doc(id).collection('userFollowing').get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach(async (doc) => {
+          const queryUid = doc.data().uid;
+          await usersCollection.doc(queryUid).get()
+            .then((ref) => {
+              const {
+                uid, name, userName, imageURL,
+              } = ref.data();
+              return dispatch({
+                type: user.uid === id ? Actions.GET_MY_FOLLOWINGS : Actions.GET_FOLLOWINGS,
+                payload: {
+                  uid, name, userName, imageURL,
+                },
+              });
+            });
+        });
+      });
+  } catch (error) {
+    console.log('error getting follows', error);
+    return dispatch({
+      type: Actions.GET_FOLLOWS_ERROR,
     });
   }
 };

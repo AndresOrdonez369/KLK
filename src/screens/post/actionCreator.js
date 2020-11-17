@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import Actions from '../../redux/actionTypes';
 import firebase from '../../../firebase';
 
@@ -9,24 +10,35 @@ export const updateLoader = (value) => ({
 export const submitPost = (
   uid, name, body, mediaURL, uploaded, date,
 ) => async (dispatch) => {
-  const db = firebase.firestore();
-  const collection = db.collection('posts');
-  await collection.add({
-    authorID: uid,
-    author: name,
-    description: body,
-    mediaURL,
-    type: uploaded,
-    createdAt: date,
-  })
-    .then(() => dispatch({
+  try {
+    const db = firebase.firestore();
+    const followCollection = db.collection('following');
+    const userCollectionRef = db.collection('posts').doc(uid).collection('userPosts');
+
+    await userCollectionRef.add({
+      authorID: uid,
+      author: name,
+      description: body,
+      mediaURL,
+      type: uploaded,
+      createdAt: date,
+    });
+
+    await followCollection.doc(uid).set({
+      lastUpdate: Date.now(),
+    });
+
+    return dispatch({
       type: Actions.UPDATE_POST_SUCCESS,
       payload: 'Publicación cargada correctamente',
-    }))
-    .catch(() => dispatch({
+    });
+  } catch (error) {
+    console.log('error updating post', error);
+    return dispatch({
       type: Actions.UPDATE_POST_ERROR,
       payload: 'Hubo un error subiendo la publicación',
-    }));
+    });
+  }
 };
 
 export const uploadImage = (image, uid) => async (dispatch) => {
