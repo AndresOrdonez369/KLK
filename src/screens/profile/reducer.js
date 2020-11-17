@@ -151,7 +151,7 @@ export default (state = STATE_INICIAL, action) => {
         ...state,
         anotherUser: {
           ...state.anotherUser,
-          followings: {
+          following: {
             ...state.anotherUser.followings,
             [action.payload.uid]: {
               name: action.payload.name,
@@ -166,7 +166,7 @@ export default (state = STATE_INICIAL, action) => {
         ...state,
         user: {
           ...state.user,
-          followings: {
+          following: {
             ...state.user.followings,
             [action.payload.uid]: {
               name: action.payload.name,

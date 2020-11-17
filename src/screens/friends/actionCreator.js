@@ -24,20 +24,16 @@ export const cleanSearch = () => ({
 });
 
 export const followFirestore = (
-  myUid, myUserName, uid, imageURL, name, userName,
+  myUid, uid, imageURL, name, userName,
 ) => async (dispatch) => {
   try {
     const db = firebase.firestore();
     const usersCollection = db.collection('users').doc(uid).collection('followers');
     const followingCollection = db.collection('following').doc(myUid).collection('userFollowing');
 
-    await followingCollection.doc(uid).set({
-      uid, userName,
-    });
+    await followingCollection.doc(uid).set({ uid });
 
-    await usersCollection.doc(myUid).set({
-      uid: myUid, userName: myUserName,
-    });
+    await usersCollection.doc(myUid).set({ uid: myUid });
 
     return dispatch({
       type: Actions.FOLLOW_SOMEONE,
