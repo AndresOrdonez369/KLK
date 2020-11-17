@@ -18,15 +18,15 @@ export default styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  textPass: {
+  textPass: (val) => ({
     fontSize: 16,
     alignSelf: 'flex-start',
     marginLeft: width * 0.1,
     marginRight: width * 0.1,
-    marginTop: height * -0.01,
-    marginBottom: height * 0.02,
+    marginTop: !val ? height * -0.01 : 0,
+    marginBottom: !val ? height * 0.02 : 0,
     color: '#2672FF',
-  },
+  }),
   textLogin: {
     fontSize: 18,
     marginTop: height * 0.05,
