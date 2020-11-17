@@ -1,13 +1,34 @@
 import Actions from '../../redux/actionTypes';
 import firebase from '../../../firebase';
 
-export const getStories = () => async (dispatch) => {
+export const getStories = (uid) => async (dispatch) => {
   const db = firebase.firestore();
-  await db.collection('stories').orderBy('authorID', 'asc').get()
+  const followingCollection = db.collection('following').doc(uid).collection('userFollowing');
+  await followingCollection.get()
     .then((querySnapshot) => {
-      querySnapshot.forEach((doc) => dispatch({
+      querySnapshot.forEach(async (doc) => {
+        const queryUid = doc.data().uid;
+        await db.collection('stories').where('authorID', '==', queryUid).get()
+          .then((query) => {
+            query.forEach((ref) => dispatch({
+              type: Actions.GET_STORIES,
+              payload: ref.data(),
+            }));
+          })
+          .catch((error) => {
+            console.log(error);
+            return dispatch({
+              type: Actions.GET_STORIES_ERROR,
+            });
+          });
+      });
+    });
+
+  await db.collection('stories').where('authorID', '==', uid).get()
+    .then((query) => {
+      query.forEach((ref) => dispatch({
         type: Actions.GET_STORIES,
-        payload: doc.data(),
+        payload: ref.data(),
       }));
     })
     .catch((error) => {
@@ -25,6 +46,7 @@ export const postStory = (image, uid, nick, profileImg) => async (dispatch) => {
     const userPhothoURL = `/Stories/${uid}/${random}.png`;
     const storage = firebase.storage().ref();
     const imagePath = storage.child(userPhothoURL);
+    // eslint-disable-next-line no-undef
     const response = await fetch(image);
     const imagenBlob = await response.blob();
     await imagePath.put(imagenBlob);

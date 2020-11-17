@@ -55,8 +55,8 @@ const Feed = () => {
   const { navigate } = useNavigation();
 
   useEffect(() => {
-    dispatch(getStories());
-  }, []);
+    dispatch(getStories(profile.uid));
+  }, [profile.uid]);
 
   // data
   const uniqueID = stories.filter((value, index, self) => {
