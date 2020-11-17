@@ -16,6 +16,7 @@ export const getStories = (uid) => async (dispatch) => {
             }));
           })
           .catch((error) => {
+            dispatch(handleModalFeed(true, 'error', 'Hubo un error trayendo los datos de las historias'));
             console.log(error);
             return dispatch({
               type: Actions.GET_STORIES_ERROR,
@@ -55,14 +56,24 @@ export const postStory = (image, uid, nick, profileImg) => async (dispatch) => {
     const storiesCollection = dbh.collection('stories');
     await storiesCollection.add(storyObj);
 
+    dispatch(handleModalFeed(true, 'confirmation', 'Historia subida correctamente'));
+
     return dispatch({
       type: Actions.USER_UPLOAD_STORY,
       payload: storyObj,
     });
   } catch (error) {
+    dispatch(handleModalFeed(true, 'error', 'Hubo un error al subir la historia, intente nuevamente'));
     return dispatch({
       type: Actions.USER_UPLOAD_STORY_ERROR,
       payload: error,
     });
   }
 };
+
+export const handleModalFeed = (show, type = 'confirmation', title = '', height = 0.3) => ({
+  type: Actions.MODAL_FEED,
+  payload: {
+    show, type, title, height,
+  },
+});

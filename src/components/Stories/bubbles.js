@@ -39,7 +39,10 @@ const Bubbles = ({
         url={item.authorProfileImg}
         onPress={() => pressStory(item.authorID) || null}
       />
-      <Text style={styles.textContainer}>{item.authorUsername}</Text>
+      <Text style={styles.textContainer}>
+        @
+        {item.authorUsername}
+      </Text>
     </View>
   );
   const pickStory = async () => {
@@ -115,7 +118,10 @@ const Bubbles = ({
                 url={imageURL}
                 onPress={() => pressStory(uid) || null}
               />
-              <Text style={styles.textContainer}>{user.userName}</Text>
+              <Text style={styles.textContainer}>
+                @
+                {user.userName}
+              </Text>
             </View>
             <View style={styles.iconContainer}>
               <Icon

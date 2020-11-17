@@ -7,8 +7,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import TimedSlideshow from 'react-native-timed-slideshow';
-import { getStories } from './actionCreator';
+import { getStories, handleModalFeed } from './actionCreator';
 import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
+import BasicModal from '../../components/BasicModal';
 import Post from '../../components/FeedPost';
 import Bubbles from '../../components/Stories/bubbles';
 
@@ -49,7 +50,9 @@ const Feed = () => {
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.reducerProfile);
   const feed = useSelector((state) => state.reducerHome);
-  const { stories } = feed;
+  const {
+    stories, showModal, modalType, titleModal, heightModal,
+  } = feed;
   const { imageURL } = profile;
 
   const { navigate } = useNavigation();
@@ -97,7 +100,7 @@ const Feed = () => {
       };
     });
     setStoriesObj(data);
-    if (data) setShowStories(true);
+    if (data !== []) setShowStories(true); else dispatch(handleModalFeed(true, 'error', 'No tienes ninguna historia activa'));
   };
   if (showStories) {
     if (storiesObj) {
@@ -118,6 +121,17 @@ const Feed = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#F22' }}>
       <View style={styles.container}>
+        {showModal
+        && (
+          <BasicModal
+            type={modalType}
+            visible={showModal}
+            title={titleModal}
+            onPressCancel={dispatch(handleModalFeed(false))}
+            onPressOk={null}
+            requiredHeight={heightModal}
+          />
+        )}
         <Bubbles
           stories={bubbleData}
           pressStory={(uid) => onPressStory(uid)}
