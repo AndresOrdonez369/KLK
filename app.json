@@ -18,12 +18,15 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "usesIcloudStorage": true
+      "usesIcloudStorage": true,
+      "bundleIdentifier": "com.klk.klk_msn",
+      "buildNumber": "1.0.0",
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "package": "com.klk.klk_msn",
       "permissions": [
         "READ_EXTERNAL_STORAGE",
