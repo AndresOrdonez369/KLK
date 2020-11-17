@@ -24,19 +24,14 @@ const audioApp = async () => {
     );
     dispatch(audioObjUpdate(playbackObject));
   }
-  console.log('este es el playerAc', playerAction);
-  console.log('entre al audio', audioObj);
+
   if (audioObj != null) {
     // cambiar switch
-    console.log('Entre al nonull');
     if (playerAction === 'pause') {
-      console.log('Entre al pausa');
       await audioObj.pauseAsync();
     } if (playerAction === 'play') {
-      console.log('Entre al play');
       await audioObj.playAsync();
     } if (playerAction === 'stop') {
-      console.log('Entre al stop');
       await audioObj.stopAsync();
     }
   }
