@@ -9,6 +9,7 @@ import reducerRadio from '../screens/radio/reducer';
 import reducerRegistry from '../screens/registry/reducer';
 import reducerVideoFeed from '../screens/videoFeed/reducer';
 import reducerSettings from '../screens/settings/reducer';
+import reducerAudio from '../components/Audio/audioAppReducer';
 
 const combineReducer = combineReducers({
   reducerHome,
@@ -21,6 +22,7 @@ const combineReducer = combineReducers({
   reducerRegistry,
   reducerVideoFeed,
   reducerSettings,
+  reducerAudio,
 });
 
 export default combineReducer;

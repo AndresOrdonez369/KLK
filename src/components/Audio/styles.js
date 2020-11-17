@@ -12,11 +12,20 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
   },
-  mediaButtonStyle: {
-    height: height * 0.3,
+  playButtonStyle: {
+    height: height * 0.25,
     width: width * 0.95,
     backgroundColor: '#0667FF',
-
+  },
+  mediaContainerStyle: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  mediaButtonStyle: {
+    width: width * 0.46,
+    height: height * 0.25,
+    backgroundColor: '#0667FF',
   },
 });
 
