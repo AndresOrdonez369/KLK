@@ -23,20 +23,6 @@ export const getStories = (uid) => async (dispatch) => {
           });
       });
     });
-
-  await db.collection('stories').where('authorID', '==', uid).get()
-    .then((query) => {
-      query.forEach((ref) => dispatch({
-        type: Actions.GET_STORIES,
-        payload: ref.data(),
-      }));
-    })
-    .catch((error) => {
-      console.log(error);
-      return dispatch({
-        type: Actions.GET_STORIES_ERROR,
-      });
-    });
 };
 
 export const postStory = (image, uid, nick, profileImg) => async (dispatch) => {
