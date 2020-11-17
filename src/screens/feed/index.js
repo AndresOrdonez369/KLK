@@ -97,7 +97,7 @@ const Feed = () => {
       };
     });
     setStoriesObj(data);
-    setShowStories(true);
+    if (data) setShowStories(true);
   };
   if (showStories) {
     if (storiesObj) {
