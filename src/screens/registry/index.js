@@ -46,11 +46,13 @@ const Registry = () => {
          || Name.trim() === '' || UserName.trim() === '') return true;
     return false;
   };
-  const pressRegistry = (Email, Password, Name, UserName, err, ErrorCode, val) => {
-    if (checkEmptyInputs(Email, Password, Name, UserName)) return setAlert({ show: true, message: 'No pueden haber campos vacíos' });
-    if (err) return setAlert({ show: true, message: checkErrorType(ErrorCode) });
-    if (val) return setAlert({ show: true, message: 'Ingresaste información incorrecta en algún campo' });
-    return dispatch(register(Email, Password, Name, UserName));
+  const pressRegistry = async (Email, Password, Name, UserName, err, ErrorCode, val) => {
+    if (checkEmptyInputs(Email, Password, Name, UserName)) setAlert({ show: true, message: 'No pueden haber campos vacíos' });
+    if (val) setAlert({ show: true, message: 'Ingresaste información incorrecta en algún campo' });
+    if (val === false && checkEmptyInputs(Email, Password, Name, UserName)) {
+      await dispatch(register(Email, Password, Name, UserName));
+    }
+    if (err) setAlert({ show: true, message: checkErrorType(ErrorCode) });
   };
 
   return (
