@@ -102,18 +102,20 @@ export const getFollowsByUid = (id) => async (dispatch) => {
       .then((querySnapshot) => {
         querySnapshot.forEach(async (doc) => {
           const queryUid = doc.data().uid;
-          await usersCollection.doc(queryUid).get()
-            .then((ref) => {
-              const {
-                uid, name, userName, imageURL,
-              } = ref.data();
-              return dispatch({
-                type: user.uid === id ? Actions.GET_MY_FOLLOWINGS : Actions.GET_FOLLOWINGS,
-                payload: {
+          if (id !== queryUid) {
+            await usersCollection.doc(queryUid).get()
+              .then((ref) => {
+                const {
                   uid, name, userName, imageURL,
-                },
+                } = ref.data();
+                return dispatch({
+                  type: user.uid === id ? Actions.GET_MY_FOLLOWINGS : Actions.GET_FOLLOWINGS,
+                  payload: {
+                    uid, name, userName, imageURL,
+                  },
+                });
               });
-            });
+          }
         });
       });
   } catch (error) {

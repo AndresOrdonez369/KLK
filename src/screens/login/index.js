@@ -6,27 +6,37 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { SocialIcon } from 'react-native-elements';
 import InputBasic from '../../components/InputBasic/inputBasic';
 import ButtonBasic from '../../components/ButtonBasic/ButtonBasic';
+import AlertMessage from '../../components/AlertMessage';
 import Logo from '../../../assets/logo.png';
 import { loginEmailAndPassword } from './actionCreator';
 import styles from './styles';
+import checkErrorType from './helperFirebaseError';
 
 const Login = () => {
   const { navigate } = useNavigation();
   // react-redux
   const dispatch = useDispatch();
-  const state = useSelector((state) => state.reducerLogin);
-  const { error } = state;
+  const state = useSelector((sta) => sta.reducerLogin);
+  const { error, message } = state;
   // useState
+  const [validation, setValidation] = useState(false);
+  const [alert, setAlert] = useState({
+    show: false,
+    message: 'Hubo un error',
+  });
   const [input, setInput] = useState({
     email: '',
     password: '',
   });
   const { email, password } = input;
   // loginEaP
-  const logInEaP = async (Email, Password) => {
-    if (error === false && email.trim() !== '' && email.trim() !== '') {
+  const logInEaP = async (Email, Password, val) => {
+    if (Email.trim() === '' || Password.trim() === '') setAlert({ show: true, message: 'No pueden haber campos vacíos' });
+    if (val) setAlert({ show: true, message: 'Ingresaste información incorrecta en algún campo' });
+    if (error === false && Email.trim() !== '' && Password.trim() !== '') {
       await dispatch(loginEmailAndPassword(Email, Password));
     }
+    if (error) setAlert({ show: true, message: checkErrorType(message) });
   };
   // login fb
   const loginFacebook = () => {
@@ -36,6 +46,11 @@ const Login = () => {
   const loginGoogle = () => {
     console.log('loginGoogle');
   };
+  // validate
+  const validate = (value) => {
+    if (value !== undefined) setValidation(true); else setValidation(false);
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'silver' }}>
       <View style={styles.container}>
@@ -45,23 +60,30 @@ const Login = () => {
           placeholder="Correo electrónico"
           validation="email"
           value={email}
-          changeText={(text, err) => setInput({ ...input, email: text })}
+          changeText={(text, err) => {
+            setInput({ ...input, email: text });
+            validate(err);
+          }}
         />
         <InputBasic
           placeholder="Contraseña"
           validation="password"
           value={password}
-          changeText={(text, err) => setInput({ ...input, password: text })}
+          changeText={(text, err) => {
+            setInput({ ...input, password: text });
+            validate(err);
+          }}
           secureTextEntry
         />
-        <Text style={styles.textPass} onPress={() => navigate('PasswordRecovery')}>
+        {alert.show && <AlertMessage message={alert.message} />}
+        <Text style={styles.textPass(alert.show)} onPress={() => navigate('PasswordRecovery')}>
           Olvidé mi contraseña
         </Text>
         <ButtonBasic
           text="Iniciar sesión"
           buttonStyle={styles.buttonStyle}
           textStyle={styles.textButtons}
-          onPress={() => logInEaP(email, password)}
+          onPress={() => logInEaP(email, password, validation)}
         />
         <SocialIcon
           title="Iniciar con Facebook"
