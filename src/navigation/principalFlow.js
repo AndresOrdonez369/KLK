@@ -10,6 +10,7 @@ import Radio from '../screens/radio';
 import Post from '../screens/post';
 import Settings from '../screens/settings';
 import AnotherProfile from '../screens/ExtraProfile';
+import Chat from '../screens/chat';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -68,6 +69,7 @@ function AppHide() {
       <Stack.Screen name="PrincipalFlow" component={PrincipalFlow} />
       <Stack.Screen name="CreatePost" component={Post} />
       <Stack.Screen name="AnotherProfile" component={AnotherProfile} />
+      <Stack.Screen name="Chat" component={Chat} />
     </Stack.Navigator>
   );
 }
