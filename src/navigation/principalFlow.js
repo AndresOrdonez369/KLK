@@ -9,7 +9,7 @@ import Videos from '../screens/videoFeed';
 import Radio from '../screens/radio';
 import Post from '../screens/post';
 import Settings from '../screens/settings';
-import AnotherProfile from '../components/ExtraProfile';
+import AnotherProfile from '../screens/ExtraProfile';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
