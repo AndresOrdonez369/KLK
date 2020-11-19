@@ -48,19 +48,23 @@ const Chat = () => {
             Chat con...
           </Text>
         </View>
-        <View style={styles.chatContainer}>
-          <GiftedChat
-            messages={messages}
-            onSend={() => console.log(actualMessage)}
-            user={{
-              _id: 1,
-            }}
-            onInputTextChanged={(text) => setActualMessage(text)}
-          />
-          {
-            Platform.OS === 'android' && <KeyboardAvoidingView behavior="padding" />
-          }
-        </View>
+        <KeyboardAvoidingView
+          enabled={Platform.OS === 'android'}
+          style={styles.chatContainer}
+          behavior="padding"
+          keyboardVerticalOffset={height * 0.03}
+        >
+          <View style={styles.chatContainer}>
+            <GiftedChat
+              messages={messages}
+              onSend={() => console.log(actualMessage)}
+              user={{
+                _id: 1,
+              }}
+              onInputTextChanged={(text) => setActualMessage(text)}
+            />
+          </View>
+        </KeyboardAvoidingView>
       </View>
     </SafeAreaView>
   );
