@@ -9,8 +9,7 @@ const requirePhoto = require('../../../assets/busyPosition.png');
 const { height, width } = Dimensions.get('screen');
 
 const CommentAvatar = ({
-  url, size = height * 0.08, name, comment, accessory = null,
-  showAccessory = false, onPress = () => {},
+  url, size = height * 0.08, name, comment, accessory = null, showAccessory = false, onPress,
 }) => {
   const imgUser = url
     ? { uri: url }
@@ -57,7 +56,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E6E6E6',
     borderRadius: 18,
     width: width * 0.65,
-    marginRight: width * 0.05,
+    marginRight: width * 0.08,
 
   }),
 

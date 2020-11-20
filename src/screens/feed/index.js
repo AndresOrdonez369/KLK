@@ -178,7 +178,7 @@ const Feed = () => {
           />
           <Button
             title="¿klk estás pensando?"
-            onPress={() => navigate('CreatePost')}
+            onPress={() => navigate('Comments')}
             buttonStyle={styles.buttonCreate}
           />
         </View>

@@ -9,6 +9,13 @@ import AudioComponent from '../../components/Audio';
 import { Send, LoadMessages } from './actionCreator';
 
 const { height, width } = Dimensions.get('screen');
+const renderComment = ({ item }) => (
+  <CommentAvatar
+    url={item.url}
+    name={item.name}
+    comment={item.comment}
+  />
+);
 
 const Radio = () => {
   const dispatch = useDispatch();
