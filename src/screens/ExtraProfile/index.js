@@ -27,6 +27,8 @@ const ExtraProfile = ({ route }) => {
   const {
     description, name, userName, followers, following, coverURL, imageURL,
   } = profile.anotherUser;
+  const screen = 'AnotherProfile';
+  const userObj = profile.anotherUser;
 
   const { navigate } = useNavigation();
   const { uid, actualScreen } = route.params;
@@ -137,6 +139,7 @@ const ExtraProfile = ({ route }) => {
             <Button
               title="Mensaje"
               buttonStyle={styles.buttonSubmit}
+              onPress={() => navigate('Chat', { userObj, screen, actualScreen })}
             />
           </View>
         </View>

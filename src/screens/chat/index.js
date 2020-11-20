@@ -12,14 +12,23 @@ import {
 } from 'react-native-gifted-chat';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
+import BasicModal from '../../components/BasicModal';
 
 const { height, width } = Dimensions.get('screen');
 
-const Chat = () => {
+const Chat = ({ route }) => {
   // state
   const [actualMessage, setActualMessage] = useState('');
-  const [image, setImage] = useState(null);
-  const [video, setVideo] = useState(null);
+  const [modal, setModal] = useState({
+    modalType: '',
+    showModal: false,
+    modalTitle: '',
+    pressOk: null,
+    pressCancel: null,
+    height: 0.3,
+  });
+  const [image, setImage] = useState('');
+  const [video, setVideo] = useState('');
 
   // redux
   const dispatch = useDispatch();
@@ -27,34 +36,44 @@ const Chat = () => {
   console.log(chatState);
 
   const { navigate } = useNavigation();
-  // const { userObj } = route.params;
+  const { userObj, screen, actualScreen } = route.params;
+  const { uid } = userObj;
 
-  const pickMedia = async (type) => {
+  const handleModal = (show, type = 'confirmation', title = '', ok = null, modalHeight = 0.3) => {
+    setModal({
+      showModal: show,
+      modalType: type,
+      modalTitle: title,
+      pressOk: ok,
+      pressCancel: () => handleModal(false),
+      height: modalHeight,
+    });
+  };
+  const pickMedia = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
     if (status !== 'granted') {
-      setModal({
-        ...modal,
-        showModal: true,
-        modalType: 'error',
-        modalTitle: 'Necesitamos permisos para acceder a la galería',
-        pressCancel: () => setModal({ ...modal, showModal: false }),
-      });
+      handleModal(true, 'error', 'Necesitamos permisos para acceder a la galería');
       return;
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: [ImagePicker.MediaTypeOptions.Videos, ImagePicker.MediaTypeOptions.Images],
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
       videoMaxDuration: 300,
     });
     if (!result.cancelled) {
-      if (type === 'video') setVideo(result); else setImage(result);
-      uploadStatus(false);
-      if (type === 'video') setUploaded('video'); else setUploaded('image');
+      handleModal(true, 'confirmation', 'Archivo cargado correctamente');
+      if (result.type === 'image') {
+        setVideo('');
+        setImage(result);
+      } else {
+        setVideo(result);
+        setImage('');
+      }
     } else {
-      uploadStatus(true);
+      handleModal(true, 'error', 'Has cancelado la carga del archivo');
     }
   };
 
@@ -83,6 +102,7 @@ const Chat = () => {
       _id: 3,
       text: 'Hello developer',
       createdAt: new Date(),
+      image: 'https://placeimg.com/140/140/any',
       user: {
         _id: 1,
         name: 'React Native',
@@ -94,16 +114,24 @@ const Chat = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f22' }}>
       <View style={styles.container}>
+        {modal.showModal && (
+        <BasicModal
+          visible={modal.showModal}
+          type={modal.modalType}
+          requiredHeight={modal.height}
+          title={modal.modalTitle}
+          onPressCancel={modal.pressCancel}
+          onPressOk={modal.pressOk}
+        />
+        )}
         <View style={styles.header}>
           <Icon
             name="arrow-left"
             type="font-awesome"
-            onPress={() => navigate('Inicio')}
+            onPress={() => navigate(screen, { uid, actualScreen })}
             iconStyle={styles.icon}
           />
-          <Text style={styles.title}>
-            Chat con...
-          </Text>
+          <Text style={styles.title}>{userObj.name}</Text>
         </View>
         <KeyboardAvoidingView
           enabled={Platform.OS === 'android'}
@@ -116,7 +144,7 @@ const Chat = () => {
               messages={messages}
               onSend={() => console.log(actualMessage)}
               placeholder="Escribe un mensaje..."
-              alwaysShowSend={actualMessage}
+              alwaysShowSend={actualMessage !== ''}
               renderBubble={(props) => (
                 <Bubble
                   {...props}

@@ -315,7 +315,6 @@ const Post = () => {
             </View>
           )}
         { isLoading && loader() }
-        {console.log(post)}
       </View>
     </SafeAreaView>
   );
