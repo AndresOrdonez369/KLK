@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dimensions, StyleSheet, View, Text, Platform, KeyboardAvoidingView, StatusBar,
 } from 'react-native';
@@ -13,6 +13,7 @@ import {
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import BasicModal from '../../components/BasicModal';
+import { uploadImage, uploadVideo } from '../post/actionCreator';
 
 const { height, width } = Dimensions.get('screen');
 
@@ -29,11 +30,12 @@ const Chat = ({ route }) => {
   });
   const [image, setImage] = useState('');
   const [video, setVideo] = useState('');
+  const [postdb, setPostdb] = useState(false);
 
   // redux
   const dispatch = useDispatch();
   const chatState = useSelector((state) => state.reducerChat);
-  console.log(chatState);
+  const profile = useSelector((state) => state.reducerProfile);
 
   const { navigate } = useNavigation();
   const { userObj, screen, actualScreen } = route.params;
@@ -64,7 +66,7 @@ const Chat = ({ route }) => {
       videoMaxDuration: 300,
     });
     if (!result.cancelled) {
-      handleModal(true, 'confirmation', 'Archivo cargado correctamente');
+      handleModal(true, 'interactive', '¿Deseas enviar este archivo?', () => sendMessage());
       if (result.type === 'image') {
         setVideo('');
         setImage(result);
@@ -77,6 +79,18 @@ const Chat = ({ route }) => {
     }
   };
 
+  const sendMessage = () => {
+    if (image !== '') dispatch(uploadImage(image.uri, profile.uid, 'chats'));
+    if (video !== '') dispatch(uploadVideo(video.uri, profile.uid, 'chats'));
+
+    setPostdb(true);
+  };
+  useEffect(() => {
+    const send = () => {
+      console.log(actualMessage, image, video, profile.uid, profile.userName);
+    };
+    if (postdb) send();
+  }, [postdb, chatState.image, chatState.video]);
   const messages = [
     {
       _id: 1,
@@ -142,7 +156,7 @@ const Chat = ({ route }) => {
           <View style={styles.chatContainer}>
             <GiftedChat
               messages={messages}
-              onSend={() => console.log(actualMessage)}
+              onSend={() => sendMessage(actualMessage)}
               placeholder="Escribe un mensaje..."
               alwaysShowSend={actualMessage !== ''}
               renderBubble={(props) => (

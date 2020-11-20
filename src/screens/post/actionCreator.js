@@ -41,11 +41,11 @@ export const submitPost = (
   }
 };
 
-export const uploadImage = (image, uid) => async (dispatch) => {
+export const uploadImage = (image, uid, type = 'posts') => async (dispatch) => {
   try {
     const random = Math.random().toString(36).substring(2)
       .concat(Math.random().toString(36).substring(2));
-    const userPhothoURL = `/posts/images/${uid}/${random}.png`;
+    const userPhothoURL = `/${type}/images/${uid}/${random}.png`;
     const storage = firebase.storage().ref();
     const imagePath = storage.child(userPhothoURL);
     const response = await fetch(image);
@@ -57,22 +57,22 @@ export const uploadImage = (image, uid) => async (dispatch) => {
       .getDownloadURL();
 
     return dispatch({
-      type: Actions.UPDATE_PHOTO_SUCCESS,
+      type: type === 'posts' ? Actions.UPDATE_PHOTO_SUCCESS : Actions.UPLOAD_PHOTO_CHAT,
       payload: url,
     });
   } catch (error) {
     return dispatch({
-      type: Actions.UPDATE_PHOTO_ERROR,
+      type: type === 'posts' ? Actions.UPDATE_PHOTO_ERROR : Actions.UPLOAD_PHOTO_CHAT_ERROR,
       payload: 'No se pudo cargar la imagen',
     });
   }
 };
 
-export const uploadVideo = (video, uid) => async (dispatch) => {
+export const uploadVideo = (video, uid, type = 'posts') => async (dispatch) => {
   try {
     const random = Math.random().toString(36).substring(2)
       .concat(Math.random().toString(36).substring(2));
-    const userVideoURL = `/posts/videos/${uid}/${random}.avi`;
+    const userVideoURL = `/${type}/videos/${uid}/${random}.avi`;
     const storage = firebase.storage().ref();
     const imagePath = storage.child(userVideoURL);
     const response = await fetch(video);
@@ -84,12 +84,12 @@ export const uploadVideo = (video, uid) => async (dispatch) => {
       .getDownloadURL();
 
     return dispatch({
-      type: Actions.UPDATE_VIDEO_SUCCESS,
+      type: type === 'posts' ? Actions.UPDATE_VIDEO_SUCCESS : Actions.UPLOAD_VIDEO_CHAT,
       payload: url,
     });
   } catch (error) {
     return dispatch({
-      type: Actions.UPDATE_VIDEO_ERROR,
+      type: type === 'posts' ? Actions.UPDATE_VIDEO_ERROR : Actions.UPLOAD_VIDEO_CHAT_ERROR,
       payload: 'No se pudo cargar el video',
     });
   }
