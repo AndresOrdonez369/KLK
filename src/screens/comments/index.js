@@ -26,7 +26,7 @@ const Comments = ({ route }) => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getComments(authorID, pid));
-  }, []);
+  }, [authorID, pid]);
   const renderComment = ({ item }) => (
     <CommentAvatar
       url={item.url}

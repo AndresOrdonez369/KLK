@@ -24,7 +24,7 @@ export default (state = STATE_INICIAL, action) => {
     case Actions.GET_COMMENTS:
       return {
         ...state,
-        comments: action.payload,
+        comments: [...state.comments, action.payload],
       };
     case Actions.UPDATE_DATA_POST:
       return {

@@ -24,18 +24,16 @@ export const submitComment = (comment, uid, name, imageUrl, pid) => async (dispa
       payload: 'Hubo un error publicando el comentario.',
     }));
 };
+
 export const getComments = (authorID, pid) => async (dispatch) => {
   const db = firebase.firestore();
   await db.collection('posts').doc(authorID).collection('userPosts').doc(pid)
     .collection('comments')
     .get()
     .then((querySnapshot) => {
-      const data = {};
-      const comments = querySnapshot.data();
-      console.log(data);
-      return dispatch({
+      querySnapshot.forEach((comment) => dispatch({
         type: Actions.GET_COMMENTS,
-        payload: data,
-      });
+        payload: comment.data(),
+      }));
     });
 };
