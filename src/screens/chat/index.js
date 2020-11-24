@@ -14,6 +14,7 @@ import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import BasicModal from '../../components/BasicModal';
 import { uploadImage, uploadVideo } from '../post/actionCreator';
+import { sendMessageDB, getMessages } from './actionCreator';
 
 const { height, width } = Dimensions.get('screen');
 
@@ -41,6 +42,9 @@ const Chat = ({ route }) => {
   const { userObj, screen, actualScreen } = route.params;
   const { uid } = userObj;
 
+  useEffect(() => {
+    dispatch(getMessages(profile.uid, uid));
+  }, []);
   const handleModal = (show, type = 'confirmation', title = '', ok = null, modalHeight = 0.3) => {
     setModal({
       showModal: show,
@@ -66,7 +70,7 @@ const Chat = ({ route }) => {
       videoMaxDuration: 300,
     });
     if (!result.cancelled) {
-      handleModal(true, 'interactive', '¿Deseas enviar este archivo?', () => sendMessage());
+      handleModal(true, 'interactive', '¿Deseas enviar el archivo seleccionado como mensaje?', () => sendMessage());
       if (result.type === 'image') {
         setVideo('');
         setImage(result);
@@ -87,43 +91,27 @@ const Chat = ({ route }) => {
   };
   useEffect(() => {
     const send = () => {
-      console.log(actualMessage, image, video, profile.uid, profile.userName);
+      dispatch(sendMessageDB(
+        actualMessage, chatState.image, chatState.video, profile.uid, profile.user.userName,
+      ));
     };
     if (postdb) send();
-  }, [postdb, chatState.image, chatState.video]);
-  const messages = [
-    {
-      _id: 1,
-      text: 'Hello developer',
-      createdAt: new Date(),
-      user: {
-        _id: 2,
-        name: 'React Native',
-        avatar: 'https://placeimg.com/140/140/any',
-      },
+  }, [postdb, actualMessage, chatState.image, chatState.video]);
+
+  // data
+  const messages = chatState.messages ? chatState.messages.map((item) => ({
+    _id: item.createdAt,
+    text: item.message,
+    createdAt: item.createdAt,
+    image: item.image,
+    video: item.video,
+    user: {
+      _id: item.authorID === uid ? 2 : 1,
+      name: item.userName,
+      avatar: item.authorID === uid ? userObj.imageURL : profile.imageURL,
     },
-    {
-      _id: 2,
-      text: 'Hello developer',
-      createdAt: new Date(),
-      user: {
-        _id: 2,
-        name: 'React Native',
-        avatar: 'https://placeimg.com/140/140/any',
-      },
-    },
-    {
-      _id: 3,
-      text: 'Hello developer',
-      createdAt: new Date(),
-      image: 'https://placeimg.com/140/140/any',
-      user: {
-        _id: 1,
-        name: 'React Native',
-        avatar: 'https://placeimg.com/140/140/any',
-      },
-    },
-  ];
+  })) : [];
+  console.log(chatState);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f22' }}>

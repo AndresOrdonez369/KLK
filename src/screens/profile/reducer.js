@@ -108,6 +108,7 @@ export default (state = STATE_INICIAL, action) => {
           description: action.payload.description,
           coverURL: action.payload.coverURL,
           imageURL: action.payload.imageURL,
+          uid: action.payload.uid,
         },
       };
     case Actions.CLEAN_EXTRA_PROFILE:

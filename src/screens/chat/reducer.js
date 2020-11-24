@@ -5,9 +5,12 @@ const STATE_INICIAL = {
   message: '',
   image: '',
   video: '',
+  messages: [],
+  docID: '',
 };
 
 export default (state = STATE_INICIAL, action) => {
+  console.log(action);
   switch (action.type) {
     case Actions.SIGN_OUT:
       return STATE_INICIAL;
@@ -23,12 +26,26 @@ export default (state = STATE_INICIAL, action) => {
         video: action.payload,
         error: false,
       };
+    case Actions.CHAT_ERROR:
     case Actions.UPLOAD_VIDEO_CHAT_ERROR:
     case Actions.UPLOAD_PHOTO_CHAT_ERROR:
       return {
         ...state,
         error: true,
         message: action.payload,
+      };
+    case Actions.MESSAGE_SENT:
+      return {
+        ...state,
+        error: false,
+        messages: [...state.messages, action.payload],
+      };
+    case Actions.GET_MESSAGES:
+      return {
+        ...state,
+        error: false,
+        messages: [...state.messages, action.payload],
+        docID: action.doc,
       };
     default:
       return { ...state };
