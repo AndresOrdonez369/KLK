@@ -45,7 +45,11 @@ export default (state = STATE_INICIAL, action) => {
         ...state,
         error: false,
         messages: [...state.messages, action.payload],
-        docID: action.doc,
+      };
+    case Actions.SET_DOC_ID:
+      return {
+        ...state,
+        docID: action.payload,
       };
     default:
       return { ...state };

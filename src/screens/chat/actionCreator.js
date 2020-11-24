@@ -43,12 +43,14 @@ export const getMessages = (myUid, uid) => async (dispatch) => {
                 .then((query) => {
                   query.forEach(async (doc) => {
                     const snap = chatCollection.doc(doc.id).collection('messages').orderBy('timestamp', 'desc').limit(20);
-                    const docID = doc.id;
+                    dispatch({
+                      type: Actions.SET_DOC_ID,
+                      payload: doc.id,
+                    });
                     await snap.onSnapshot((snapshot) => {
                       snapshot.docs.forEach((docu) => dispatch({
                         type: Actions.GET_MESSAGES,
                         payload: docu.data(),
-                        docID,
                       }));
                     });
                   });
@@ -57,12 +59,14 @@ export const getMessages = (myUid, uid) => async (dispatch) => {
         } else {
           querySnapshot.forEach(async (doc) => {
             const snap = chatCollection.doc(doc.id).collection('messages').orderBy('timestamp', 'desc').limit(20);
-            const docID = doc.id;
+            dispatch({
+              type: Actions.SET_DOC_ID,
+              payload: doc.id,
+            });
             await snap.onSnapshot((snapshot) => {
               snapshot.docs.forEach((docu) => dispatch({
                 type: Actions.GET_MESSAGES,
                 payload: docu.data(),
-                docID,
               }));
             });
           });

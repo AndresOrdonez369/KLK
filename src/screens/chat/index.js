@@ -90,13 +90,14 @@ const Chat = ({ route }) => {
     setPostdb(true);
   };
   useEffect(() => {
-    const send = () => {
+    if (postdb) {
       dispatch(sendMessageDB(
-        actualMessage, chatState.image, chatState.video, profile.uid, profile.user.userName,
+        actualMessage, chatState.image, chatState.video,
+        profile.uid, profile.user.userName, chatState.docID,
       ));
-    };
-    if (postdb) send();
-  }, [postdb, actualMessage, chatState.image, chatState.video]);
+      setPostdb(false);
+    }
+  }, [postdb, actualMessage, chatState.image, chatState.video, chatState.docID]);
 
   // data
   const messages = chatState.messages ? chatState.messages.map((item) => ({
@@ -112,6 +113,7 @@ const Chat = ({ route }) => {
     },
   })) : [];
   console.log(chatState);
+  console.log(actualMessage);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f22' }}>
