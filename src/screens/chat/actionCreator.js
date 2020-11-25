@@ -47,7 +47,8 @@ export const getMessages = (myUid, uid) => async (dispatch) => {
                       type: Actions.SET_DOC_ID,
                       payload: doc.id,
                     });
-                    await snap.onSnapshot((snapshot) => {
+                    await snap.get()
+                      .then((snapshot) => {
                       snapshot.docs.forEach((docu) => dispatch({
                         type: Actions.GET_MESSAGES,
                         payload: docu.data(),
@@ -63,7 +64,8 @@ export const getMessages = (myUid, uid) => async (dispatch) => {
               type: Actions.SET_DOC_ID,
               payload: doc.id,
             });
-            await snap.onSnapshot((snapshot) => {
+            await snap.get()
+              .then((snapshot) => {
               snapshot.docs.forEach((docu) => dispatch({
                 type: Actions.GET_MESSAGES,
                 payload: docu.data(),

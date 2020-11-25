@@ -38,6 +38,8 @@ export default (state = STATE_INICIAL, action) => {
       return {
         ...state,
         error: false,
+        image: '',
+        video: '',
         messages: [...state.messages, action.payload],
       };
     case Actions.GET_MESSAGES:

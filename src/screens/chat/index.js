@@ -31,7 +31,6 @@ const Chat = ({ route }) => {
   });
   const [image, setImage] = useState('');
   const [video, setVideo] = useState('');
-  const [postdb, setPostdb] = useState(false);
 
   // redux
   const dispatch = useDispatch();
@@ -70,7 +69,6 @@ const Chat = ({ route }) => {
       videoMaxDuration: 300,
     });
     if (!result.cancelled) {
-      handleModal(true, 'interactive', '¿Deseas enviar el archivo seleccionado como mensaje?', () => sendMessage());
       if (result.type === 'image') {
         setVideo('');
         setImage(result);
@@ -78,26 +76,31 @@ const Chat = ({ route }) => {
         setVideo(result);
         setImage('');
       }
+      handleModal(true,
+        'interactive',
+        '¿Deseas enviar el archivo seleccionado como mensaje?',
+        () => {
+          sendMedia();
+          setModal({ ...modal, showModal: false });
+        });
     } else {
       handleModal(true, 'error', 'Has cancelado la carga del archivo');
     }
   };
 
-  const sendMessage = () => {
+  const sendMedia = () => {
     if (image !== '') dispatch(uploadImage(image.uri, profile.uid, 'chats'));
     if (video !== '') dispatch(uploadVideo(video.uri, profile.uid, 'chats'));
-
-    setPostdb(true);
   };
   useEffect(() => {
-    if (postdb) {
-      dispatch(sendMessageDB(
-        actualMessage, chatState.image, chatState.video,
-        profile.uid, profile.user.userName, chatState.docID,
-      ));
-      setPostdb(false);
-    }
-  }, [postdb, actualMessage, chatState.image, chatState.video, chatState.docID]);
+    if (chatState.image !== '' || chatState.video !== '') sendMessage();
+  }, [chatState.image, chatState.video]);
+  const sendMessage = async () => {
+    await dispatch(sendMessageDB(
+      actualMessage, chatState.image, chatState.video,
+      profile.uid, profile.user.userName, chatState.docID,
+    ));
+  };
 
   // data
   const messages = chatState.messages ? chatState.messages.map((item) => ({
