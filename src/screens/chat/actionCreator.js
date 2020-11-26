@@ -42,35 +42,21 @@ export const getMessages = (myUid, uid) => async (dispatch) => {
               await chatCollection.where('docID', 'array-contains', id1).get()
                 .then((query) => {
                   query.forEach(async (doc) => {
-                    const snap = chatCollection.doc(doc.id).collection('messages').orderBy('timestamp', 'desc').limit(20);
                     dispatch({
                       type: Actions.SET_DOC_ID,
                       payload: doc.id,
                     });
-                    await snap.get()
-                      .then((snapshot) => {
-                      snapshot.docs.forEach((docu) => dispatch({
-                        type: Actions.GET_MESSAGES,
-                        payload: docu.data(),
-                      }));
-                    });
+                    await dispatch(chatMessages(doc.id));
                   });
                 });
             });
         } else {
           querySnapshot.forEach(async (doc) => {
-            const snap = chatCollection.doc(doc.id).collection('messages').orderBy('timestamp', 'desc').limit(20);
             dispatch({
               type: Actions.SET_DOC_ID,
               payload: doc.id,
             });
-            await snap.get()
-              .then((snapshot) => {
-              snapshot.docs.forEach((docu) => dispatch({
-                type: Actions.GET_MESSAGES,
-                payload: docu.data(),
-              }));
-            });
+            await dispatch(chatMessages(doc.id));
           });
         }
       });
@@ -81,4 +67,19 @@ export const getMessages = (myUid, uid) => async (dispatch) => {
       payload: 'Hubo un error accediendo a la información de este chat, inténtalo nuevamente',
     });
   }
+};
+
+const chatMessages = (docID) => async (dispatch) => {
+  const messages = firebase.firestore().collection('chats').doc(docID).collection('messages');
+  await messages.orderBy('createdAt', 'desc').limit(20).onSnapshot((snapshot) => {
+    const msgs = [];
+    snapshot.docs.forEach((doc) => {
+      const msg = doc.data();
+      msgs.push(msg);
+    });
+    return dispatch({
+      type: Actions.GET_MESSAGES,
+      payload: msgs,
+    });
+  });
 };

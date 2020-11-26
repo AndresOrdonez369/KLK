@@ -10,7 +10,6 @@ const STATE_INICIAL = {
 };
 
 export default (state = STATE_INICIAL, action) => {
-  console.log(action);
   switch (action.type) {
     case Actions.SIGN_OUT:
       return STATE_INICIAL;
@@ -40,13 +39,12 @@ export default (state = STATE_INICIAL, action) => {
         error: false,
         image: '',
         video: '',
-        messages: [...state.messages, action.payload],
       };
     case Actions.GET_MESSAGES:
       return {
         ...state,
         error: false,
-        messages: [...state.messages, action.payload],
+        messages: action.payload,
       };
     case Actions.SET_DOC_ID:
       return {

@@ -115,8 +115,6 @@ const Chat = ({ route }) => {
       avatar: item.authorID === uid ? userObj.imageURL : profile.imageURL,
     },
   })) : [];
-  console.log(chatState);
-  console.log(actualMessage);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f22' }}>
