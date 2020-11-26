@@ -8,10 +8,10 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getExtraProfile, cleanExtraProfile } from '../../screens/profile/actionCreator';
-import { followFirestore, unfollowFirestore, getFollowsByUid } from '../../screens/friends/actionCreator';
-import Post from '../FeedPost';
-import SimpleAvatar from '../Avatar/SimpleAvatar';
+import { getExtraProfile, cleanExtraProfile } from '../profile/actionCreator';
+import { followFirestore, unfollowFirestore, getFollowsByUid } from '../friends/actionCreator';
+import Post from '../../components/FeedPost';
+import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
 
 const requireCover = require('../../../assets/defaultCover.png');
 
@@ -27,6 +27,8 @@ const ExtraProfile = ({ route }) => {
   const {
     description, name, userName, followers, following, coverURL, imageURL,
   } = profile.anotherUser;
+  const screen = 'AnotherProfile';
+  const userObj = profile.anotherUser;
 
   const { navigate } = useNavigation();
   const { uid, actualScreen } = route.params;
@@ -137,6 +139,7 @@ const ExtraProfile = ({ route }) => {
             <Button
               title="Mensaje"
               buttonStyle={styles.buttonSubmit}
+              onPress={() => navigate('Chat', { userObj, screen, actualScreen })}
             />
           </View>
         </View>
