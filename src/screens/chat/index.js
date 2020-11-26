@@ -1,12 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState, useEffect } from 'react';
 import {
-  Dimensions, StyleSheet, View, Text, Platform, KeyboardAvoidingView, StatusBar,
+  Dimensions, StyleSheet, View, Text, Platform, KeyboardAvoidingView, StatusBar, ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import { Icon } from 'react-native-elements';
+import { Icon, Overlay } from 'react-native-elements';
 import {
   GiftedChat, Send, InputToolbar, Bubble,
 } from 'react-native-gifted-chat';
@@ -31,16 +31,19 @@ const Chat = ({ route }) => {
   });
   const [image, setImage] = useState('');
   const [video, setVideo] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   // redux
   const dispatch = useDispatch();
   const chatState = useSelector((state) => state.reducerChat);
   const profile = useSelector((state) => state.reducerProfile);
 
+  // navigation
   const { navigate } = useNavigation();
   const { userObj, screen, actualScreen } = route.params;
   const { uid } = userObj;
 
+  // fnc
   useEffect(() => {
     dispatch(getMessages(profile.uid, uid));
   }, []);
@@ -87,10 +90,11 @@ const Chat = ({ route }) => {
       handleModal(true, 'error', 'Has cancelado la carga del archivo');
     }
   };
-
   const sendMedia = () => {
+    setIsLoading(true);
     if (image !== '') dispatch(uploadImage(image.uri, profile.uid, 'chats'));
     if (video !== '') dispatch(uploadVideo(video.uri, profile.uid, 'chats'));
+    setIsLoading(false);
   };
   useEffect(() => {
     if (chatState.image !== '' || chatState.video !== '') sendMessage();
@@ -116,9 +120,19 @@ const Chat = ({ route }) => {
     },
   })) : [];
 
+  // loader
+  const loader = () => (
+    <Overlay isVisible={isLoading} overlayStyle={styles.overlay}>
+      <View style={styles.overlayView}>
+        <ActivityIndicator size="large" color="#f22" />
+        <Text style={styles.overlayText}>...Enviando archivo</Text>
+      </View>
+    </Overlay>
+  );
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f22' }}>
       <View style={styles.container}>
+        {isLoading && loader()}
         {modal.showModal && (
         <BasicModal
           visible={modal.showModal}
@@ -237,6 +251,24 @@ const styles = StyleSheet.create({
     width: width * 0.9,
     marginLeft: width * 0.1,
     borderTopWidth: 0,
+  },
+  overlay: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    height,
+    width,
+  },
+  overlayView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  overlayText: {
+    color: 'white',
+    fontWeight: 'bold',
+    alignSelf: 'center',
+    fontSize: 25,
+    marginTop: 20,
   },
 });
 
