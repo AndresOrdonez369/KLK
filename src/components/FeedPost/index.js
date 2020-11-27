@@ -1,9 +1,12 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image } from 'react-native';
+import {
+  View, Text, Image, Share,
+} from 'react-native';
 import { useSelector } from 'react-redux';
 import { Icon, Button } from 'react-native-elements';
 import { Video } from 'expo-av';
+import * as Linking from 'expo-linking';
 import Avatar from '../Avatar/SimpleAvatar';
 import AudioComponent from '../Audio';
 import Youtube from '../Youtube';
@@ -11,8 +14,8 @@ import firebase from '../../../firebase';
 
 import styles from './styles';
 
-const FeedPost = async ({
-  authorName, mensaje, mediaLink, likes, type, timestamp, url, pid, authorId,
+const FeedPost = ({
+  authorName, mensaje, mediaLink, likes, type, timestamp, url, pid, authorId, navigate 
 }) => {
   const {
     container, headerContainer, basicInfoContainer, dotsContainer,
@@ -24,25 +27,49 @@ const FeedPost = async ({
   const profile = useSelector((state) => state.reducerProfile);
   const { uid } = profile;
 
-  const firebaseQuery = firebase.firestore().collection('posts').doc(authorId).collection('userPosts')
-    .doc(pid)
-    .collection('likes')
-    .doc(uid);
-  await firebaseQuery.get().then((doc) => {
-    console.log('este es el doc', doc);
-    if (doc.exists && doc.data().userlike) {
-      setLike(true);
-    } else {
-      setLike(false);
-    }
-  }).catch((error) => {
-    console.log('Error getting document:', error);
-  });
+  let firebaseQuery = {};
+  if (authorId !== '' && pid !== '' && uid !== '') {
+    firebaseQuery = firebase.firestore().collection('posts').doc(authorId).collection('userPosts')
+      .doc(pid)
+      .collection('likes')
+      .doc(uid);
+  }
+
   useEffect(() => {
-    return () => {
-      if (like) firebaseQuery.set({ userlike: like }, { merge: true });
+    const getLike = async () => {
+      if (firebaseQuery !== {}) {
+        await firebaseQuery.get().then((doc) => {
+          if (doc.exists && doc.data().userlike) {
+            setLike(true);
+          } else {
+            setLike(false);
+          }
+        }).catch((error) => {
+          console.log('Error getting document:', error);
+        });
+      }
     };
+    getLike();
   }, []);
+  useEffect(() => {
+    const uploadLike = async () => {
+      if (firebaseQuery !== {}) {
+        await firebaseQuery.set({ userlike: like }, { merge: true });
+      }
+    };
+    uploadLike();
+  }, [like]);
+  const onSharePress = async () => {
+    const link = Linking.makeUrl(`post/${authorId}/${pid}`);
+    const message = `Mira esta publicacion de KLK msn
+si no tienes la aplicacion la puedes descargar 
+Link de descarga: ...
+Si ya tienes el app instalada puedes ver la publicacion aqui 
+${link}`;
+    await Share.share({
+      message,
+    });
+  };
   const renderMedia = () => {
     if (type === 'image') {
       return (
@@ -58,7 +85,8 @@ const FeedPost = async ({
       // hacer await soundObject.unloadAsync(); al component
       return (
         <AudioComponent
-          mediaLink={mediaLink}
+          id={pid}
+          link={mediaLink}
         />
       );
     } if (type === 'video') {
@@ -125,13 +153,14 @@ const FeedPost = async ({
           />
           <Button
             buttonStyle={dotsButtonStyle}
+            onPress={() => onSharePress()}
             icon={
               <Icon name="share" type="material-community" color="#f22" size={25} />
             }
           />
         </View>
         <View style={likesContainer}>
-          <Text style={likesStyle}>{likes}</Text>
+          <Text style={likesStyle}>{like ? likes + 1 : likes}</Text>
         </View>
       </View>
     </View>

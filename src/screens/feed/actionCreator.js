@@ -1,8 +1,53 @@
 import Actions from '../../redux/actionTypes';
 import firebase from '../../../firebase';
 
+const db = firebase.firestore();
+
+export const getPosts = (uid) => async (dispatch) => {
+  if (uid !== '') {
+    await db.collection('following').doc(uid).collection('userFollowing').limit(10)
+      .get()
+      .then((followeds) => {
+        const postList = [];
+        followeds.forEach(async (followed) => {
+          const queryUid = followed.data().uid;
+          console.log('este es el queryUid', queryUid);
+          await db.collection('posts').doc(queryUid).collection('userPosts').limit(2)
+            .get()
+            .then((posts) => {
+              posts.forEach(async (post) => {
+                const pathReference = firebase.storage().ref(`/Users/profilePhotos/${post.data().authorID}.png`);
+                const url = await pathReference.getDownloadURL();
+                const date0 = new Date(post.data().createdAt);
+                const date = date0.toLocaleDateString();
+                const likes0 = await firebase.firestore().collection('posts').doc(post.data().authorID).collection('userPosts')
+                  .doc(post.id)
+                  .collection('likes')
+                  .get();
+                const post0 = {
+                  pid: post.id,
+                  urlAvatar: url,
+                  authorName: post.data().author,
+                  mensaje: post.data().description,
+                  mediaLink: post.data().mediaURL,
+                  type: post.data().type,
+                  timestamp: date,
+                  likes: likes0.size,
+                  authorId: post.data().authorID,
+                };
+                postList.push(post0);
+              });
+            });
+        });
+        return dispatch({
+          type: Actions.GET_POSTS,
+          payload: postList,
+        });
+      });
+  }
+};
+
 export const getStories = (uid) => async (dispatch) => {
-  const db = firebase.firestore();
   const followingCollection = db.collection('following').doc(uid).collection('userFollowing');
   await followingCollection.get()
     .then((querySnapshot) => {

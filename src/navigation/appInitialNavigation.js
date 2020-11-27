@@ -6,7 +6,7 @@ import { Overlay, Button, Icon } from 'react-native-elements';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useDispatch } from 'react-redux';
-import AudioApp from '../components/Audio/audioApp';
+import * as Linking from 'expo-linking';
 import PrincipalFlow from './principalFlow';
 import Login from '../screens/login';
 import PasswordRecovery from '../screens/passwordRecovery';
@@ -16,8 +16,21 @@ import firebase from '../../firebase';
 
 const Stack = createStackNavigator();
 
+const prefix = Linking.makeUrl('/');
+const config = {
+  screens: {
+    PrincipalFlow: {
+      screens: {
+        PrincipalFlow: {
+          screens: {
+            Commets: 'post/:auid/:pid',
+          },
+        },
+      },
+    },
+  },
+};
 const { width, height } = Dimensions.get('screen');
-
 const styles = StyleSheet.create({
   overlayStyle: {
     width: width * 0.8,
@@ -42,6 +55,10 @@ const styles = StyleSheet.create({
   },
 });
 
+const linking = {
+  prefixes: [prefix],
+  config,
+};
 function AuthStack() {
   return (
     <Stack.Navigator headerMode="none" initialRouteName="Login">
@@ -63,7 +80,7 @@ const AppInitialNavigation = () => {
   // state
   const [logged, setLogged] = useState(false);
   const [verified, setVerified] = useState(false);
-  AudioApp();
+
   const dispatch = useDispatch();
   // authChecker
   useEffect(() => {
@@ -87,6 +104,7 @@ const AppInitialNavigation = () => {
     };
     authState();
   }, []);
+
   // EmailVerification
   const EmailVerification = () => (
     <Overlay
@@ -109,7 +127,7 @@ const AppInitialNavigation = () => {
     </Overlay>
   );
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <Stack.Navigator headerMode="none">
         {(logged === true && verified === false) && <Stack.Screen name="VerificationEmail" component={EmailVerification} />}
         {(logged === false && verified === false) ? (<Stack.Screen name="Auth" component={AuthStack} />)

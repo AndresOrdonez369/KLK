@@ -1,6 +1,7 @@
 import Actions from '../../redux/actionTypes';
 
 const STATE_INICIAL = {
+  postList: [],
   stories: [],
   error: false,
   message: '',
@@ -22,6 +23,8 @@ export default (state = STATE_INICIAL, action) => {
         titleModal: action.payload.title,
         heightModal: action.payload.height,
       };
+    case Actions.GET_POSTS:
+      return { ...state, postList: action.payload };
     case Actions.GET_STORIES:
     case Actions.USER_UPLOAD_STORY:
       return {
