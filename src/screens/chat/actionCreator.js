@@ -37,8 +37,7 @@ export const getMessages = (myUid, uid) => async (dispatch) => {
         if (querySnapshot.empty) {
           await chatCollection.add({
             docID: [id1, id2],
-            user1: myUid,
-            user2: uid,
+            users: [myUid, uid],
           })
             .then(async () => {
               await chatCollection.where('docID', 'array-contains', id1).get()
