@@ -27,7 +27,7 @@ export const sendMessageDB = (message, image, video, uid, userName, docID) => as
 };
 
 // eslint-disable-next-line consistent-return
-export const getMessages = (myUid, uid) => async (dispatch) => {
+export const getMessages = (myUid, uid, index) => async (dispatch) => {
   try {
     const id1 = `${myUid}${uid}`;
     const id2 = `${uid}${myUid}`;
@@ -47,7 +47,7 @@ export const getMessages = (myUid, uid) => async (dispatch) => {
                       type: Actions.SET_DOC_ID,
                       payload: doc.id,
                     });
-                    await dispatch(chatMessages(doc.id));
+                    await dispatch(chatMessages(doc.id, index));
                   });
                 });
             });
@@ -57,7 +57,7 @@ export const getMessages = (myUid, uid) => async (dispatch) => {
               type: Actions.SET_DOC_ID,
               payload: doc.id,
             });
-            await dispatch(chatMessages(doc.id));
+            await dispatch(chatMessages(doc.id, index));
           });
         }
       });
@@ -70,17 +70,26 @@ export const getMessages = (myUid, uid) => async (dispatch) => {
   }
 };
 
-const chatMessages = (docID) => async (dispatch) => {
-  const messages = firebase.firestore().collection('chats').doc(docID).collection('messages');
-  await messages.orderBy('createdAt', 'desc').limit(20).onSnapshot((snapshot) => {
-    const msgs = [];
-    snapshot.docs.forEach((doc) => {
-      const msg = doc.data();
-      msgs.push(msg);
+// eslint-disable-next-line consistent-return
+const chatMessages = (docID, index) => async (dispatch) => {
+  try {
+    const messages = firebase.firestore().collection('chats').doc(docID).collection('messages');
+    await messages.orderBy('createdAt', 'desc').limit(index).onSnapshot((snapshot) => {
+      const msgs = [];
+      snapshot.docs.forEach((doc) => {
+        const msg = doc.data();
+        msgs.push(msg);
+      });
+      return dispatch({
+        type: Actions.GET_MESSAGES,
+        payload: msgs,
+      });
     });
+  } catch (error) {
+    console.log('error getting messages', error);
     return dispatch({
-      type: Actions.GET_MESSAGES,
-      payload: msgs,
+      type: Actions.CHAT_ERROR,
+      payload: 'Hubo un error accediendo a la información de este chat, inténtalo nuevamente',
     });
-  });
+  }
 };
