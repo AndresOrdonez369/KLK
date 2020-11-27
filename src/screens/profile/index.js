@@ -28,7 +28,7 @@ const Profile = () => {
     dataChange, modalType, error, message, user, uid,
   } = profile;
   const {
-    description, name, userName, followers, following,
+    description, name, userName, qFollowers, qFollowings,
   } = user;
 
   const { navigate } = useNavigation();
@@ -36,9 +36,6 @@ const Profile = () => {
   useEffect(() => {
     dataUpdate();
   }, [dataChange]);
-
-  const totalFollowers = followers ? Object.keys(followers).length : 0;
-  const totalFollows = following ? Object.keys(following).length : 0;
 
   const dataUpdate = () => {
     if (dataChange) {
@@ -103,11 +100,11 @@ const Profile = () => {
               <Text style={styles.category}>posts</Text>
             </View>
             <View style={styles.textCategory}>
-              <Text style={styles.numbersInfo}>{totalFollowers}</Text>
+              <Text style={styles.numbersInfo}>{qFollowers}</Text>
               <Text style={styles.category}>seguidores</Text>
             </View>
             <View style={styles.textCategory}>
-              <Text style={styles.numbersInfo}>{totalFollows}</Text>
+              <Text style={styles.numbersInfo}>{qFollowings}</Text>
               <Text style={styles.category}>siguiendo</Text>
             </View>
           </View>

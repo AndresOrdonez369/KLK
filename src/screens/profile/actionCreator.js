@@ -1,6 +1,6 @@
 import Actions from '../../redux/actionTypes';
 import firebase from '../../../firebase';
-import { getFollowsByUid } from '../friends/actionCreator';
+import { getFollowersByUid, getFollowingsByUid } from '../friends/actionCreator';
 
 export const updateLoader = (value) => ({
   type: Actions.SET_LOADER_PROFILE,
@@ -24,7 +24,8 @@ export const fetchUserData = () => async (dispatch) => {
         payload: 'No se encontraron datos de usuario',
       });
     }
-    await dispatch(getFollowsByUid(uid));
+    await dispatch(getFollowersByUid(uid));
+    await dispatch(getFollowingsByUid(uid));
     const {
       userName, name, coverURL, description,
     } = snapShot.data();

@@ -72,14 +72,20 @@ export const unfollowFirestore = (myUid, uid) => async (dispatch) => {
 };
 
 // eslint-disable-next-line consistent-return
-export const getFollowsByUid = (id) => async (dispatch) => {
+export const getFollowersByUid = (id, start = 0) => async (dispatch) => {
   try {
     const user = await firebase.auth().currentUser;
     const db = firebase.firestore();
     const usersCollection = db.collection('users');
-    const followingCollection = db.collection('following');
 
-    await usersCollection.doc(id).collection('followers').get()
+    const query = await usersCollection.doc(id).collection('followers');
+    if (start === 0) {
+      query.get((snap) => dispatch({
+        type: user.uid === id ? Actions.SET_MY_FOLLOWERS : Actions.SET_FOLLOWERS,
+        payload: snap.size,
+      }));
+    }
+    query.limit(30).startAt(start).get()
       .then((querySnapshot) => {
         querySnapshot.forEach(async (doc) => {
           const queryUid = doc.data().uid;
@@ -97,8 +103,30 @@ export const getFollowsByUid = (id) => async (dispatch) => {
             });
         });
       });
+  } catch (error) {
+    console.log('error getting follows', error);
+    return dispatch({
+      type: Actions.GET_FOLLOWS_ERROR,
+    });
+  }
+};
 
-    await followingCollection.doc(id).collection('userFollowing').get()
+// eslint-disable-next-line consistent-return
+export const getFollowingsByUid = (id, start = 0) => async (dispatch) => {
+  try {
+    const user = await firebase.auth().currentUser;
+    const db = firebase.firestore();
+    const usersCollection = db.collection('users');
+    const followingCollection = db.collection('following');
+
+    const query = await followingCollection.doc(id).collection('userFollowing');
+    if (start === 0) {
+      query.get((snap) => dispatch({
+        type: user.uid === id ? Actions.SET_MY_FOLLOWINGS : Actions.SET_FOLLOWINGS,
+        payload: snap.size,
+      }));
+    }
+    query.limit(30).startAt(start).get()
       .then((querySnapshot) => {
         querySnapshot.forEach(async (doc) => {
           const queryUid = doc.data().uid;
