@@ -80,12 +80,13 @@ export const getFollowersByUid = (id, start = 0) => async (dispatch) => {
 
     const query = await usersCollection.doc(id).collection('followers');
     if (start === 0) {
-      query.get((snap) => dispatch({
-        type: user.uid === id ? Actions.SET_MY_FOLLOWERS : Actions.SET_FOLLOWERS,
-        payload: snap.size,
-      }));
+      query.get()
+        .then((snap) => dispatch({
+          type: user.uid === id ? Actions.SET_MY_FOLLOWERS : Actions.SET_FOLLOWERS,
+          payload: snap.size,
+        }));
     }
-    query.limit(30).startAt(start).get()
+    query.orderBy('uid', 'asc').startAt(start).limit(30).get()
       .then((querySnapshot) => {
         querySnapshot.forEach(async (doc) => {
           const queryUid = doc.data().uid;
@@ -121,12 +122,13 @@ export const getFollowingsByUid = (id, start = 0) => async (dispatch) => {
 
     const query = await followingCollection.doc(id).collection('userFollowing');
     if (start === 0) {
-      query.get((snap) => dispatch({
-        type: user.uid === id ? Actions.SET_MY_FOLLOWINGS : Actions.SET_FOLLOWINGS,
-        payload: snap.size,
-      }));
+      query.get()
+        .then((snap) => dispatch({
+          type: user.uid === id ? Actions.SET_MY_FOLLOWINGS : Actions.SET_FOLLOWINGS,
+          payload: snap.size,
+        }));
     }
-    query.limit(30).startAt(start).get()
+    query.orderBy('uid', 'asc').startAt(start).limit(30).get()
       .then((querySnapshot) => {
         querySnapshot.forEach(async (doc) => {
           const queryUid = doc.data().uid;
