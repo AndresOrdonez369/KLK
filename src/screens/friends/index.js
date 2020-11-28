@@ -139,8 +139,8 @@ const Friends = () => {
     );
   };
   let footer = null;
-  if ((buttonSelected === 'followers' && ((pagination === 0 && follower >= 30) || (qFollowers > pagination)))
-    || (buttonSelected === 'following' && ((pagination === 0 && follower >= 30) || (qFollowings > pagination)))) {
+  if ((buttonSelected === 'followers' && ((pagination === 0 && follower >= 30) || (pagination !== 0 && qFollowers > pagination)))
+    || (buttonSelected === 'following' && ((pagination === 0 && follows >= 30) || (pagination !== 0 && qFollowings > pagination)))) {
     footer = (
       <View>
         <Button
