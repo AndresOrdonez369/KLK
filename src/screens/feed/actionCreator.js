@@ -8,15 +8,13 @@ export const getPosts = (uid) => async (dispatch) => {
     await db.collection('following').doc(uid).collection('userFollowing').limit(10)
       .get()
       .then((followeds) => {
-        const postList = [];
         followeds.forEach(async (followed) => {
           const queryUid = followed.data().uid;
-          console.log('este es el queryUid', queryUid);
           await db.collection('posts').doc(queryUid).collection('userPosts').limit(2)
             .get()
             .then((posts) => {
               posts.forEach(async (post) => {
-                const pathReference = firebase.storage().ref(`/Users/profilePhotos/${post.data().authorID}.png`);
+                const pathReference = await firebase.storage().ref(`/Users/profilePhotos/${post.data().authorID}.png`);
                 const url = await pathReference.getDownloadURL();
                 const date0 = new Date(post.data().createdAt);
                 const date = date0.toLocaleDateString();
@@ -35,16 +33,29 @@ export const getPosts = (uid) => async (dispatch) => {
                   likes: likes0.size,
                   authorId: post.data().authorID,
                 };
-                postList.push(post0);
+                dispatch({
+                  type: Actions.GET_POSTS,
+                  payload: post0,
+                });
               });
             });
         });
-        return dispatch({
-          type: Actions.GET_POSTS,
-          payload: postList,
-        });
       });
   }
+};
+export const getHidenPosts = (uid) => async (dispatch) => {
+  const hidenL = [];
+  if (uid !== '') {
+    await firebase.firestore().collection('users').doc(uid).collection('hidenPosts')
+      .get()
+      .then((hidenList) => hidenList.forEach((post) => {
+        hidenL.push(post.data().publication);
+      }));
+  }
+  return dispatch({
+    type: Actions.GET_HIDEN_LIST,
+    payload: hidenL,
+  });
 };
 
 export const getStories = (uid) => async (dispatch) => {
@@ -121,4 +132,9 @@ export const handleModalFeed = (show, type = 'confirmation', title = '', height 
   payload: {
     show, type, title, height,
   },
+});
+
+export const showHPostModal = (show) => ({
+  type: Actions.HPOST_MODAL,
+  payload: show,
 });

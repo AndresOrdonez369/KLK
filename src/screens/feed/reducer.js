@@ -2,6 +2,7 @@ import Actions from '../../redux/actionTypes';
 
 const STATE_INICIAL = {
   postList: [],
+  hidenList: [],
   stories: [],
   error: false,
   message: '',
@@ -9,12 +10,17 @@ const STATE_INICIAL = {
   modalType: '',
   titleModal: '',
   heightModal: 0,
+  hidePostModal: false,
 };
 
 export default (state = STATE_INICIAL, action) => {
   switch (action.type) {
     case Actions.SIGN_OUT:
       return STATE_INICIAL;
+    case Actions.GET_HIDEN_LIST:
+      return { ...state, hidenList: action.payload };
+    case Actions.HPOST_MODAL:
+      return { ...state, hidePostModal: action.payload };
     case Actions.MODAL_FEED:
       return {
         ...state,
@@ -24,7 +30,7 @@ export default (state = STATE_INICIAL, action) => {
         heightModal: action.payload.height,
       };
     case Actions.GET_POSTS:
-      return { ...state, postList: action.payload };
+      return { ...state, postList: [...state.postList, action.payload] };
     case Actions.GET_STORIES:
     case Actions.USER_UPLOAD_STORY:
       return {

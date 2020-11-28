@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { Icon, Button } from 'react-native-elements';
 import { Video } from 'expo-av';
 import * as Linking from 'expo-linking';
+import BasicModal from '../BasicModal';
 import Avatar from '../Avatar/SimpleAvatar';
 import AudioComponent from '../Audio';
 import Youtube from '../Youtube';
@@ -15,15 +16,15 @@ import firebase from '../../../firebase';
 import styles from './styles';
 
 const FeedPost = ({
-  authorName, mensaje, mediaLink, likes, type, timestamp, url, pid, authorId, navigate 
+  authorName, mensaje, mediaLink, likes, type, timestamp, url, pid, authorId, navigate,
 }) => {
   const {
     container, headerContainer, basicInfoContainer, dotsContainer,
     bodyContainer, messageContainer, mediaContainer, bottomContainer, iconsContainer,
     dotsButtonStyle, messageStyle, likesStyle, likesContainer,
   } = styles;
-
   const [like, setLike] = useState(false);
+  const [modal, setShowModal] = useState(false);
   const profile = useSelector((state) => state.reducerProfile);
   const { uid } = profile;
 
@@ -34,7 +35,13 @@ const FeedPost = ({
       .collection('likes')
       .doc(uid);
   }
-
+  const onHidePress = async () => {
+    if (uid !== '') {
+      const hidenPostPath = await firebase.firestore().collection('users').doc(uid).collection('hidenPosts');
+      hidenPostPath.add({ publication: pid });
+      setShowModal(false);
+    }
+  };
   useEffect(() => {
     const getLike = async () => {
       if (firebaseQuery !== {}) {
@@ -50,7 +57,7 @@ const FeedPost = ({
       }
     };
     getLike();
-  }, []);
+  }, [firebaseQuery]);
   useEffect(() => {
     const uploadLike = async () => {
       if (firebaseQuery !== {}) {
@@ -59,6 +66,7 @@ const FeedPost = ({
     };
     uploadLike();
   }, [like]);
+
   const onSharePress = async () => {
     const link = Linking.makeUrl(`post/${authorId}/${pid}`);
     const message = `Mira esta publicacion de KLK msn
@@ -82,7 +90,6 @@ ${link}`;
         />
       );
     } if (type === 'audio') {
-      // hacer await soundObject.unloadAsync(); al component
       return (
         <AudioComponent
           id={pid}
@@ -114,6 +121,17 @@ ${link}`;
   };
   return (
     <View style={container}>
+      {modal
+        && (
+          <BasicModal
+            type="interactive"
+            visible={modal}
+            title="Desea ocultar esta publicación ?"
+            onPressCancel={() => setShowModal(false)}
+            onPressOk={() => onHidePress()}
+            requiredHeight={0.5}
+          />
+        )}
       <View style={headerContainer}>
         <View style={basicInfoContainer}>
           <Avatar size={94} name={authorName} date={timestamp} url={url} />
@@ -121,7 +139,7 @@ ${link}`;
         <View style={dotsContainer}>
           <Button
             buttonStyle={dotsButtonStyle}
-            onPress={() => console.log('este es el pid', pid)}
+            onPress={() => setShowModal(true)}
             icon={
               <Icon name="dots-vertical" type="material-community" color="black" size={25} />
             }

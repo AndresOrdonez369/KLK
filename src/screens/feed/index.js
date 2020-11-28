@@ -7,7 +7,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import TimedSlideshow from 'react-native-timed-slideshow';
-import { getStories, handleModalFeed, getPosts } from './actionCreator';
+import {
+  getStories, handleModalFeed, getPosts, getHidenPosts,
+} from './actionCreator';
 import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
 import BasicModal from '../../components/BasicModal';
 import Post from '../../components/FeedPost';
@@ -47,16 +49,27 @@ const Feed = () => {
   const profile = useSelector((state) => state.reducerProfile);
   const feed = useSelector((state) => state.reducerHome);
   const {
-    stories, showModal, modalType, titleModal, heightModal,
+    stories, showModal, modalType, titleModal, heightModal, postList, hidenList,
   } = feed;
   const { imageURL } = profile;
 
   const { navigate } = useNavigation();
 
+  const renderData = () => {
+    console.log('esta es la lista de post', postList);
+    console.log('esta es la lista de hideeeee', hidenList);
+    const res = postList.filter((post) => !hidenList.includes(post.pid));
+    console.log('esta es la respuesta', res);
+  };
+
   useEffect(() => {
     dispatch(getStories(profile.uid));
     dispatch(getPosts(profile.uid));
+    dispatch(getHidenPosts(profile.uid));
   }, [profile.uid]);
+  useEffect(() => {
+    if (postList.length > 0 && hidenList.length > 0) renderData();
+  }, [postList, hidenList]);
 
   // data
   const uniqueID = stories.filter((value, index, self) => {
@@ -82,12 +95,6 @@ const Feed = () => {
     />
   );
 
-  const renderData = () => {
-    const arr = [1, 2, 3, 4];
-    const brr = [2, 4];
-    const res = arr.filter((f) => !brr.includes(f));
-    console.log(res);
-  };
   const onPressStory = (uid) => {
     let story = [];
     if (uid === profile.uid) {
