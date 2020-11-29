@@ -9,7 +9,9 @@ import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getExtraProfile, cleanExtraProfile } from '../profile/actionCreator';
-import { followFirestore, unfollowFirestore, getFollowsByUid } from '../friends/actionCreator';
+import {
+  followFirestore, unfollowFirestore, getFollowersByUid, getFollowingsByUid,
+} from '../friends/actionCreator';
 import Post from '../../components/FeedPost';
 import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
 
@@ -25,7 +27,7 @@ const ExtraProfile = ({ route }) => {
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.reducerProfile);
   const {
-    description, name, userName, followers, following, coverURL, imageURL,
+    description, name, userName, followers, coverURL, imageURL, qFollowers, qFollowings,
   } = profile.anotherUser;
   const screen = 'AnotherProfile';
   const userObj = profile.anotherUser;
@@ -36,7 +38,8 @@ const ExtraProfile = ({ route }) => {
   useEffect(() => {
     const getData = async (id) => {
       await dispatch(getExtraProfile(id));
-      await dispatch(getFollowsByUid(id));
+      await dispatch(getFollowersByUid(id));
+      await dispatch(getFollowingsByUid(id));
     };
     if (name === '') getData(uid);
   }, [uid, name]);
@@ -55,8 +58,6 @@ const ExtraProfile = ({ route }) => {
     checkFollow();
   }, [followers]);
 
-  const totalFollowers = followers ? Object.keys(followers).length : 0;
-  const totalFollows = following ? Object.keys(following).length : 0;
   const imgUser = imageURL ? { uri: imageURL } : null;
   const imgCover = coverURL ? { uri: coverURL } : requireCover;
 
@@ -117,11 +118,11 @@ const ExtraProfile = ({ route }) => {
               <Text style={styles.category}>posts</Text>
             </View>
             <View style={styles.textCategory}>
-              <Text style={styles.numbersInfo}>{totalFollowers + temp}</Text>
+              <Text style={styles.numbersInfo}>{qFollowers + temp}</Text>
               <Text style={styles.category}>seguidores</Text>
             </View>
             <View style={styles.textCategory}>
-              <Text style={styles.numbersInfo}>{totalFollows}</Text>
+              <Text style={styles.numbersInfo}>{qFollowings}</Text>
               <Text style={styles.category}>siguiendo</Text>
             </View>
           </View>

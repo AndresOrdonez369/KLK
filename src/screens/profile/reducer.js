@@ -8,6 +8,8 @@ const STATE_INICIAL = {
     description: '',
     followers: {},
     following: {},
+    qFollowers: 0,
+    qFollowing: 0,
   },
   imageURL: '',
   uploadPhotoError: '',
@@ -26,6 +28,8 @@ const STATE_INICIAL = {
     imageURL: '',
     following: '',
     followers: '',
+    qFollowers: 0,
+    qFollowing: 0,
   },
 };
 
@@ -190,6 +194,38 @@ export default (state = STATE_INICIAL, action) => {
               imageURL: action.payload.imageURL,
             },
           },
+        },
+      };
+    case Actions.SET_MY_FOLLOWERS:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          qFollowers: action.payload,
+        },
+      };
+    case Actions.SET_MY_FOLLOWINGS:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          qFollowings: action.payload,
+        },
+      };
+    case Actions.SET_FOLLOWINGS:
+      return {
+        ...state,
+        anotherUser: {
+          ...state.anotherUser,
+          qFollowings: action.payload,
+        },
+      };
+    case Actions.SET_FOLLOWERS:
+      return {
+        ...state,
+        anotherUser: {
+          ...state.anotherUser,
+          qFollowers: action.payload,
         },
       };
     default:

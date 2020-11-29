@@ -7,7 +7,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import {
-  searcherFirestore, cleanSearch, followFirestore, unfollowFirestore,
+  searcherFirestore, cleanSearch, followFirestore,
+  unfollowFirestore, getFollowersByUid, getFollowingsByUid,
 } from './actionCreator';
 import BasicModal from '../../components/BasicModal';
 import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
@@ -28,6 +29,7 @@ const Friends = () => {
     title: '',
     pressOk: null,
   });
+  const [pagination, setPagination] = useState(0);
 
   // redux
   const dispatch = useDispatch();
@@ -36,7 +38,9 @@ const Friends = () => {
   const {
     error, message, searchResult, errorFollow, messageError,
   } = friends;
-  const { followers, following } = profile.user;
+  const {
+    followers, following, qFollowings, qFollowers,
+  } = profile.user;
 
   const { navigate } = useNavigation();
 
@@ -134,6 +138,26 @@ const Friends = () => {
       />
     );
   };
+  let footer = null;
+  if ((buttonSelected === 'followers' && ((pagination === 0 && follower >= 30) || (pagination !== 0 && qFollowers > pagination)))
+    || (buttonSelected === 'following' && ((pagination === 0 && follows >= 30) || (pagination !== 0 && qFollowings > pagination)))) {
+    footer = (
+      <View>
+        <Button
+          title="Ver más seguidores"
+          buttonStyle={styles.buttonSubmit}
+          onPress={() => {
+            setPagination((prev) => (prev === 0 ? prev + 31 : prev + 30));
+            if (buttonSelected === 'followers') {
+              dispatch(getFollowersByUid(profile.uid, pagination));
+            } else {
+              dispatch(getFollowingsByUid(profile.uid, pagination));
+            }
+          }}
+        />
+      </View>
+    );
+  }
   const header = (
     <View style={styles.headerContainer}>
       <SearchBar
@@ -273,6 +297,7 @@ const Friends = () => {
           ListHeaderComponent={header}
           renderItem={renderFollow}
           keyExtractor={(item) => item.uid}
+          ListFooterComponent={footer}
         />
       </View>
     </SafeAreaView>
@@ -353,6 +378,13 @@ const styles = StyleSheet.create({
   },
   overlayContent: {
     alignItems: 'flex-start',
+  },
+  buttonSubmit: {
+    backgroundColor: '#f22',
+    borderRadius: 20,
+    width: width * 0.6,
+    alignSelf: 'center',
+    marginTop: height * 0.04,
   },
 });
 

@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { Icon, Overlay } from 'react-native-elements';
 import {
-  GiftedChat, Send, InputToolbar, Bubble,
+  GiftedChat, Send, InputToolbar, Bubble, LoadEarlier,
 } from 'react-native-gifted-chat';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
@@ -32,6 +32,7 @@ const Chat = ({ route }) => {
   const [image, setImage] = useState('');
   const [video, setVideo] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [queryIndex, setQueryIndex] = useState(20);
 
   // redux
   const dispatch = useDispatch();
@@ -45,7 +46,8 @@ const Chat = ({ route }) => {
 
   // fnc
   useEffect(() => {
-    dispatch(getMessages(profile.uid, uid));
+    setQueryIndex(20);
+    dispatch(getMessages(profile.uid, uid, queryIndex));
   }, []);
   const handleModal = (show, type = 'confirmation', title = '', ok = null, modalHeight = 0.3) => {
     setModal({
@@ -164,12 +166,27 @@ const Chat = ({ route }) => {
               onSend={() => sendMessage(actualMessage)}
               placeholder="Escribe un mensaje..."
               alwaysShowSend={actualMessage !== ''}
+              loadEarlier={queryIndex <= messages.length}
+              onLoadEarlier={() => {
+                setQueryIndex((prevState) => prevState + 20);
+                dispatch(getMessages(profile.uid, uid, queryIndex));
+              }}
+              renderLoadEarlier={(props) => (
+                <LoadEarlier
+                  {...props}
+                  label="Cargar mensajes antiguos..."
+                />
+              )}
               renderBubble={(props) => (
                 <Bubble
                   {...props}
                   wrapperStyle={{
                     right: {
                       backgroundColor: '#f22',
+                      marginTop: StatusBar.currentHeight,
+                    },
+                    left: {
+                      marginTop: StatusBar.currentHeight,
                     },
                   }}
                 />
