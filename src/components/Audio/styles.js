@@ -13,18 +13,21 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   playButtonStyle: {
-    height: height * 0.25,
-    width: width * 0.95,
+    borderRadius: 50,
+    height: height * 0.12,
+    width: width * 0.25,
     backgroundColor: '#0667FF',
   },
   mediaContainerStyle: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
+    alignItems: 'center',
   },
   mediaButtonStyle: {
-    width: width * 0.46,
-    height: height * 0.25,
+    borderRadius: 50,
+    width: width * 0.25,
+    height: height * 0.12,
     backgroundColor: '#0667FF',
   },
 });

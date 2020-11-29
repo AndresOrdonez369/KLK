@@ -7,7 +7,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import TimedSlideshow from 'react-native-timed-slideshow';
-import { getStories, handleModalFeed } from './actionCreator';
+import {
+  getStories, handleModalFeed, getPosts, getHidenPosts,
+} from './actionCreator';
 import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
 import BasicModal from '../../components/BasicModal';
 import Post from '../../components/FeedPost';
@@ -16,32 +18,28 @@ import Bubbles from '../../components/Stories/bubbles';
 const { height, width } = Dimensions.get('screen');
 const DATA = [
   {
-    id: 1,
+    pid: 'k7tzQyjNtfnSKBrNJBeE',
     urlAvatar: 'https://i.pinimg.com/564x/f1/40/4c/f1404c87f540b80b5fcf766e4c1f567d.jpg',
     authorName: 'Valentina Ruiz Carmona',
     mensaje: 'La música es lo mejor de mi vida',
     mediaLink: 'https://firebasestorage.googleapis.com/v0/b/klk-messenger.appspot.com/o/posts%2Faudios%2F2%2FAnd%20It%20Was%20So.mp3?alt=media&token=a7301cb3-1bab-4ed6-883d-e18b8421bd31',
     type: 'audio',
     timestamp: '24/10/2020',
+    likes: 20,
+    authorId: '1VK5QYny97VrexbCWMCKXtuocKa2',
   },
   {
-    id: 2,
+    pid: 'qmx6YCHCdFo0DVPLv4Yi',
     urlAvatar: 'https://www.eltiempo.com/files/article_multimedia/uploads/2019/11/07/5dc434e900e5f.jpeg',
     authorName: 'Sara Sofia Zarama Cifuentes',
     mensaje: 'Eres lo mejor que me ha pasado en la vida @danielFernandez',
-    mediaLink: 'https://media1.tenor.com/images/2f5349a8ca4737441a87465ff9fab2d0/tenor.gif?itemid=12763949',
-    type: 'image',
+    mediaLink: 'https://firebasestorage.googleapis.com/v0/b/klk-messenger.appspot.com/o/posts%2Faudios%2F1VK5QYny97VrexbCWMCKXtuocKa2%2FAUD-20201118-WA0021.mp3?alt=media&token=39b916fd-3174-487d-a3ec-ae04821f19c0',
+    type: 'audio',
     timestamp: '24/10/2020',
+    likes: 20,
+    authorId: '1VK5QYny97VrexbCWMCKXtuocKa2',
   },
-  {
-    id: 3,
-    urlAvatar: 'https://www.spanishjournal.com/wp-content/uploads/2019/09/091919entertainment.jpg',
-    authorName: 'Austin Agustin Santos',
-    mensaje: 'Aquí mi nueva canción.',
-    mediaLink: 'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
-    type: 'video',
-    timestamp: '24/10/2020',
-  }];
+];
 const Feed = () => {
   // state
   const [showStories, setShowStories] = useState(false);
@@ -51,15 +49,27 @@ const Feed = () => {
   const profile = useSelector((state) => state.reducerProfile);
   const feed = useSelector((state) => state.reducerHome);
   const {
-    stories, showModal, modalType, titleModal, heightModal,
+    stories, showModal, modalType, titleModal, heightModal, postList, hidenList,
   } = feed;
   const { imageURL } = profile;
 
   const { navigate } = useNavigation();
 
+  const renderData = () => {
+    console.log('esta es la lista de post', postList);
+    console.log('esta es la lista de hideeeee', hidenList);
+    const res = postList.filter((post) => !hidenList.includes(post.pid));
+    console.log('esta es la respuesta', res);
+  };
+
   useEffect(() => {
     dispatch(getStories(profile.uid));
+    dispatch(getPosts(profile.uid));
+    dispatch(getHidenPosts(profile.uid));
   }, [profile.uid]);
+  useEffect(() => {
+    if (postList.length > 0 && hidenList.length > 0) renderData();
+  }, [postList, hidenList]);
 
   // data
   const uniqueID = stories.filter((value, index, self) => {
@@ -72,14 +82,19 @@ const Feed = () => {
   // fnc
   const renderPost = ({ item }) => (
     <Post
+      pid={item.pid}
       url={item.urlAvatar}
       authorName={item.authorName}
       mensaje={item.mensaje}
       mediaLink={item.mediaLink}
       type={item.type}
+      likes={item.likes}
+      authorId={item.authorId}
       timestamp={item.timestamp}
+      navigate={navigate}
     />
   );
+
   const onPressStory = (uid) => {
     let story = [];
     if (uid === profile.uid) {
@@ -151,7 +166,7 @@ const Feed = () => {
           <FlatList
             data={DATA}
             renderItem={renderPost}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.pid}
           />
         </View>
       </View>
@@ -190,8 +205,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   feedContainer: {
-
-    height: height * 0.8,
+    height: height * 0.66,
   },
 });
 
