@@ -49,7 +49,7 @@ const FollowAvatar = ({
       />
       <View style={styles.containerText(size)}>
         {name && <Text style={styles.name(size)}>{name}</Text>}
-        {nick && <Text style={styles.nick(size)}>{nick}</Text>}
+        {date && <Text style={styles.date(size)}>{date}</Text>}
       </View>
       <View style={styles.containerButton(size)}>
         <ButtonBasic
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     fontSize: size / 6,
     fontWeight: '500',
   }),
-  nick: (size) => ({
+  date: (size) => ({
     fontSize: size / 7,
     color: 'gray',
   }),
