@@ -139,3 +139,38 @@ export const getExtraProfile = (id) => async (dispatch) => {
 export const cleanExtraProfile = () => ({
   type: Actions.CLEAN_EXTRA_PROFILE,
 });
+
+export const getPosts = (uid) => async (dispatch) => {
+  const db = firebase.firestore();
+  if (uid !== '') {
+    await db.collection('posts').doc(uid).collection('userPosts').limit(20)
+      .get()
+      .then((posts) => {
+        posts.forEach(async (post) => {
+          const pathReference = await firebase.storage().ref(`/Users/profilePhotos/${post.data().authorID}.png`);
+          const url = await pathReference.getDownloadURL();
+          const date0 = new Date(post.data().createdAt);
+          const date = date0.toLocaleDateString();
+          const likes0 = await firebase.firestore().collection('posts').doc(post.data().authorID).collection('userPosts')
+            .doc(post.id)
+            .collection('likes')
+            .get();
+          const post0 = {
+            pid: post.id,
+            urlAvatar: url,
+            authorName: post.data().author,
+            mensaje: post.data().description,
+            mediaLink: post.data().mediaURL,
+            type: post.data().type,
+            timestamp: date,
+            likes: likes0.size,
+            authorId: post.data().authorID,
+          };
+          dispatch({
+            type: Actions.GET_POSTS_PROFILE,
+            payload: post0,
+          });
+        });
+      });
+  }
+};
