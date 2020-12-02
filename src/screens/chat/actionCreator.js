@@ -93,3 +93,18 @@ const chatMessages = (docID, index) => async (dispatch) => {
     });
   }
 };
+
+export const updateLastMessage = (docID, text, timestamp) => async (dispatch) => {
+  const db = firebase.firestore();
+  await db.collection('chats').doc(docID).update({
+    lastMessage: text,
+    lastUpdate: timestamp,
+  })
+    .catch((error) => {
+      console.log('error actualizando último mensaje: ', error);
+      return dispatch({
+        type: Actions.LAST_MESSAGE_ERROR,
+        payload: 'Hubo un error actualizando los cambios',
+      });
+    });
+};

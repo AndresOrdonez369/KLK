@@ -14,11 +14,11 @@ import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import BasicModal from '../../components/BasicModal';
 import { uploadImage, uploadVideo } from '../post/actionCreator';
-import { sendMessageDB, getMessages } from './actionCreator';
+import { sendMessageDB, getMessages, updateLastMessage } from './actionCreator';
 
 const { height, width } = Dimensions.get('screen');
 
-const Chat = ({ route }) => {
+const Chat = ({ route, navigation }) => {
   // state
   const [actualMessage, setActualMessage] = useState('');
   const [modal, setModal] = useState({
@@ -33,6 +33,7 @@ const Chat = ({ route }) => {
   const [video, setVideo] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [queryIndex, setQueryIndex] = useState(20);
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
 
   // redux
   const dispatch = useDispatch();
@@ -47,8 +48,23 @@ const Chat = ({ route }) => {
   // fnc
   useEffect(() => {
     setQueryIndex(20);
+    setUnsavedChanges(false);
     dispatch(getMessages(profile.uid, uid, queryIndex));
   }, []);
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', () => setLastMessage());
+    return unsubscribe;
+  }, [navigation, unsavedChanges, messages, chatState]);
+  const setLastMessage = () => {
+    if (unsavedChanges) {
+      const last = messages[messages.length - 1];
+      let { text } = last;
+      if (last.text === '' && (last.image !== '' || last.video !== '')) {
+        text = 'media';
+      }
+      dispatch(updateLastMessage(chatState.docID, text, last.createdAt));
+    }
+  };
   const handleModal = (show, type = 'confirmation', title = '', ok = null, modalHeight = 0.3) => {
     setModal({
       showModal: show,
@@ -102,6 +118,7 @@ const Chat = ({ route }) => {
     if (chatState.image !== '' || chatState.video !== '') sendMessage();
   }, [chatState.image, chatState.video]);
   const sendMessage = async () => {
+    setUnsavedChanges(true);
     await dispatch(sendMessageDB(
       actualMessage, chatState.image, chatState.video,
       profile.uid, profile.user.userName, chatState.docID,
@@ -149,7 +166,10 @@ const Chat = ({ route }) => {
           <Icon
             name="arrow-left"
             type="font-awesome"
-            onPress={() => navigate(screen, { uid, actualScreen })}
+            onPress={() => {
+              navigate(screen, { uid, actualScreen });
+              setLastMessage();
+            }}
             iconStyle={styles.icon}
           />
           <Text style={styles.title}>{userObj.name}</Text>

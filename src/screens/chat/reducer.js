@@ -25,6 +25,7 @@ export default (state = STATE_INICIAL, action) => {
         video: action.payload,
         error: false,
       };
+    case Actions.LAST_MESSAGE_ERROR:
     case Actions.CHAT_ERROR:
     case Actions.UPLOAD_VIDEO_CHAT_ERROR:
     case Actions.UPLOAD_PHOTO_CHAT_ERROR:
