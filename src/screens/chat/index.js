@@ -55,6 +55,11 @@ const Chat = ({ route, navigation }) => {
     const unsubscribe = navigation.addListener('beforeRemove', () => setLastMessage());
     return unsubscribe;
   }, [navigation, unsavedChanges, messages, chatState]);
+  useEffect(() => {
+    if (chatState.error) {
+      handleModal(true, 'error', chatState.message);
+    }
+  }, [chatState.error, chatState.message]);
   const setLastMessage = () => {
     if (unsavedChanges) {
       const last = messages[messages.length - 1];
