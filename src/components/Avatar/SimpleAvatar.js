@@ -5,7 +5,7 @@ import { View, Text, StyleSheet } from 'react-native';
 const requirePhoto = require('../../../assets/busyPosition.png');
 
 const SimpleAvatar = ({
-  url, size = 150, name, date, accessory = null, showAccessory = false, onPress = () => {},
+  url, size = 150, name, date, accessory = null, showAccessory = false, onPress,
 }) => {
   const imgUser = url
     ? { uri: url }

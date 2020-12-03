@@ -8,6 +8,7 @@ import Friends from '../screens/friends';
 import Videos from '../screens/videoFeed';
 import Radio from '../screens/radio';
 import Post from '../screens/post';
+import Chats from '../screens/chats';
 import Settings from '../screens/settings';
 import AnotherProfile from '../screens/ExtraProfile';
 import Chat from '../screens/chat';
@@ -70,6 +71,7 @@ function AppHide() {
       <Stack.Screen name="CreatePost" component={Post} />
       <Stack.Screen name="AnotherProfile" component={AnotherProfile} />
       <Stack.Screen name="Chat" component={Chat} />
+      <Stack.Screen name="Chats" component={Chats} />
     </Stack.Navigator>
   );
 }

@@ -3,34 +3,23 @@ import { Avatar } from 'react-native-elements';
 import {
   View, Text, StyleSheet, Dimensions,
 } from 'react-native';
-import ButtonBasic from '../ButtonBasic/ButtonBasic';
 
 const { height, width } = Dimensions.get('screen');
 const requirePhoto = require('../../../assets/busyPosition.png');
 
-const FollowAvatar = ({
-  follow = true,
+const ChatAvatar = ({
   urlImage,
   size = height * 0.1,
   name,
-  date,
+  message,
   accessory = null,
   showAccessory = false,
   onPress,
-  pressFollow,
-  pressUnfollow,
+  hour,
 }) => {
   const imgUser = urlImage
     ? { uri: urlImage }
     : requirePhoto;
-  const buttonPress = async (value) => {
-    if (value) {
-      if (pressFollow) await pressFollow();
-    }
-    if (!value) {
-      if (pressUnfollow) await pressUnfollow();
-    }
-  };
 
   return (
     <View style={{
@@ -49,15 +38,10 @@ const FollowAvatar = ({
       />
       <View style={styles.containerText(size)}>
         {name && <Text style={styles.name(size)}>{name}</Text>}
-        {date && <Text style={styles.date(size)}>{date}</Text>}
+        {message && <Text style={styles.message(size)}>{message}</Text>}
       </View>
-      <View style={styles.containerButton(size)}>
-        <ButtonBasic
-          text={follow ? 'Seguir' : 'Siguiendo'}
-          buttonStyle={styles.buttonStyle(size, follow)}
-          textStyle={styles.textButtons(size, follow)}
-          onPress={() => buttonPress(follow)}
-        />
+      <View style={styles.containerHour(size)}>
+        {hour && <Text style={styles.message(size)}>{hour}</Text>}
       </View>
     </View>
   );
@@ -90,7 +74,7 @@ const styles = StyleSheet.create({
     fontSize: size / 6,
     fontWeight: '500',
   }),
-  date: (size) => ({
+  message: (size) => ({
     fontSize: size / 7,
     color: 'gray',
   }),
@@ -99,7 +83,7 @@ const styles = StyleSheet.create({
     marginRight: size / 4,
     width: size * 2.1,
   }),
-  containerButton: (size) => ({
+  containerHour: (size) => ({
     marginTop: size / 4,
     width: size / 1.65,
     alignItems: 'center',
@@ -108,4 +92,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default FollowAvatar;
+export default ChatAvatar;
