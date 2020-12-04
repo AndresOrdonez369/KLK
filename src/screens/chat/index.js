@@ -62,11 +62,6 @@ const Chat = ({ route, navigation }) => {
   }, [chatState.error, chatState.message]);
   const setLastMessage = () => {
     if (unsavedChanges) {
-      const last = messages[messages.length - 1];
-      let { text } = last;
-      if (last.text === '' && (last.image !== '' || last.video !== '')) {
-        text = 'media';
-      }
       dispatch(updateLastMessage(chatState.docID, text, last.createdAt));
     }
   };
@@ -105,15 +100,13 @@ const Chat = ({ route, navigation }) => {
       handleModal(true,
         'interactive',
         '¿Deseas enviar el archivo seleccionado como mensaje?',
-        () => {
-          sendMedia();
-          setModal({ ...modal, showModal: false });
-        });
+        () => sendMedia());
     } else {
       handleModal(true, 'error', 'Has cancelado la carga del archivo');
     }
   };
   const sendMedia = () => {
+    handleModal(false);
     setIsLoading(true);
     if (image !== '') dispatch(uploadImage(image.uri, profile.uid, 'chats'));
     if (video !== '') dispatch(uploadVideo(video.uri, profile.uid, 'chats'));
@@ -143,6 +136,11 @@ const Chat = ({ route, navigation }) => {
       avatar: item.authorID === uid ? userObj.imageURL : profile.imageURL,
     },
   })) : [];
+  const last = messages ? messages[0] : null;
+  let text = last ? last.text : '';
+  if (text === '' && (last.image !== '' || last.video !== '')) {
+    text = 'media';
+  }
 
   // loader
   const loader = () => (
