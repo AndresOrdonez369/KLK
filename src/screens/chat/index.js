@@ -29,8 +29,6 @@ const Chat = ({ route, navigation }) => {
     pressCancel: null,
     height: 0.3,
   });
-  const [image, setImage] = useState('');
-  const [video, setVideo] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [queryIndex, setQueryIndex] = useState(20);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
@@ -62,11 +60,6 @@ const Chat = ({ route, navigation }) => {
   }, [chatState.error, chatState.message]);
   const setLastMessage = () => {
     if (unsavedChanges) {
-      const last = messages[messages.length - 1];
-      let { text } = last;
-      if (last.text === '' && (last.image !== '' || last.video !== '')) {
-        text = 'media';
-      }
       dispatch(updateLastMessage(chatState.docID, text, last.createdAt));
     }
   };
@@ -95,28 +88,22 @@ const Chat = ({ route, navigation }) => {
       videoMaxDuration: 300,
     });
     if (!result.cancelled) {
-      if (result.type === 'image') {
-        setVideo('');
-        setImage(result);
-      } else {
-        setVideo(result);
-        setImage('');
-      }
       handleModal(true,
         'interactive',
         '¿Deseas enviar el archivo seleccionado como mensaje?',
-        () => {
-          sendMedia();
-          setModal({ ...modal, showModal: false });
-        });
+        () => sendMedia(result, result.type));
     } else {
       handleModal(true, 'error', 'Has cancelado la carga del archivo');
     }
   };
-  const sendMedia = () => {
+  const sendMedia = (media, type) => {
+    handleModal(false);
     setIsLoading(true);
-    if (image !== '') dispatch(uploadImage(image.uri, profile.uid, 'chats'));
-    if (video !== '') dispatch(uploadVideo(video.uri, profile.uid, 'chats'));
+    if (type === 'image') {
+      dispatch(uploadImage(media.uri, profile.uid, 'chats'));
+    } else {
+      dispatch(uploadVideo(media.uri, profile.uid, 'chats'));
+    }
     setIsLoading(false);
   };
   useEffect(() => {
@@ -143,6 +130,13 @@ const Chat = ({ route, navigation }) => {
       avatar: item.authorID === uid ? userObj.imageURL : profile.imageURL,
     },
   })) : [];
+  const last = messages ? messages[0] : null;
+  let text = last ? last.text : '';
+  const img = last ? last.image : '';
+  const vid = last ? last.video : '';
+  if (text === '' && (img !== '' || vid !== '')) {
+    text = 'media';
+  }
 
   // loader
   const loader = () => (
@@ -242,7 +236,7 @@ const Chat = ({ route, navigation }) => {
                   />
                 </View>
               )}
-              onInputTextChanged={(text) => setActualMessage(text)}
+              onInputTextChanged={(textt) => setActualMessage(textt)}
             />
           </View>
         </KeyboardAvoidingView>

@@ -18,7 +18,6 @@ const Chats = () => {
   const chats = useSelector((state) => state.reducerChats);
   const { chatList } = chats;
 
-  console.log(chatList, 'holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
   const { navigate } = useNavigation();
   useEffect(() => {
     if (chatList.length === 0) {
@@ -28,7 +27,6 @@ const Chats = () => {
 
   const renderChats = ({ item }) => {
     const userObj = { imageUrl: item.urlImage, name: item.name, uid: item.uid };
-    console.log(userObj, 'impresioooooooon');
     return (
       <TouchableHighlight underlayColor="#ffc4c4" onPress={() => navigate('Chat', { userObj, screen: 'Chats', actualScreen: 'NoView' })}>
 
