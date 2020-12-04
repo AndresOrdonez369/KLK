@@ -129,7 +129,7 @@ ${link}`;
             title="Desea ocultar esta publicación ?"
             onPressCancel={() => setShowModal(false)}
             onPressOk={() => onHidePress()}
-            requiredHeight={0.5}
+            requiredHeight={0.4}
           />
         )}
       <View style={headerContainer}>

@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderWidth: 1,
     borderColor: error ? 'red' : '#2672FF',
-    color:"red",
+    color: 'red',
     shadowColor: 'rgba(0,0,0, .4)',
     shadowOffset: { height: 2, width: 2 },
     shadowOpacity: 1,
@@ -32,8 +32,8 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     color: '#2672FF',
     marginBottom: 10,
-    marginLeft:width * 0.08,
-    marginRight:width * 0.1,
+    marginLeft: width * 0.08,
+    marginRight: width * 0.1,
   },
 });
 export default styles;

@@ -4,7 +4,7 @@ const { height, width } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
   container: {
-    height: height * 0.47,
+    height: height * 0.49,
     width,
     borderRadius: 20,
     alignItems: 'center',
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
 
   },
   bottomContainer: {
-    height: height * 0.06,
+    height: height * 0.07,
     width,
     backgroundColor: 'white',
     justifyContent: 'flex-end',

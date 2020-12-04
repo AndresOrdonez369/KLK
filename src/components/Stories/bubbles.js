@@ -145,7 +145,7 @@ const Bubbles = ({
 
 const styles = StyleSheet.create({
   container: {
-    height: height * 0.13,
+    height: height * 0.12,
     width,
     backgroundColor: 'white',
     flexDirection: 'row',

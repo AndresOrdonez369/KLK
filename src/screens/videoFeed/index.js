@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import {
-  Dimensions, StyleSheet, View, FlatList, StatusBar,
+  Dimensions, StyleSheet, View, FlatList, StatusBar, SafeAreaView, 
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
@@ -35,7 +35,7 @@ const DATA = [
 ];
 const styles = StyleSheet.create({
   container: {
-    height: height * 0.9,
+    backgroundColor: '#ffffff',
     width,
     marginTop: StatusBar.currentHeight || 0,
   },
@@ -71,13 +71,15 @@ const VideoFeed = () => {
   );
 
   return (
-    <View style={container}>
-      <FlatList
-        data={DATA}
-        renderItem={renderPost}
-        keyExtractor={(item) => item.pid}
-      />
-    </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f22' }}>
+      <View style={container}>
+        <FlatList
+          data={DATA}
+          renderItem={renderPost}
+          keyExtractor={(item) => item.pid}
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 export default VideoFeed;

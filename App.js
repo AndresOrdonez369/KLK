@@ -7,12 +7,10 @@ import store from './src/redux/store';
 if (!global.btoa) global.btoa = encode;
 if (!global.atob) global.atob = decode;
 
-const App = () => {
-    return (
-      <Provider store={store}>
-        <Navigation />
-      </Provider>
-    );
-}
+const App = () => (
+  <Provider store={store}>
+    <Navigation />
+  </Provider>
+);
 
 export default App;

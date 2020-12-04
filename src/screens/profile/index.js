@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f22',
   },
   container: {
-    height,
+    height: height * 0.9,
     width,
     backgroundColor: 'white',
   },

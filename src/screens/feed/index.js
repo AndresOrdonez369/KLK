@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Dimensions, StyleSheet, View, FlatList, Modal,
+  Dimensions, StyleSheet, View, FlatList, Modal, Text, Image,
 } from 'react-native';
 import { Button } from 'react-native-elements';
 import { useSelector, useDispatch } from 'react-redux';
@@ -10,12 +10,15 @@ import TimedSlideshow from 'react-native-timed-slideshow';
 import {
   getStories, handleModalFeed, getPosts, getHidenPosts,
 } from './actionCreator';
+import AudioComponent from '../../components/Audio';
 import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
 import BasicModal from '../../components/BasicModal';
 import Post from '../../components/FeedPost';
 import Bubbles from '../../components/Stories/bubbles';
 
 const { height, width } = Dimensions.get('screen');
+const klkmsn = require('../../../assets/klklogo512.png');
+
 const DATA = [
   {
     pid: 'k7tzQyjNtfnSKBrNJBeE',
@@ -56,10 +59,11 @@ const Feed = () => {
   const { navigate } = useNavigation();
 
   const renderData = () => {
-    console.log('esta es la lista de post', postList);
-    console.log('esta es la lista de hideeeee', hidenList);
+    // console.log('esta es la lista de post', postList);
+    // console.log('esta es la lista de hideeeee', hidenList);
     const res = postList.filter((post) => !hidenList.includes(post.pid));
-    console.log('esta es la respuesta', res);
+    // console.log('esta es la respuesta', res);
+    return res;
   };
 
   useEffect(() => {
@@ -136,6 +140,22 @@ const Feed = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#F22' }}>
       <View style={styles.container}>
+        <View style={styles.radioContainerStyle}>
+          <View style={styles.radioButtonContainer}>
+            <AudioComponent
+              id="radio"
+              link="http://64.37.50.226:8006/stream"
+              radio
+              size={25}
+            />
+          </View>
+          <Image source={klkmsn} style={{ marginLeft: 50,  height: 45, width: 45 }} />
+          <Text style={styles.title}>
+            klk msn
+          </Text>
+
+        </View>
+
         {showModal
         && (
           <BasicModal
@@ -164,6 +184,7 @@ const Feed = () => {
         </View>
         <View style={styles.feedContainer}>
           <FlatList
+            contentContainerStyle={{ marginBottom: 100 }}
             data={DATA}
             renderItem={renderPost}
             keyExtractor={(item) => item.pid}
@@ -183,6 +204,23 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
+    textAlign: 'center',
+    marginLeft: 20,
+    fontWeight: '700',
+    color: '#0667FF',
+  },
+  radioButtonContainer: {
+    height: height * 0.6,
+
+  },
+  radioContainerStyle: {
+    height: height * 0.07,
+    width,
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    alignItems: 'center',
+    paddingLeft: 20,
+    marginBottom: -5,
   },
   createView: {
     height: height * 0.1,
@@ -205,7 +243,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   feedContainer: {
-    height: height * 0.66,
+    height: height * 0.6,
   },
 });
 
