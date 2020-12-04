@@ -6,7 +6,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { idUpdate } from './audioAppActionCreator';
 import styles from './styles';
 
-const AudioComponent = ({ link, id }) => {
+const AudioComponent = ({
+  link, id, radio = false, size = 20,
+}) => {
   const [audio, setAudio] = useState({
     audioController: true,
     mediaSource: link,
@@ -16,7 +18,9 @@ const AudioComponent = ({ link, id }) => {
   const {
     audioController, mediaSource, playBack,
   } = audio;
-  const { mediaButtonStyle, playButtonStyle, mediaContainerStyle } = styles;
+  const {
+    mediaButtonStyle, playButtonStyle, mediaContainerStyle, radioButtonStyle, radioContainerStyle,
+  } = styles;
   const audioReducer = useSelector((state) => state.reducerAudio);
   const { aid } = audioReducer;
   const dispatch = useDispatch();
@@ -70,6 +74,30 @@ const AudioComponent = ({ link, id }) => {
     setAudio({ ...audio, audioController: !audioController });
   };
 
+  const renderRadio = () => (audioController ? (
+    <View style={radioContainerStyle}>
+      <Button
+        raised
+        onPress={() => playAudio()}
+        buttonStyle={radioButtonStyle}
+        icon={
+          <Icon name="play" type="material-community" color="white" size={size} />
+      }
+      />
+    </View>
+  ) : (
+    <View style={radioContainerStyle}>
+      <Button
+        raised
+        onPress={() => pauseAudio()}
+        buttonStyle={radioButtonStyle}
+        icon={
+          <Icon name="pause" type="material-community" color="white" size={size} />
+      }
+      />
+    </View>
+  ));
+
   const renderButtons = () => (audioController ? (
     <View style={mediaContainerStyle}>
       <Button
@@ -101,7 +129,7 @@ const AudioComponent = ({ link, id }) => {
       />
     </View>
   ));
-  return renderButtons();
+  return radio ? renderRadio() : renderButtons();
 };
 
 export default AudioComponent;

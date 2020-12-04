@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet, View, Text, FlatList, Dimensions, KeyboardAvoidingView,
+  StyleSheet, View, Text, FlatList, Dimensions, KeyboardAvoidingView, SafeAreaView, ScrollView
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Input, Button, Icon } from 'react-native-elements';
+import AudioComponent from '../../components/Audio';
 // import InputBasic from '../../components/InputBasic/inputBasic';
 import { Send, LoadMessages } from './actionCreator';
 
@@ -50,45 +51,57 @@ const Radio = () => {
     setInput({ ...input, message: '' });
   };
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior="padding"
-    >
-      <Text style={styles.titulo}>Chat KLK Radio</Text>
-      <View style={styles.chatContainer}>
-        <FlatList
-          inverted
-          data={messages}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.time}
-        />
-      </View>
-      <View style={styles.inputContainer}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f22' }}>
+      <ScrollView style={styles.container}>
+        <View style={{ height: height * 0.15, width }}>
+          <AudioComponent
+            id="radio"
+            link="http://64.37.50.226:8006/stream"
+            radio
+            size={70}
+          />
+        </View>
+        <Text style={styles.titulo}>Chat KLK Radio</Text>
+        <View style={styles.chatContainer}>
+          <FlatList
+            inverted
+            data={messages}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.time}
+          />
+        </View>
         <Input
           value={message}
           placeholder="Escribe tu mensaje"
           containerStyle={styles.input}
           underlineColorAndroid="#A7A8AB"
           onChangeText={(text) => setInput({ ...input, message: text })}
+          rightIcon={(
+            <Button
+              raised
+              onPress={() => sendFunction()}
+              buttonStyle={styles.sendButton}
+              icon={
+                <Icon name="send" type="material-community" color="white" size={30} />
+                 }
+            />
+            )}
         />
-        <Button
-          raised
-          onPress={() => sendFunction()}
-          buttonStyle={styles.sendButton}
-          icon={
-            <Icon name="send" type="material-community" color="white" size={30} />
-      }
-        />
-      </View>
-    </KeyboardAvoidingView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
   container: {
-    height: height * 0.9,
-    backgroundColor: '#F7F7F7',
-    marginTop: height * 0.05,
+    marginTop: 29,
+    height,
     width,
+    backgroundColor: '#ffffff',
+  },
+  avoidingStyle: {
+    height: height * 0.3,
+    width,
+
   },
   titulo: {
     fontSize: 15,
@@ -103,7 +116,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#A7A8AB',
     flexDirection: 'row',
-    paddingHorizontal: width * 0.03,
+    paddingHorizontal: width * 0.01,
     borderRadius: 50,
     height: height * 0.06,
     width: width * 0.94,
@@ -120,14 +133,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#f22',
   },
   input: {
+    height: height * 0.07,
     alignSelf: 'center',
-    marginTop: 10,
     width: width * 0.75,
+    backgroundColor: '#A7A8AB',
+    borderRadius: 30,
   },
   chatContainer: {
     paddingTop: 15,
     borderRadius: 40,
-    height: height * 0.75,
+    height: height * 0.59,
     width,
     backgroundColor: '#F7F7F7',
   },

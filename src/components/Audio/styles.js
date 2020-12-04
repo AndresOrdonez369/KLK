@@ -18,6 +18,16 @@ const styles = StyleSheet.create({
     width: width * 0.25,
     backgroundColor: '#0667FF',
   },
+  radioContainerStyle: {
+    flex: 1,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  radioButtonStyle: {
+    borderRadius: 50,
+    backgroundColor: '#f22',
+
+  },
   mediaContainerStyle: {
     flex: 1,
     flexDirection: 'row',
