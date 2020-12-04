@@ -126,12 +126,12 @@ export const getExtraProfile = (id) => async (dispatch) => {
     });
   }
   const {
-    userName, name, coverURL, description, following, followers, imageURL, uid,
+    userName, name, coverURL, description, imageURL, uid,
   } = snapShot.data();
   return dispatch({
     type: Actions.ANOTHER_USER_FETCH,
     payload: {
-      userName, name, imageURL, coverURL, description, followers, following, uid,
+      userName, name, imageURL, coverURL, description, uid,
     },
   });
 };
