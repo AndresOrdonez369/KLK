@@ -12,7 +12,7 @@ import InputBasic from '../../components/InputBasic/inputBasic';
 import BasicModal from '../../components/BasicModal';
 import ProfilePicture from '../../components/Avatar/ProfilePicture';
 import {
-  updateDescription, hideModalProfile, setDataChange, updateDataUser, getPosts
+  updateDescription, hideModalProfile, setDataChange, updateDataUser, getPosts,
 } from './actionCreator';
 import Post from '../../components/FeedPost';
 
@@ -141,6 +141,7 @@ const Profile = () => {
           <Button
             title="Mis chats"
             buttonStyle={styles.buttonSubmit}
+            onPress={() => navigate('Chats', { actualScreen: 'Perfil' })}
           />
         </View>
         <FlatList

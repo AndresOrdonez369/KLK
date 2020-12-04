@@ -86,4 +86,6 @@ export default {
   LAST_MESSAGE_ERROR: 'LAST_MESSAGE_ERROR',
   // Video
   GET_VIDEO_POSTS: 'GET_VIDEO_POSTS',
+  // Chats
+  GET_CHATS: 'GET_CHATS',
 };
