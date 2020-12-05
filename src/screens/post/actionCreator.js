@@ -8,12 +8,16 @@ export const updateLoader = (value) => ({
 });
 
 export const submitPost = (
-  uid, name, body, mediaURL, uploaded, date,
+  uid, name, body, mediaURL, uploaded, date, urlAvatar,
 ) => async (dispatch) => {
   try {
     const db = firebase.firestore();
     const followCollection = db.collection('following');
     const userCollectionRef = db.collection('posts').doc(uid).collection('userPosts');
+
+    await followCollection.doc(uid).set({
+      lastUpdate: Date.now(),
+    });
 
     await userCollectionRef.add({
       authorID: uid,
@@ -22,11 +26,31 @@ export const submitPost = (
       mediaURL,
       type: uploaded,
       createdAt: date,
-    });
-
-    await followCollection.doc(uid).set({
-      lastUpdate: Date.now(),
-    });
+    })
+      .then((doc) => {
+        const post = {
+          pid: doc.id,
+          authorName: name,
+          mensaje: body,
+          mediaLink: mediaURL,
+          type: uploaded,
+          timestamp: date,
+          likes: 0,
+          authorID: uid,
+          urlAvatar,
+        };
+        if (type !== 'video') {
+          dispatch({
+            type: Actions.SET_NEW_POST,
+            payload: post,
+          });
+        } else {
+          dispatch({
+            type: Actions.SET_NEW_VIDEOPOST,
+            payload: post,
+          });
+        }
+      });
 
     return dispatch({
       type: Actions.UPDATE_POST_SUCCESS,

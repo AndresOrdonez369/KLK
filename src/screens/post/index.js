@@ -155,7 +155,7 @@ const Post = () => {
           pressCancel: () => setModal({ ...modal, showModal: false }),
         });
       } else {
-        await dispatch(submitPost(uid, name, body, mediaURL, uploaded, date));
+        await dispatch(submitPost(uid, name, body, mediaURL, uploaded, date, imageURL));
         dispatch(updateLoader(false));
         setModal({
           ...modal,

@@ -50,6 +50,11 @@ export default (state = STATE_INICIAL, action) => {
         error: true,
         message: 'Hubo un error trayendo los datos',
       };
+    case Actions.SET_NEW_POST:
+      return {
+        ...state,
+        postList: [...state.postList, action.payload],
+      };
     default:
       return { ...state };
   }

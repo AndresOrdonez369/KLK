@@ -231,6 +231,12 @@ export default (state = STATE_INICIAL, action) => {
           qFollowers: action.payload,
         },
       };
+    case Actions.SET_NEW_VIDEOPOST:
+    case Actions.SET_NEW_POST:
+      return {
+        ...state,
+        postList: [...state.postList, action.payload],
+      };
     default:
       return { ...state };
   }
