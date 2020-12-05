@@ -181,11 +181,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#f22',
   },
   input: {
+    marginTop: height * 0.005,
     height: height * 0.06,
     alignSelf: 'center',
-    width: width * 0.75,
+    width: width * 0.95,
     backgroundColor: '#efefef',
-    borderRadius: 30,
+    borderRadius: 20,
   },
   title: {
     fontSize: height * 0.02,

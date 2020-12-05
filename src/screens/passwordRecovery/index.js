@@ -2,17 +2,21 @@ import React, { useState } from 'react';
 import {
   Dimensions, StyleSheet, View, Text,
 } from 'react-native';
+import { useDispatch } from 'react-redux';
 import InputBasic from '../../components/InputBasic/inputBasic';
 import ButtonBasic from '../../components/ButtonBasic/ButtonBasic';
+import passwordRecovery from './actionCreator';
 
 const { height, width } = Dimensions.get('screen');
 
 const PassRecovery = () => {
   // state
   const [input, setInput] = useState({ user: '' });
+
   // recuperar contraseña
+  const dispatch = useDispatch();
   const pressRecovery = (user) => {
-    console.log(user);
+    dispatch(passwordRecovery(user));
   };
   return (
     <View style={styles.container}>

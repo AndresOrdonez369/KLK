@@ -143,7 +143,7 @@ ${link}`;
           />
         )}
       <View style={headerContainer}>
-        <TouchableHighlight onPress={() => navigate('AnotherProfile', { authorId, screen })}>
+        <TouchableHighlight onPress={() => navigate('AnotherProfile', { uid: authorId, actualScreen: screen })}>
           <View style={basicInfoContainer}>
             <Avatar size={94} name={authorName} date={timestamp} url={url} />
           </View>

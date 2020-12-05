@@ -241,7 +241,7 @@ const Post = () => {
           <Icon
             name="arrow-left"
             type="font-awesome"
-            onPress={() => navigate('PerfilStack')}
+            onPress={() => navigate('Inicio')}
             iconStyle={styles.icon}
           />
           <Text style={styles.title}>
