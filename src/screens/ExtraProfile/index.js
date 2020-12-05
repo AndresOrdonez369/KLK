@@ -75,6 +75,7 @@ const ExtraProfile = ({ route }) => {
     }
   };
   const renderPost = ({ item }) => (
+
     <Post
       pid={item.pid}
       url={item.urlAvatar}
@@ -85,9 +86,10 @@ const ExtraProfile = ({ route }) => {
       likes={item.likes}
       authorId={item.authorId}
       timestamp={item.timestamp}
-      navigate={navigate}
+      screen="AnotherProfile"
     />
   );
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>

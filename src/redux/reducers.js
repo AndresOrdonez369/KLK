@@ -12,6 +12,7 @@ import reducerSettings from '../screens/settings/reducer';
 import reducerAudio from '../components/Audio/audioAppReducer';
 import reducerChat from '../screens/chat/reducer';
 import reducerChats from '../screens/chats/reducer';
+import reducerComments from '../screens/comments/reducer';
 
 const combineReducer = combineReducers({
   reducerHome,
@@ -27,6 +28,7 @@ const combineReducer = combineReducers({
   reducerAudio,
   reducerChat,
   reducerChats,
+  reducerComments,
 });
 
 export default combineReducer;

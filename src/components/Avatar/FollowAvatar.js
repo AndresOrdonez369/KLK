@@ -69,11 +69,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: size / 5,
-    width: flag ? size / 1.70 : size / 1.20,
+    width: flag ? size / 1.18 : size / 1.50,
     borderRadius: 4,
-    backgroundColor: flag ? '#f22' : '#F0F0F0',
+    backgroundColor: flag ? '#F0F0F0' : '#f22',
     borderWidth: 0.3,
-    borderColor: flag ? '#f22' : 'gray',
+    borderColor: flag ? 'gray' : '#f22',
     shadowColor: 'rgba(0,0,0, .4)',
     shadowOffset: { height: 2, width: 2 },
     shadowOpacity: 0.5,
@@ -82,8 +82,8 @@ const styles = StyleSheet.create({
 
   }),
   textButtons: (size, flag) => ({
-    color: flag ? 'white' : 'black',
-    fontSize: size / 8.2,
+    color: flag ? 'black' : 'white',
+    fontSize: size / 8.7,
     fontWeight: 'bold',
   }),
   name: (size) => ({

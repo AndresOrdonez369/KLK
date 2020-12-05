@@ -49,6 +49,7 @@ const Feed = () => {
   const [storiesObj, setStoriesObj] = useState(null);
   // redux
   const dispatch = useDispatch();
+  const [realData, setRealData] = useState([]);
   const profile = useSelector((state) => state.reducerProfile);
   const feed = useSelector((state) => state.reducerHome);
   const {
@@ -59,11 +60,11 @@ const Feed = () => {
   const { navigate } = useNavigation();
 
   const renderData = () => {
-    // console.log('esta es la lista de post', postList);
-    // console.log('esta es la lista de hideeeee', hidenList);
+    console.log('esta es la lista de post', postList);
+    console.log('esta es la lista de hideeeee', hidenList);
     const res = postList.filter((post) => !hidenList.includes(post.pid));
-    // console.log('esta es la respuesta', res);
-    return res;
+    console.log('esta es la respuesta', res);
+    setRealData(res);
   };
 
   useEffect(() => {
@@ -96,6 +97,7 @@ const Feed = () => {
       authorId={item.authorId}
       timestamp={item.timestamp}
       navigate={navigate}
+      screen="Inicio"
     />
   );
 
@@ -143,13 +145,13 @@ const Feed = () => {
         <View style={styles.radioContainerStyle}>
           <View style={styles.radioButtonContainer}>
             <AudioComponent
-              id="radio"
+              id="radio1"
               link="http://64.37.50.226:8006/stream"
               radio
               size={25}
             />
           </View>
-          <Image source={klkmsn} style={{ marginLeft: 50,  height: 45, width: 45 }} />
+          <Image source={klkmsn} style={{ marginLeft: 50, height: 45, width: 45 }} />
           <Text style={styles.title}>
             klk msn
           </Text>
@@ -178,14 +180,14 @@ const Feed = () => {
           />
           <Button
             title="¿klk estás pensando?"
-            onPress={() => navigate('CreatePost')}
+            onPress={() => navigate('Comments')}
             buttonStyle={styles.buttonCreate}
           />
         </View>
         <View style={styles.feedContainer}>
           <FlatList
             contentContainerStyle={{ marginBottom: 100 }}
-            data={DATA}
+            data={realData}
             renderItem={renderPost}
             keyExtractor={(item) => item.pid}
           />
