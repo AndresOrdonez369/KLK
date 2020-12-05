@@ -89,7 +89,7 @@ const Radio = () => {
               onPress={() => sendFunction()}
               buttonStyle={styles.sendButton}
               icon={
-                <Icon name="send" type="material-community" color="white" size={30} />
+                <Icon name="send" type="material-community" color="white" size={25} />
                  }
             />
             )}
@@ -134,8 +134,8 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   sendButton: {
-    height: height * 0.05,
-    width: width * 0.11,
+    height: height * 0.04,
+    width: width * 0.10,
     borderRadius: 50,
     backgroundColor: '#f22',
   },
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     height: height * 0.07,
     alignSelf: 'center',
     width: width * 0.75,
-    backgroundColor: '#A7A8AB',
+    backgroundColor: '#efefef',
     borderRadius: 30,
   },
   chatContainer: {

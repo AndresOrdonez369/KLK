@@ -1,10 +1,11 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, Image, Share,
+  View, Text, Image, Share, TouchableHighlight,
 } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Icon, Button } from 'react-native-elements';
+import { useNavigation } from '@react-navigation/native';
 import { Video } from 'expo-av';
 import * as Linking from 'expo-linking';
 import BasicModal from '../BasicModal';
@@ -12,11 +13,11 @@ import Avatar from '../Avatar/SimpleAvatar';
 import AudioComponent from '../Audio';
 import Youtube from '../Youtube';
 import firebase from '../../../firebase';
-
 import styles from './styles';
 
 const FeedPost = ({
-  authorName, mensaje, mediaLink, likes, type, timestamp, url, pid, authorId, navigate,
+  authorName, mensaje, mediaLink, likes, type, timestamp, url, pid,
+  authorId, blockComment = false, screen = 'Inicio',
 }) => {
   const {
     container, headerContainer, basicInfoContainer, dotsContainer,
@@ -27,6 +28,8 @@ const FeedPost = ({
   const [modal, setShowModal] = useState(false);
   const profile = useSelector((state) => state.reducerProfile);
   const { uid } = profile;
+  const { navigate } = useNavigation();
+  const dispatch = useDispatch();
 
   let firebaseQuery = {};
   if (authorId !== '' && pid !== '' && uid !== '') {
@@ -41,6 +44,13 @@ const FeedPost = ({
       hidenPostPath.add({ publication: pid });
       setShowModal(false);
     }
+  };
+
+  const commentNavigate = () => {
+    const postObject = {
+      authorName, mensaje, mediaLink, likes, type, timestamp, url, pid, authorId,
+    };
+    navigate('Comments', { screen, postObject });
   };
   useEffect(() => {
     const getLike = async () => {
@@ -69,7 +79,7 @@ const FeedPost = ({
 
   const onSharePress = async () => {
     const link = Linking.makeUrl(`post/${authorId}/${pid}`);
-    const message = `Mira esta publicacion de KLK msn
+    const message = `Mira esta publicacion de KLK msn,
 si no tienes la aplicacion la puedes descargar 
 Link de descarga: ...
 Si ya tienes el app instalada puedes ver la publicacion aqui 
@@ -133,9 +143,11 @@ ${link}`;
           />
         )}
       <View style={headerContainer}>
-        <View style={basicInfoContainer}>
-          <Avatar size={94} name={authorName} date={timestamp} url={url} />
-        </View>
+        <TouchableHighlight onPress={() => navigate('AnotherProfile', { authorId, screen })}>
+          <View style={basicInfoContainer}>
+            <Avatar size={94} name={authorName} date={timestamp} url={url} />
+          </View>
+        </TouchableHighlight>
         <View style={dotsContainer}>
           <Button
             buttonStyle={dotsButtonStyle}
@@ -165,6 +177,7 @@ ${link}`;
           />
           <Button
             buttonStyle={dotsButtonStyle}
+            onPress={() => (blockComment ? null : commentNavigate())}
             icon={
               <Icon name="comment-multiple" type="material-community" color="gray" size={25} />
             }

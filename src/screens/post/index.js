@@ -15,6 +15,9 @@ import InputBasic from '../../components/InputBasic/inputBasic';
 import {
   submitPost, uploadAudio, uploadVideo, uploadImage, updateLoader, cleanNewPost, uploadYoutube,
 } from './actionCreator';
+import {
+  getPosts,
+} from '../feed/actionCreator';
 import styles from './styles';
 
 const Post = () => {
@@ -138,6 +141,7 @@ const Post = () => {
 
       setPostdb(true);
     }
+    dispatch(getPosts(uid));
   };
   useEffect(() => {
     const postFirestore = async () => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Dimensions, StyleSheet, View, Text, FlatList,
+  Dimensions, StyleSheet, View, Text, FlatList, ScrollView,
 } from 'react-native';
 import {
   Icon, Input, Avatar, Overlay, Button,
@@ -10,23 +10,29 @@ import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import CommentAvatar from '../../components/Avatar/CommentAvatar';
 import { submitComment, getComments } from './actionCreator';
-import FeedPost from '../../components/FeedPost';
+import Post from '../../components/FeedPost';
 
 const { height, width } = Dimensions.get('screen');
 
 const Comments = ({ route }) => {
-  console.log(route);
   const [comment, setComment] = useState('');
   const profile = useSelector((state) => state.reducerProfile);
   const commentReducer = useSelector((state) => state.reducerComments);
-  const { post, comments } = commentReducer;
+  const { comments } = commentReducer;
+  console.log(comments, 'que llegaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!');
+
   const { uid, user, imageURL } = profile;
   const { navigate } = useNavigation();
-  const { pid, authorID } = route.params;
+  const {
+    postObject, screen,
+  } = route.params;
   const dispatch = useDispatch();
+
   useEffect(() => {
-    dispatch(getComments(authorID, pid));
-  }, [authorID, pid]);
+    console.log(postObject.authorID, postObject.pid, 'esto que es lo que necesitaaaaaaaaaaaaamos');
+    dispatch(getComments(postObject.authorID, postObject.pid));
+  }, [postObject]);
+
   const renderComment = ({ item }) => (
     <CommentAvatar
       url={item.url}
@@ -35,63 +41,66 @@ const Comments = ({ route }) => {
     />
   );
   const submit = () => {
-    if (comment.trim() === '') {
-      console.log('Traer Modal');
-    } else {
-      dispatch(submitComment(comment, uid, user, imageURL, pid));
-    }
+    dispatch(submitComment(comment, uid, user.name, imageURL, postObject.pid));
+    console.log(postObject.authorID, postObject.pid, 'este es uno de los que nbecesitamos');
+    dispatch(getComments(postObject.authorID, postObject.pid));
+    setComment('');
   };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f22' }}>
-      <View style={styles.container}>
-        <View>
-          <FeedPost
-            authorName={post.authorName}
-            mensaje={post.mensaje}
-            mediaLink={post.mediaLink}
-            likes={post.likes}
-            type={post.type}
-            timestamp={post.timestamp}
-            url={post.url}
-            pid ={pid}
-            authorId={authorID}
-          />
-        </View>
+      <ScrollView style={styles.container}>
+
         <View style={styles.header}>
           <Icon
             name="arrow-left"
             type="font-awesome"
             iconStyle={styles.icon}
-            onPress={() => navigate('Feed')}
+            onPress={() => navigate(screen)}
           />
           <Text style={styles.title}>
             Comentarios
           </Text>
         </View>
-        <FlatList
-          data={DATA}
-          renderItem={renderComment}
-          keyExtractor={(item) => item.name}
-        />
-        <View style={styles.inputContainer}>
-          <Input
-            placeholder=" Escribe un comentario... "
-            inputContainerStyle={styles.inputStyle}
-            containerStyle={styles.input}
-            style={styles.placeholder}
-            onChange={(e) => setComment(e.nativeEvent.text)}
-            value={comment}
-          />
-          <Button
-            raised
-            buttonStyle={styles.sendButton}
-            onPress={() => submit()}
-            icon={
-              <Icon name="send" type="material-community" color="white" size={30} />
-            }
+        <View>
+          <Post
+            authorName={postObject.authorName}
+            mensaje={postObject.mensaje}
+            mediaLink={postObject.mediaLink}
+            likes={postObject.likes}
+            type={postObject.type}
+            timestamp={postObject.timestamp}
+            url={postObject.url}
+            pid={postObject.pid}
+            authorId={postObject.authorId}
+            blockComment
           />
         </View>
-      </View>
+        <View style={styles.chatContainer}>
+          <FlatList
+            data={DATA}
+            renderItem={renderComment}
+            keyExtractor={(item) => item.cid}
+          />
+        </View>
+        <Input
+          placeholder="Escribe tu comentario"
+          containerStyle={styles.input}
+          underlineColorAndroid="#A7A8AB"
+          onChangeText={(text) => setComment(text)}
+          value={comment}
+          rightIcon={(
+            <Button
+              raised
+              onPress={() => submit()}
+              buttonStyle={styles.sendButton}
+              icon={
+                <Icon name="send" type="material-community" color="white" size={25} />
+                 }
+            />
+            )}
+        />
+
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -112,6 +121,7 @@ const DATA = [
     url: 'https://pbs.twimg.com/profile_images/549851078880022528/8X7WyNT9_400x400.jpeg',
     name: 'Sergio Hernandez Contreras',
     comment: '@sergiouyh',
+    cid: '1234',
   },
   {
     url: 'https://scontent.fclo8-1.fna.fbcdn.net/v/t1.0-1/p720x720/48362502_2498331116876254_6402442224126132224_n.jpg?_nc_cat=105&ccb=2&_nc_sid=dbb9e7&_nc_ohc=O3ivFCF4SYcAX8jVc62&_nc_ht=scontent.fclo8-1.fna&tp=6&oh=7e89b63e55d3f7250b8d4762ec606cba&oe=5FB84A0A',
@@ -135,9 +145,10 @@ const DATA = [
   }];
 const styles = StyleSheet.create({
   container: {
+    marginTop: 29,
     height,
     width,
-    backgroundColor: 'white',
+    backgroundColor: '#ffffff',
   },
   header: {
     height: height * 0.05,
@@ -157,16 +168,24 @@ const styles = StyleSheet.create({
     width: width * 0.94,
 
   },
+  chatContainer: {
+    paddingTop: 15,
+    height: height * 0.28,
+    width,
+    backgroundColor: 'white',
+  },
   sendButton: {
-    height: height * 0.05,
-    width: width * 0.11,
+    height: height * 0.04,
+    width: width * 0.10,
     borderRadius: 50,
     backgroundColor: '#f22',
   },
   input: {
+    height: height * 0.06,
     alignSelf: 'center',
-    marginTop: 10,
     width: width * 0.75,
+    backgroundColor: '#efefef',
+    borderRadius: 30,
   },
   title: {
     fontSize: height * 0.02,

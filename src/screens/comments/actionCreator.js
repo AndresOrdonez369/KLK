@@ -17,7 +17,6 @@ export const submitComment = (comment, uid, name, imageUrl, pid) => async (dispa
     .then(() => dispatch({
       type: Actions.SUBMIT_COMMENT_SUCCESS,
       message: 'Comentario publicado correctamente.',
-      payload: data,
     }))
     .catch(() => dispatch({
       type: Actions.SUBMIT_COMMENT_ERROR,
@@ -26,14 +25,33 @@ export const submitComment = (comment, uid, name, imageUrl, pid) => async (dispa
 };
 
 export const getComments = (authorID, pid) => async (dispatch) => {
+  console.log(authorID, pid, '¿ estoy entrandoooooooooooooooooooooo???????');
   const db = firebase.firestore();
   await db.collection('posts').doc(authorID).collection('userPosts').doc(pid)
     .collection('comments')
     .get()
-    .then((querySnapshot) => {
-      querySnapshot.forEach((comment) => dispatch({
-        type: Actions.GET_COMMENTS,
-        payload: comment.data(),
-      }));
+    .then((comments) => {
+      console.log('aaaaaaaaaaaaaaaaaaaaaacomente');
+      comments.forEach(async (comment) => {
+        console.log('entre o nooooooooooooooooooo');
+        const dataComment = comment.data();
+        console.log(dataComment.createdAt, 'holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+        /* const [hour, minute] = new Date(parseInt(dataComment.createdAt, 10))
+        .toLocaleTimeString('en-US').split(/:| /);
+         */
+        /*  console.log(hour, minute, 'holaaaaaaaaaaaaaaaaa'); */
+        const commentResume = {
+          name: dataComment.authorName,
+          comment: dataComment.comment,
+          urlImage: dataComment.imageUrl,
+          /*  hour: `${hour}:${minute}`, */
+          cid: comment.id,
+        };
+        console.log(commentResume, 'este es el comment resume, y de esto depende mucho');
+        dispatch({
+          type: Actions.GET_COMMENTS,
+          payload: commentResume,
+        });
+      });
     });
 };

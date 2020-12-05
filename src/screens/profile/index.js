@@ -68,6 +68,7 @@ const Profile = () => {
       authorId={item.authorId}
       timestamp={item.timestamp}
       navigate={navigate}
+      screen="Perfil"
     />
   );
 

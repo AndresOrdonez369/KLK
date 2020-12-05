@@ -13,7 +13,7 @@ export default (state = STATE_INICIAL, action) => {
         ...state,
         error: false,
         message: action.message,
-        comments: [...state.comments, action.payload],
+        
       };
     case Actions.SUBMIT_COMMENT_ERROR:
       return {

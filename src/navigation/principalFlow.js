@@ -56,6 +56,8 @@ const PrincipalFlow = () => (
     })}
     initialRouteName="Inicio"
     headerMode="none"
+    tabBarOptions={{ showLabel: false }}
+
   >
     <Tab.Screen name="Inicio" component={FeedStack} />
     <Tab.Screen name="Perfil" component={profileStack} />
@@ -67,12 +69,18 @@ const PrincipalFlow = () => (
 
 function AppHide() {
   return (
-    <Stack.Navigator headerMode="none">
+    <Stack.Navigator
+      headerMode="none"
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
       <Stack.Screen name="PrincipalFlow" component={PrincipalFlow} />
       <Stack.Screen name="CreatePost" component={Post} />
       <Stack.Screen name="AnotherProfile" component={AnotherProfile} />
       <Stack.Screen name="Chat" component={Chat} />
       <Stack.Screen name="Chats" component={Chats} />
+      <Stack.Screen name="Comments" component={Comments} />
     </Stack.Navigator>
   );
 }
