@@ -132,7 +132,7 @@ export const getFollowingsByUid = (id, start = 0) => async (dispatch) => {
       .then((querySnapshot) => {
         querySnapshot.forEach(async (doc) => {
           const queryUid = doc.data().uid;
-          if (user.uid !== queryUid) {
+          if (id !== queryUid) {
             await usersCollection.doc(queryUid).get()
               .then((ref) => {
                 const {

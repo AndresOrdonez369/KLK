@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState, useEffect } from 'react';
 import {
-  Dimensions, StyleSheet, View, Text, Platform, KeyboardAvoidingView, StatusBar, ActivityIndicator,
+  Dimensions, StyleSheet, View, Text, ScrollView, StatusBar, ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
@@ -88,7 +88,7 @@ const Chat = ({ route, navigation }) => {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
@@ -155,11 +155,11 @@ const Chat = ({ route, navigation }) => {
     </Overlay>
   );
 
-  if (isLoader) return <Loader message="Registrando..." />;
+  if (isLoader) return <Loader message="Cargando mensajes..." />;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f22' }}>
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         {isLoading && loader()}
         {modal.showModal && (
         <BasicModal
@@ -183,74 +183,62 @@ const Chat = ({ route, navigation }) => {
           />
           <Text style={styles.title}>{userObj.name}</Text>
         </View>
-        <KeyboardAvoidingView
-          enabled={Platform.OS === 'android'}
-          style={styles.chatContainer}
-          behavior="padding"
-          keyboardVerticalOffset={height * 0.03}
-        >
-          <View style={styles.chatContainer}>
-            <GiftedChat
-              messages={messages}
-              onSend={() => sendMessage(actualMessage)}
-              placeholder="Escribe un mensaje..."
-              alwaysShowSend={actualMessage !== ''}
-              loadEarlier={queryIndex <= messages.length}
-              onLoadEarlier={() => {
-                setQueryIndex((prevState) => prevState + 20);
-                dispatch(getMessages(profile.uid, uid, queryIndex));
-              }}
-              renderLoadEarlier={(props) => (
-                <LoadEarlier
+        <View style={styles.chatContainer}>
+          <GiftedChat
+            messages={messages}
+            onSend={() => sendMessage(actualMessage)}
+            placeholder="Escribe un mensaje..."
+            alwaysShowSend={actualMessage !== ''}
+            loadEarlier={queryIndex <= messages.length}
+            onLoadEarlier={() => {
+              setQueryIndex((prevState) => prevState + 20);
+              dispatch(getMessages(profile.uid, uid, queryIndex));
+            }}
+            renderLoadEarlier={(props) => (
+              <LoadEarlier
+                {...props}
+                label="Cargar mensajes antiguos..."
+              />
+            )}
+            renderBubble={(props) => (
+              <Bubble
+                {...props}
+                wrapperStyle={{
+                  right: [styles.bubbleContainer, { backgroundColor: '#f22' }],
+                  left: styles.bubbleContiner,
+                }}
+              />
+            )}
+            renderSend={(props) => (
+              <Send
+                {...props}
+                containerStyle={styles.sendContainer}
+              >
+                <Icon size={27} type="ionicons" name="send" color="#f22" />
+              </Send>
+            )}
+            user={{
+              _id: 1,
+            }}
+            renderInputToolbar={(props) => (
+              <View style={styles.inputView}>
+                <InputToolbar
                   {...props}
-                  label="Cargar mensajes antiguos..."
+                  containerStyle={styles.inputToolbar}
                 />
-              )}
-              renderBubble={(props) => (
-                <Bubble
-                  {...props}
-                  wrapperStyle={{
-                    right: {
-                      backgroundColor: '#f22',
-                      marginTop: StatusBar.currentHeight,
-                    },
-                    left: {
-                      marginTop: StatusBar.currentHeight,
-                    },
-                  }}
+                <Icon
+                  name="file-image"
+                  type="material-community"
+                  size={45}
+                  color="#f22"
+                  onPress={() => pickMedia()}
                 />
-              )}
-              renderSend={(props) => (
-                <Send
-                  {...props}
-                  containerStyle={styles.sendContainer}
-                >
-                  <Icon size={27} type="ionicons" name="send" color="#f22" />
-                </Send>
-              )}
-              user={{
-                _id: 1,
-              }}
-              renderInputToolbar={(props) => (
-                <View style={styles.inputView}>
-                  <InputToolbar
-                    {...props}
-                    containerStyle={styles.inputToolbar}
-                  />
-                  <Icon
-                    name="file-image"
-                    type="material-community"
-                    size={45}
-                    color="#f22"
-                    onPress={() => pickMedia()}
-                  />
-                </View>
-              )}
-              onInputTextChanged={(textt) => setActualMessage(textt)}
-            />
-          </View>
-        </KeyboardAvoidingView>
-      </View>
+              </View>
+            )}
+            onInputTextChanged={(textt) => setActualMessage(textt)}
+          />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -292,11 +280,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderTopWidth: 1,
     borderTopColor: 'gray',
+    position: 'absolute',
+    height: height * 0.1,
+    top: height * 0.85,
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   inputToolbar: {
     width: width * 0.9,
     marginLeft: width * 0.1,
     borderTopWidth: 0,
+    height: (height * 0.1) - 1,
+  },
+  bubbleContiner: {
+    position: 'absolute',
+    height: height * 0.85,
+    top: height * 0.05,
+    bottom: (height * 0.1) + 12,
+    left: 0,
+    right: 0,
   },
   overlay: {
     justifyContent: 'center',
