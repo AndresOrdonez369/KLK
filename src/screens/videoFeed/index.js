@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import {
-  Dimensions, StyleSheet, View, FlatList, StatusBar, SafeAreaView, 
+  Dimensions, StyleSheet, View, FlatList, StatusBar, SafeAreaView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import getPosts from './actionCreator';
 import Post from '../../components/FeedPost';
 
-const { height, width } = Dimensions.get('screen');
+const { width } = Dimensions.get('screen');
 
 const DATA = [
   {
@@ -49,6 +49,7 @@ const VideoFeed = () => {
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.reducerProfile);
   const video = useSelector((state) => state.reducerVideoFeed);
+  const { postList } = video;
 
   useEffect(() => {
     dispatch(getPosts(profile.uid));
@@ -75,7 +76,7 @@ const VideoFeed = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f22' }}>
       <View style={container}>
         <FlatList
-          data={DATA}
+          data={postList}
           renderItem={renderPost}
           keyExtractor={(item) => item.pid}
         />
