@@ -22,7 +22,6 @@ const { height, width } = Dimensions.get('screen');
 const ExtraProfile = ({ route }) => {
   // state
   const [follow, setFollow] = useState(false);
-  const [temp, setTemp] = useState(0);
   // redux
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.reducerProfile);
@@ -45,7 +44,6 @@ const ExtraProfile = ({ route }) => {
   }, [uid]);
   useEffect(() => () => {
     dispatch(cleanExtraProfile());
-    setTemp(0);
   }, []);
   useEffect(() => {
     const checkFollow = () => {
@@ -65,13 +63,11 @@ const ExtraProfile = ({ route }) => {
     if (follow) {
       await dispatch(unfollowFirestore(profile.uid, uid));
       setFollow(false);
-      setTemp(-1);
     } else {
       await dispatch(followFirestore(
         profile.uid, uid, imageURL, name, userName,
       ));
       setFollow(true);
-      setTemp(1);
     }
   };
   const renderPost = ({ item }) => (
@@ -124,7 +120,7 @@ const ExtraProfile = ({ route }) => {
               <Text style={styles.category}>posts</Text>
             </View>
             <View style={styles.textCategory}>
-              <Text style={styles.numbersInfo}>{qFollowers + temp}</Text>
+              <Text style={styles.numbersInfo}>{qFollowers}</Text>
               <Text style={styles.category}>seguidores</Text>
             </View>
             <View style={styles.textCategory}>
