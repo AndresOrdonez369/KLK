@@ -146,7 +146,7 @@ const Profile = () => {
           />
         </View>
         <FlatList
-          data={DATA}
+          data={postList}
           renderItem={renderPost}
           keyExtractor={(item) => item.pid}
         />
