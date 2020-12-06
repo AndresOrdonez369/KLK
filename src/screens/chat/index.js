@@ -13,6 +13,7 @@ import {
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import BasicModal from '../../components/BasicModal';
+import Loader from '../../components/Loader';
 import { uploadImage, uploadVideo } from '../post/actionCreator';
 import { sendMessageDB, getMessages, updateLastMessage } from './actionCreator';
 
@@ -32,6 +33,7 @@ const Chat = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [queryIndex, setQueryIndex] = useState(20);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
+  const [isLoader, setLoader] = useState(false);
 
   // redux
   const dispatch = useDispatch();
@@ -45,9 +47,14 @@ const Chat = ({ route, navigation }) => {
 
   // fnc
   useEffect(() => {
-    setQueryIndex(20);
-    setUnsavedChanges(false);
-    dispatch(getMessages(profile.uid, uid, queryIndex));
+    const chatInit = async () => {
+      setLoader(true);
+      setQueryIndex(20);
+      setUnsavedChanges(false);
+      await dispatch(getMessages(profile.uid, uid, queryIndex));
+      setLoader(false);
+    };
+    chatInit();
   }, []);
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', () => setLastMessage());
@@ -147,6 +154,9 @@ const Chat = ({ route, navigation }) => {
       </View>
     </Overlay>
   );
+
+  if (isLoader) return <Loader message="Registrando..." />;
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f22' }}>
       <View style={styles.container}>

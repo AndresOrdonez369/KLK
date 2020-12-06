@@ -115,7 +115,7 @@ const Profile = () => {
               <Text style={styles.category}>seguidores</Text>
             </View>
             <View style={styles.textCategory}>
-              <Text style={styles.numbersInfo}>{qFollowings}</Text>
+              <Text style={styles.numbersInfo}>{qFollowings >= 0 ? qFollowings : 0}</Text>
               <Text style={styles.category}>siguiendo</Text>
             </View>
           </View>

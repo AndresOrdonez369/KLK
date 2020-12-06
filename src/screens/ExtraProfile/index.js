@@ -14,6 +14,7 @@ import {
 } from '../friends/actionCreator';
 import Post from '../../components/FeedPost';
 import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
+import Loader from '../../components/Loader';
 
 const requireCover = require('../../../assets/defaultCover.png');
 
@@ -22,6 +23,7 @@ const { height, width } = Dimensions.get('screen');
 const ExtraProfile = ({ route }) => {
   // state
   const [follow, setFollow] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   // redux
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.reducerProfile);
@@ -36,9 +38,11 @@ const ExtraProfile = ({ route }) => {
 
   useEffect(() => {
     const getData = async () => {
+      setIsLoading(true);
       await dispatch(getExtraProfile(uid));
       await dispatch(getFollowersByUid(uid));
       await dispatch(getFollowingsByUid(uid));
+      setIsLoading(false);
     };
     if (uid !== undefined) getData();
   }, [uid]);
@@ -86,6 +90,8 @@ const ExtraProfile = ({ route }) => {
     />
   );
 
+  if (isLoading) return <Loader message="Obteniendo datos..." />;
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container}>
@@ -124,7 +130,7 @@ const ExtraProfile = ({ route }) => {
               <Text style={styles.category}>seguidores</Text>
             </View>
             <View style={styles.textCategory}>
-              <Text style={styles.numbersInfo}>{qFollowings}</Text>
+              <Text style={styles.numbersInfo}>{qFollowings >= 0 ? qFollowings : 0}</Text>
               <Text style={styles.category}>siguiendo</Text>
             </View>
           </View>
