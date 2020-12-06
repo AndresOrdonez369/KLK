@@ -60,10 +60,7 @@ const Feed = () => {
   const { navigate } = useNavigation();
 
   const renderData = () => {
-    console.log('esta es la lista de post', postList);
-    console.log('esta es la lista de hideeeee', hidenList);
     const res = postList.filter((post) => !hidenList.includes(post.pid));
-    console.log('esta es la respuesta', res);
     setRealData(res);
   };
 
@@ -121,7 +118,8 @@ const Feed = () => {
       };
     });
     setStoriesObj(data);
-    if (data !== []) setShowStories(true); else dispatch(handleModalFeed(true, 'error', 'No tienes ninguna historia activa'));
+    if (data.length > 0) setShowStories(true);
+    if (data.length < 1) dispatch(handleModalFeed(true, 'error', 'No tienes ninguna historia activa'));
   };
   if (showStories) {
     if (storiesObj) {
@@ -164,7 +162,7 @@ const Feed = () => {
             type={modalType}
             visible={showModal}
             title={titleModal}
-            onPressCancel={dispatch(handleModalFeed(false))}
+            onPressCancel={() => dispatch(handleModalFeed(false))}
             onPressOk={null}
             requiredHeight={heightModal}
           />
