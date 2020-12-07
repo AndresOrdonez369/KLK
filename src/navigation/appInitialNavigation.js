@@ -5,7 +5,7 @@ import {
 import { Overlay, Button, Icon } from 'react-native-elements';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as Linking from 'expo-linking';
 import PrincipalFlow from './principalFlow';
 import Login from '../screens/login';
@@ -81,7 +81,10 @@ const AppInitialNavigation = () => {
   const [logged, setLogged] = useState(false);
   const [verified, setVerified] = useState(false);
 
+  // redux
   const dispatch = useDispatch();
+  const profile = useSelector((state) => state.reducerProfile);
+
   // authChecker
   useEffect(() => {
     const authState = () => {
@@ -90,7 +93,7 @@ const AppInitialNavigation = () => {
           if (user.emailVerified) {
             setLogged(true);
             setVerified(true);
-            await dispatch(fetchUserData());
+            await dispatch(fetchUserData(profile.uid));
           } else {
             setLogged(true);
             setVerified(false);

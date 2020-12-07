@@ -60,28 +60,30 @@ export const getHidenPosts = (uid) => async (dispatch) => {
   });
 };
 
-export const getStories = (uid) => async (dispatch) => {
-  const followingCollection = db.collection('following').doc(uid).collection('userFollowing');
-  await followingCollection.get()
-    .then((querySnapshot) => {
-      querySnapshot.forEach(async (doc) => {
-        const queryUid = doc.data().uid;
-        await db.collection('stories').where('authorID', '==', queryUid).get()
-          .then((query) => {
-            query.forEach((ref) => dispatch({
-              type: Actions.GET_STORIES,
-              payload: ref.data(),
-            }));
-          })
-          .catch((error) => {
-            dispatch(handleModalFeed(true, 'error', 'Hubo un error trayendo los datos de las historias'));
-            console.log(error);
-            return dispatch({
-              type: Actions.GET_STORIES_ERROR,
+export const getStories = (uid, stories) => async (dispatch) => {
+  if (stories.length === 0) {
+    const followingCollection = db.collection('following').doc(uid).collection('userFollowing');
+    await followingCollection.get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach(async (doc) => {
+          const queryUid = doc.data().uid;
+          await db.collection('stories').where('authorID', '==', queryUid).get()
+            .then((query) => {
+              query.forEach((ref) => dispatch({
+                type: Actions.GET_STORIES,
+                payload: ref.data(),
+              }));
+            })
+            .catch((error) => {
+              dispatch(handleModalFeed(true, 'error', 'Hubo un error trayendo los datos de las historias'));
+              console.log(error);
+              return dispatch({
+                type: Actions.GET_STORIES_ERROR,
+              });
             });
-          });
+        });
       });
-    });
+  }
 };
 
 export const postStory = (image, uid, nick, profileImg) => async (dispatch) => {

@@ -12,35 +12,38 @@ export const setDataChange = (value) => ({
   payload: value,
 });
 
-export const fetchUserData = () => async (dispatch) => {
-  const { uid, email, photoURL } = await firebase.auth().currentUser;
-  try {
-    const dbh = firebase.firestore();
-    const userCollection = dbh.collection('users').doc(uid);
-    const snapShot = await userCollection.get();
-    if (!snapShot) {
+export const fetchUserData = (uidTest) => async (dispatch) => {
+  if (uidTest === '') {
+    const { uid, email, photoURL } = await firebase.auth().currentUser;
+    try {
+      const dbh = firebase.firestore();
+      const userCollection = dbh.collection('users').doc(uid);
+      const snapShot = await userCollection.get();
+      if (!snapShot) {
+        return dispatch({
+          type: Actions.USER_FETCH_FAILED,
+          payload: 'No se encontraron datos de usuario',
+        });
+      }
+      await dispatch(getFollowersByUid(uid));
+      await dispatch(getFollowingsByUid(uid));
+      const {
+        userName, name, coverURL, description,
+      } = snapShot.data();
+      return dispatch({
+        type: Actions.USER_FETCH_DBASE,
+        payload: {
+          userName, name, uid, email, photoURL, coverURL, description,
+        },
+      });
+    } catch (error) {
       return dispatch({
         type: Actions.USER_FETCH_FAILED,
-        payload: 'No se encontraron datos de usuario',
+        error: 'Error trayendo datos de usuario',
       });
     }
-    await dispatch(getFollowersByUid(uid));
-    await dispatch(getFollowingsByUid(uid));
-    const {
-      userName, name, coverURL, description,
-    } = snapShot.data();
-    return dispatch({
-      type: Actions.USER_FETCH_DBASE,
-      payload: {
-        userName, name, uid, email, photoURL, coverURL, description,
-      },
-    });
-  } catch (error) {
-    return dispatch({
-      type: Actions.USER_FETCH_FAILED,
-      error: 'Error trayendo datos de usuario',
-    });
   }
+  return null;
 };
 
 export const updateDataUser = (data, uid) => (dispatch) => {
@@ -116,24 +119,26 @@ export const updateDescription = (text) => ({
   payload: text,
 });
 
-export const getExtraProfile = (id) => async (dispatch) => {
-  const dbh = firebase.firestore();
-  const snapShot = await dbh.collection('users').doc(String(id)).get();
-  if (!snapShot) {
+export const getExtraProfile = (id, nam) => async (dispatch) => {
+  if (nam === '') {
+    const dbh = firebase.firestore();
+    const snapShot = await dbh.collection('users').doc(String(id)).get();
+    if (!snapShot) {
+      return dispatch({
+        type: Actions.ANOTHER_USER_FETCH_FAILED,
+        payload: 'No se encontraron datos de usuario',
+      });
+    }
+    const {
+      userName, name, coverURL, description, imageURL, uid,
+    } = snapShot.data();
     return dispatch({
-      type: Actions.ANOTHER_USER_FETCH_FAILED,
-      payload: 'No se encontraron datos de usuario',
+      type: Actions.ANOTHER_USER_FETCH,
+      payload: {
+        userName, name, imageURL, coverURL, description, uid,
+      },
     });
   }
-  const {
-    userName, name, coverURL, description, imageURL, uid,
-  } = snapShot.data();
-  return dispatch({
-    type: Actions.ANOTHER_USER_FETCH,
-    payload: {
-      userName, name, imageURL, coverURL, description, uid,
-    },
-  });
 };
 
 export const cleanExtraProfile = () => ({

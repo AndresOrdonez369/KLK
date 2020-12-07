@@ -72,86 +72,90 @@ export const unfollowFirestore = (myUid, uid) => async (dispatch) => {
 };
 
 // eslint-disable-next-line consistent-return
-export const getFollowersByUid = (id, start = 0) => async (dispatch) => {
-  try {
-    const user = await firebase.auth().currentUser;
-    const db = firebase.firestore();
-    const usersCollection = db.collection('users');
+export const getFollowersByUid = (id, start = 0, quantity = 0) => async (dispatch) => {
+  if (quantity === 0) {
+    try {
+      const user = await firebase.auth().currentUser;
+      const db = firebase.firestore();
+      const usersCollection = db.collection('users');
 
-    const query = await usersCollection.doc(id).collection('followers');
-    if (start === 0) {
-      query.get()
-        .then((snap) => dispatch({
-          type: user.uid === id ? Actions.SET_MY_FOLLOWERS : Actions.SET_FOLLOWERS,
-          payload: snap.size,
-        }));
-    }
-    query.orderBy('uid', 'asc').startAt(start).limit(30).get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach(async (doc) => {
-          const queryUid = doc.data().uid;
-          await usersCollection.doc(queryUid).get()
-            .then((ref) => {
-              const {
-                uid, name, userName, imageURL,
-              } = ref.data();
-              return dispatch({
-                type: user.uid === id ? Actions.GET_MY_FOLLOWERS : Actions.GET_FOLLOWERS,
-                payload: {
-                  uid, name, userName, imageURL,
-                },
-              });
-            });
-        });
-      });
-  } catch (error) {
-    console.log('error getting follows', error);
-    return dispatch({
-      type: Actions.GET_FOLLOWS_ERROR,
-    });
-  }
-};
-
-// eslint-disable-next-line consistent-return
-export const getFollowingsByUid = (id, start = 0) => async (dispatch) => {
-  try {
-    const user = await firebase.auth().currentUser;
-    const db = firebase.firestore();
-    const usersCollection = db.collection('users');
-    const followingCollection = db.collection('following');
-
-    const query = await followingCollection.doc(id).collection('userFollowing');
-    if (start === 0) {
-      query.get()
-        .then((snap) => dispatch({
-          type: user.uid === id ? Actions.SET_MY_FOLLOWINGS : Actions.SET_FOLLOWINGS,
-          payload: snap.size,
-        }));
-    }
-    query.orderBy('uid', 'asc').startAt(start).limit(30).get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach(async (doc) => {
-          const queryUid = doc.data().uid;
-          if (id !== queryUid) {
+      const query = await usersCollection.doc(id).collection('followers');
+      if (start === 0) {
+        query.get()
+          .then((snap) => dispatch({
+            type: user.uid === id ? Actions.SET_MY_FOLLOWERS : Actions.SET_FOLLOWERS,
+            payload: snap.size,
+          }));
+      }
+      query.orderBy('uid', 'asc').startAt(start).limit(30).get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach(async (doc) => {
+            const queryUid = doc.data().uid;
             await usersCollection.doc(queryUid).get()
               .then((ref) => {
                 const {
                   uid, name, userName, imageURL,
                 } = ref.data();
                 return dispatch({
-                  type: user.uid === id ? Actions.GET_MY_FOLLOWINGS : Actions.GET_FOLLOWINGS,
+                  type: user.uid === id ? Actions.GET_MY_FOLLOWERS : Actions.GET_FOLLOWERS,
                   payload: {
                     uid, name, userName, imageURL,
                   },
                 });
               });
-          }
+          });
         });
+    } catch (error) {
+      console.log('error getting follows', error);
+      return dispatch({
+        type: Actions.GET_FOLLOWS_ERROR,
       });
-  } catch (error) {
-    console.log('error getting follows', error);
-    return dispatch({
-      type: Actions.GET_FOLLOWS_ERROR,
-    });
+    }
+  }
+};
+
+// eslint-disable-next-line consistent-return
+export const getFollowingsByUid = (id, start = 0, quantity = 0) => async (dispatch) => {
+  if (quantity === 0) {
+    try {
+      const user = await firebase.auth().currentUser;
+      const db = firebase.firestore();
+      const usersCollection = db.collection('users');
+      const followingCollection = db.collection('following');
+
+      const query = await followingCollection.doc(id).collection('userFollowing');
+      if (start === 0) {
+        query.get()
+          .then((snap) => dispatch({
+            type: user.uid === id ? Actions.SET_MY_FOLLOWINGS : Actions.SET_FOLLOWINGS,
+            payload: snap.size,
+          }));
+      }
+      query.orderBy('uid', 'asc').startAt(start).limit(30).get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach(async (doc) => {
+            const queryUid = doc.data().uid;
+            if (id !== queryUid) {
+              await usersCollection.doc(queryUid).get()
+                .then((ref) => {
+                  const {
+                    uid, name, userName, imageURL,
+                  } = ref.data();
+                  return dispatch({
+                    type: user.uid === id ? Actions.GET_MY_FOLLOWINGS : Actions.GET_FOLLOWINGS,
+                    payload: {
+                      uid, name, userName, imageURL,
+                    },
+                  });
+                });
+            }
+          });
+        });
+    } catch (error) {
+      console.log('error getting follows', error);
+      return dispatch({
+        type: Actions.GET_FOLLOWS_ERROR,
+      });
+    }
   }
 };

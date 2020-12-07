@@ -39,14 +39,14 @@ const ExtraProfile = ({ route }) => {
   useEffect(() => {
     const getData = async () => {
       setIsLoading(true);
-      await dispatch(getExtraProfile(uid));
+      await dispatch(getExtraProfile(uid, name));
+      await dispatch(getFollowersByUid(uid, 0, qFollowers));
+      await dispatch(getFollowingsByUid(uid, 0, qFollowings));
       if (profile.extraUserPosts.length === 0) await dispatch(getExtraUserPosts(uid));
-      await dispatch(getFollowersByUid(uid));
-      await dispatch(getFollowingsByUid(uid));
       setIsLoading(false);
     };
     if (uid !== undefined) getData();
-  }, [uid]);
+  }, [uid, name, qFollowers, qFollowings]);
   useEffect(() => () => {
     dispatch(cleanExtraProfile());
   }, []);
