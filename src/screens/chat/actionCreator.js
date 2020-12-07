@@ -94,12 +94,28 @@ const chatMessages = (docID, index) => async (dispatch) => {
   }
 };
 
-export const updateLastMessage = (docID, text, timestamp) => async (dispatch) => {
+export const updateLastMessage = (
+  docID, text, timestamp, uid, urlImage, name,
+) => async (dispatch) => {
   const db = firebase.firestore();
   await db.collection('chats').doc(docID).update({
     lastMessage: text,
     lastUpdate: timestamp,
   })
+    .then(() => {
+      const [hour, minute] = new Date(parseInt(timestamp, 10)).toLocaleTimeString('en-US').split(/:| /);
+      const lastMsg = [{
+        message: text,
+        hour: `${hour}:${minute}`,
+        uid,
+        urlImage,
+        name,
+      }];
+      return dispatch({
+        type: Actions.LAST_MESSAGE_SENT,
+        payload: lastMsg,
+      });
+    })
     .catch((error) => {
       console.log('error actualizando último mensaje: ', error);
       return dispatch({

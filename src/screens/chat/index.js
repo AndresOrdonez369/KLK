@@ -59,7 +59,7 @@ const Chat = ({ route, navigation }) => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', () => setLastMessage());
     return unsubscribe;
-  }, [navigation, unsavedChanges, messages, chatState]);
+  }, [navigation, unsavedChanges, messages, chatState, userObj]);
   useEffect(() => {
     if (chatState.error) {
       handleModal(true, 'error', chatState.message);
@@ -67,7 +67,8 @@ const Chat = ({ route, navigation }) => {
   }, [chatState.error, chatState.message]);
   const setLastMessage = () => {
     if (unsavedChanges) {
-      dispatch(updateLastMessage(chatState.docID, text, last.createdAt));
+      dispatch(updateLastMessage(chatState.docID, text,
+        last.createdAt, userObj.uid, userObj.imageURL, userObj.name));
     }
   };
   const handleModal = (show, type = 'confirmation', title = '', ok = null, modalHeight = 0.3) => {
