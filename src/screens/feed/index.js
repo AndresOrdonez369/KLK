@@ -15,6 +15,7 @@ import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
 import BasicModal from '../../components/BasicModal';
 import Post from '../../components/FeedPost';
 import Bubbles from '../../components/Stories/bubbles';
+import Loader from '../../components/Loader';
 
 const { height, width } = Dimensions.get('screen');
 const klkmsn = require('../../../assets/klklogo512.png');
@@ -47,6 +48,7 @@ const Feed = () => {
   // state
   const [showStories, setShowStories] = useState(false);
   const [storiesObj, setStoriesObj] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   // redux
   const dispatch = useDispatch();
   const [realData, setRealData] = useState([]);
@@ -65,9 +67,14 @@ const Feed = () => {
   };
 
   useEffect(() => {
-    dispatch(getStories(profile.uid));
-    dispatch(getPosts(profile.uid));
-    dispatch(getHidenPosts(profile.uid));
+    const getFeed = async () => {
+      setIsLoading(true);
+      await dispatch(getStories(profile.uid));
+      await dispatch(getPosts(profile.uid));
+      await dispatch(getHidenPosts(profile.uid));
+      setIsLoading(false);
+    };
+    getFeed();
   }, [profile.uid]);
   useEffect(() => {
     if (postList.length > 0 && hidenList.length > 0) renderData();
@@ -121,6 +128,7 @@ const Feed = () => {
     if (data.length > 0) setShowStories(true);
     if (data.length < 1) dispatch(handleModalFeed(true, 'error', 'No tienes ninguna historia activa'));
   };
+
   if (showStories) {
     if (storiesObj) {
       return (
@@ -137,6 +145,9 @@ const Feed = () => {
     }
     return console.log('no hay stories');
   }
+
+  if (isLoading) return <Loader message="Cargando..." />;
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#F22' }}>
       <View style={styles.container}>

@@ -14,6 +14,7 @@ import {
 } from '../friends/actionCreator';
 import Post from '../../components/FeedPost';
 import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
+import Loader from '../../components/Loader';
 
 const requireCover = require('../../../assets/defaultCover.png');
 
@@ -22,7 +23,7 @@ const { height, width } = Dimensions.get('screen');
 const ExtraProfile = ({ route }) => {
   // state
   const [follow, setFollow] = useState(false);
-  const [temp, setTemp] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   // redux
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.reducerProfile);
@@ -37,15 +38,16 @@ const ExtraProfile = ({ route }) => {
 
   useEffect(() => {
     const getData = async () => {
+      setIsLoading(true);
       await dispatch(getExtraProfile(uid));
       await dispatch(getFollowersByUid(uid));
       await dispatch(getFollowingsByUid(uid));
+      setIsLoading(false);
     };
     if (uid !== undefined) getData();
   }, [uid]);
   useEffect(() => () => {
     dispatch(cleanExtraProfile());
-    setTemp(0);
   }, []);
   useEffect(() => {
     const checkFollow = () => {
@@ -65,13 +67,11 @@ const ExtraProfile = ({ route }) => {
     if (follow) {
       await dispatch(unfollowFirestore(profile.uid, uid));
       setFollow(false);
-      setTemp(-1);
     } else {
       await dispatch(followFirestore(
         profile.uid, uid, imageURL, name, userName,
       ));
       setFollow(true);
-      setTemp(1);
     }
   };
   const renderPost = ({ item }) => (
@@ -89,6 +89,8 @@ const ExtraProfile = ({ route }) => {
       screen="AnotherProfile"
     />
   );
+
+  if (isLoading) return <Loader message="Obteniendo datos..." />;
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -124,11 +126,11 @@ const ExtraProfile = ({ route }) => {
               <Text style={styles.category}>posts</Text>
             </View>
             <View style={styles.textCategory}>
-              <Text style={styles.numbersInfo}>{qFollowers + temp}</Text>
+              <Text style={styles.numbersInfo}>{qFollowers}</Text>
               <Text style={styles.category}>seguidores</Text>
             </View>
             <View style={styles.textCategory}>
-              <Text style={styles.numbersInfo}>{qFollowings}</Text>
+              <Text style={styles.numbersInfo}>{qFollowings >= 0 ? qFollowings : 0}</Text>
               <Text style={styles.category}>siguiendo</Text>
             </View>
           </View>
