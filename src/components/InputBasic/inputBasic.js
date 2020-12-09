@@ -36,7 +36,9 @@ const InputBasic = ({
     const constraints = {
       name: {
         length: {
-          minimum: 8,
+          minimum: 6,
+          maximum: 18,
+
         },
       },
     };

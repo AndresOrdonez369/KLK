@@ -136,7 +136,7 @@ ${link}`;
           <BasicModal
             type="interactive"
             visible={modal}
-            title="Desea ocultar esta publicación ?"
+            title="¿Desea ocultar esta publicación?"
             onPressCancel={() => setShowModal(false)}
             onPressOk={() => onHidePress()}
             requiredHeight={0.4}

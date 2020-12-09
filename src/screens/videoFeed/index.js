@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import getPosts from './actionCreator';
 import Post from '../../components/FeedPost';
 
-const { width } = Dimensions.get('screen');
+const { width,height} = Dimensions.get('screen');
 
 const DATA = [
   {
@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#ffffff',
     width,
+    height,
     marginTop: StatusBar.currentHeight || 0,
   },
   title: {
