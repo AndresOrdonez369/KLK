@@ -143,7 +143,7 @@ ${link}`;
           />
         )}
       <View style={headerContainer}>
-        <TouchableHighlight onPress={() => navigate('AnotherProfile', { uid: authorId, actualScreen: screen })}>
+        <TouchableHighlight underlayColor="#ffc4c4" onPress={() => navigate('AnotherProfile', { uid: authorId, actualScreen: screen })}>
           <View style={basicInfoContainer}>
             <Avatar size={94} name={authorName} date={timestamp} url={url} />
           </View>
