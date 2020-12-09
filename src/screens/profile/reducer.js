@@ -212,7 +212,7 @@ export default (state = STATE_INICIAL, action) => {
         ...state,
         user: {
           ...state.user,
-          qFollowings: action.payload,
+          qFollowings: action.payload - 1,
         },
       };
     case Actions.SET_FOLLOWINGS:
@@ -220,7 +220,7 @@ export default (state = STATE_INICIAL, action) => {
         ...state,
         anotherUser: {
           ...state.anotherUser,
-          qFollowings: action.payload,
+          qFollowings: action.payload - 1,
         },
       };
     case Actions.SET_FOLLOWERS:

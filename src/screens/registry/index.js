@@ -11,6 +11,7 @@ import checkErrorType from './helperFirebaseError';
 import InputBasic from '../../components/InputBasic/inputBasic';
 import ButtonBasic from '../../components/ButtonBasic/ButtonBasic';
 import AlertMessage from '../../components/AlertMessage';
+import Loader from '../../components/Loader';
 import Logo from '../../../assets/logo.png';
 
 const { height, width } = Dimensions.get('screen');
@@ -21,6 +22,7 @@ const Registry = () => {
   const regitryState = useSelector((state) => state.reducerRegistry);
   const { error, errorCode } = regitryState;
   // state
+  const [isLoading, setIsLoading] = useState(false);
   const [validation, setValidation] = useState(false);
   const [alert, setAlert] = useState({
     show: false,
@@ -49,14 +51,18 @@ const Registry = () => {
   const pressRegistry = async (Email, Password, Name, UserName, err, ErrorCode, val) => {
     if (checkEmptyInputs(Email, Password, Name, UserName)) setAlert({ show: true, message: 'No pueden haber campos vacíos' });
     if (val) setAlert({ show: true, message: 'Ingresaste información incorrecta en algún campo' });
-    if (val === false && checkEmptyInputs(Email, Password, Name, UserName)) {
+    if (val === false && !checkEmptyInputs(Email, Password, Name, UserName)) {
+      setIsLoading(true);
       await dispatch(register(Email, Password, Name, UserName));
+      setIsLoading(false);
     }
     if (err) setAlert({ show: true, message: checkErrorType(ErrorCode) });
   };
 
+  if (isLoading) return <Loader message="Registrando..." />;
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'silver' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f22' }}>
       <View style={styles.container}>
         <KeyboardAvoidingView behavior="padding" style={styles.container}>
           <View style={styles.icon}>
