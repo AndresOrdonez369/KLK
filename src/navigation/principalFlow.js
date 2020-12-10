@@ -84,6 +84,6 @@ function AppHide() {
     </Stack.Navigator>
   );
 }
-      <Stack.Screen name="Comments" component={Comments} />
+  <Stack.Screen name="Comments" component={Comments} />;
 
 export default AppHide;

@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { Provider } from 'react-redux';
 import { decode, encode } from 'base-64';
 import Navigation from './src/navigation/appInitialNavigation';

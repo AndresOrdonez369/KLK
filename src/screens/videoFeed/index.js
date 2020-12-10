@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions, StyleSheet, View, FlatList, StatusBar, SafeAreaView,
 } from 'react-native';
@@ -44,15 +44,29 @@ const styles = StyleSheet.create({
   },
 });
 const VideoFeed = () => {
+  const [realData, setRealData] = useState([]);
   const { container } = styles;
   const { navigate } = useNavigation();
   const dispatch = useDispatch();
+  const feed = useSelector((state) => state.reducerHome);
   const profile = useSelector((state) => state.reducerProfile);
   const video = useSelector((state) => state.reducerVideoFeed);
   const { postList } = video;
+  const { hidenList, realDataAction } = feed;
+
+  const renderData = () => {
+    const res = postList.filter((post) => !hidenList.includes(post.pid));
+    setRealData(res);
+  };
+  useEffect(() => {
+    if (postList.length > 0 && hidenList.length > 0) renderData();
+  }, [postList, hidenList, realDataAction]);
 
   useEffect(() => {
-    dispatch(getPosts(profile.uid));
+    const getData = async () => {
+      if (postList.length === 0) await dispatch(getPosts(profile.uid));
+    };
+    getData();
   }, [profile.uid]);
   console.log('video postlist', video.postList);
 
@@ -76,7 +90,7 @@ const VideoFeed = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f22' }}>
       <View style={container}>
         <FlatList
-          data={postList}
+          data={realData}
           renderItem={renderPost}
           keyExtractor={(item) => item.pid}
         />

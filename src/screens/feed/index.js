@@ -10,6 +10,7 @@ import TimedSlideshow from 'react-native-timed-slideshow';
 import {
   getStories, handleModalFeed, getPosts, getHidenPosts,
 } from './actionCreator';
+import { idUpdate } from '../../components/Audio/audioAppActionCreator';
 import AudioComponent from '../../components/Audio';
 import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
 import BasicModal from '../../components/BasicModal';
@@ -55,7 +56,7 @@ const Feed = () => {
   const profile = useSelector((state) => state.reducerProfile);
   const feed = useSelector((state) => state.reducerHome);
   const {
-    stories, showModal, modalType, titleModal, heightModal, postList, hidenList,
+    stories, showModal, modalType, titleModal, heightModal, postList, hidenList, realDataAction,
   } = feed;
   const { imageURL } = profile;
 
@@ -70,7 +71,7 @@ const Feed = () => {
     const getFeed = async () => {
       setIsLoading(true);
       await dispatch(getStories(profile.uid));
-      await dispatch(getPosts(profile.uid));
+      if (postList.length === 0) await dispatch(getPosts(profile.uid));
       await dispatch(getHidenPosts(profile.uid));
       setIsLoading(false);
     };
@@ -78,7 +79,7 @@ const Feed = () => {
   }, [profile.uid]);
   useEffect(() => {
     if (postList.length > 0 && hidenList.length > 0) renderData();
-  }, [postList, hidenList]);
+  }, [postList, hidenList, realDataAction]);
 
   // data
   const uniqueID = stories.filter((value, index, self) => {
@@ -105,7 +106,8 @@ const Feed = () => {
     />
   );
 
-  const onPressStory = (uid) => {
+  const onPressStory = async (uid) => {
+    await dispatch(idUpdate('nulo'));
     let story = [];
     if (uid === profile.uid) {
       story = stories.filter((item) => item.authorID === profile.uid);

@@ -32,12 +32,15 @@ const STATE_INICIAL = {
     qFollowing: 0,
   },
   postList: [],
+  extraUserPosts: [],
 };
 
 export default (state = STATE_INICIAL, action) => {
   switch (action.type) {
     case Actions.GET_POSTS_PROFILE:
       return { ...state, postList: [...state.postList, action.payload] };
+    case Actions.GET_EXTRA_USER_POSTS:
+      return { ...state, extraUserPosts: [...state.extraUserPosts, action.payload] };
     case Actions.SIGN_OUT:
       return STATE_INICIAL;
     case Actions.UPDATE_DESCRIPTION_PROFILE:

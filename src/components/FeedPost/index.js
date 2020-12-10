@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, Image, Share, TouchableHighlight,
+  View, Text, Image, Share, TouchableHighlight, ActivityIndicator,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { Icon, Button } from 'react-native-elements';
@@ -12,12 +12,13 @@ import BasicModal from '../BasicModal';
 import Avatar from '../Avatar/SimpleAvatar';
 import AudioComponent from '../Audio';
 import Youtube from '../Youtube';
+import { activateRealPosts, getHidenPosts } from '../../screens/feed/actionCreator';
 import firebase from '../../../firebase';
 import styles from './styles';
 
 const FeedPost = ({
   authorName, mensaje, mediaLink, likes, type, timestamp, url, pid,
-  authorId, blockComment = false, screen = 'Inicio',
+  authorId, blockComment = false, screen = 'Inicio', dissable = false,
 }) => {
   const {
     container, headerContainer, basicInfoContainer, dotsContainer,
@@ -26,10 +27,13 @@ const FeedPost = ({
   } = styles;
   const [like, setLike] = useState(false);
   const [modal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const profile = useSelector((state) => state.reducerProfile);
+  const feed = useSelector((state) => state.reducerHome);
+  const { realDataAction } = feed;
   const { uid } = profile;
-  const { navigate } = useNavigation();
   const dispatch = useDispatch();
+  const { navigate } = useNavigation();
 
   let firebaseQuery = {};
   if (authorId !== '' && pid !== '' && uid !== '') {
@@ -40,8 +44,12 @@ const FeedPost = ({
   }
   const onHidePress = async () => {
     if (uid !== '') {
+      setIsLoading(true);
       const hidenPostPath = await firebase.firestore().collection('users').doc(uid).collection('hidenPosts');
-      hidenPostPath.add({ publication: pid });
+      await hidenPostPath.add({ publication: pid });
+      await dispatch(getHidenPosts(profile.uid));
+      dispatch(activateRealPosts(!realDataAction));
+      setIsLoading(false);
       setShowModal(false);
     }
   };
@@ -87,6 +95,15 @@ ${link}`;
     await Share.share({
       message,
     });
+  };
+  const onAvatarPressed = () => {
+    if (dissable !== true) {
+      if (uid !== authorId) {
+        navigate('AnotherProfile', { uid: authorId, actualScreen: screen });
+      } else {
+        navigate('Perfil');
+      }
+    }
   };
   const renderMedia = () => {
     if (type === 'image') {
@@ -140,10 +157,11 @@ ${link}`;
             onPressCancel={() => setShowModal(false)}
             onPressOk={() => onHidePress()}
             requiredHeight={0.4}
+            component={isLoading ? <ActivityIndicator /> : null}
           />
         )}
       <View style={headerContainer}>
-        <TouchableHighlight onPress={() => navigate('AnotherProfile', { uid: authorId, actualScreen: screen })}>
+        <TouchableHighlight onPress={() => onAvatarPressed()}>
           <View style={basicInfoContainer}>
             <Avatar size={94} name={authorName} date={timestamp} url={url} />
           </View>
