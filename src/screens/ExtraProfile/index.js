@@ -46,7 +46,7 @@ const ExtraProfile = ({ route }) => {
       setIsLoading(false);
     };
     if (uid !== undefined) getData();
-  }, [uid, name, qFollowers, qFollowings]);
+  }, [uid, name, qFollowers, qFollowings, profile.extraUserPosts]);
   useEffect(() => () => {
     dispatch(cleanExtraProfile());
   }, []);

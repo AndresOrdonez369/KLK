@@ -54,7 +54,7 @@ const Profile = () => {
       if (postList.length === 0) await dispatch(getPosts(uid));
     };
     getData();
-  }, [uid]);
+  }, [uid, postList]);
 
   const dataUpdate = () => {
     if (dataChange) {

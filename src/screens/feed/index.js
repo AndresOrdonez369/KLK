@@ -70,13 +70,13 @@ const Feed = () => {
   useEffect(() => {
     const getFeed = async () => {
       setIsLoading(true);
-      await dispatch(getStories(profile.uid, stories));
+      if (stories.length === 0) await dispatch(getStories(profile.uid, stories));
       if (postList.length === 0) await dispatch(getPosts(profile.uid));
       await dispatch(getHidenPosts(profile.uid));
       setIsLoading(false);
     };
     getFeed();
-  }, [profile.uid, stories]);
+  }, [profile.uid, stories, postList]);
   useEffect(() => {
     if (postList.length > 0 && hidenList.length > 0) renderData();
   }, [postList, hidenList, realDataAction]);
