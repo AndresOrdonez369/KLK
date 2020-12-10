@@ -39,7 +39,7 @@ export const submitPost = (
           authorID: uid,
           urlAvatar,
         };
-        if (type !== 'video') {
+        if (uploaded !== 'video') {
           dispatch({
             type: Actions.SET_NEW_POST,
             payload: post,
@@ -51,7 +51,6 @@ export const submitPost = (
           });
         }
       });
-
     return dispatch({
       type: Actions.UPDATE_POST_SUCCESS,
       payload: 'Publicación cargada correctamente',
