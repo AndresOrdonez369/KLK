@@ -43,6 +43,7 @@ export const getPosts = (uid) => async (dispatch) => {
       });
   }
 };
+
 export const getHidenPosts = (uid) => async (dispatch) => {
   const hidenL = [];
   if (uid !== '') {
@@ -137,4 +138,9 @@ export const handleModalFeed = (show, type = 'confirmation', title = '', height 
 export const showHPostModal = (show) => ({
   type: Actions.HPOST_MODAL,
   payload: show,
+});
+
+export const activateRealPosts = (action) => ({
+  type: Actions.RENDER_REAL_DATA,
+  payload: action,
 });

@@ -11,12 +11,15 @@ const STATE_INICIAL = {
   titleModal: '',
   heightModal: 0,
   hidePostModal: false,
+  realDataAction: false,
 };
 
 export default (state = STATE_INICIAL, action) => {
   switch (action.type) {
     case Actions.SIGN_OUT:
       return STATE_INICIAL;
+    case Actions.RENDER_REAL_DATA:
+      return { ...state, realDataAction: action.payload };
     case Actions.GET_HIDEN_LIST:
       return { ...state, hidenList: action.payload };
     case Actions.HPOST_MODAL:

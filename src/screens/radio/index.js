@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet, View, Text, FlatList, Dimensions, KeyboardAvoidingView, SafeAreaView, ScrollView,
+  StyleSheet, View, Text, FlatList, Dimensions, SafeAreaView, ScrollView,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Input, Button, Icon } from 'react-native-elements';
@@ -9,6 +9,7 @@ import AudioComponent from '../../components/Audio';
 import { Send, LoadMessages } from './actionCreator';
 
 const { height, width } = Dimensions.get('screen');
+
 const Radio = () => {
   const dispatch = useDispatch();
   const radioState = useSelector((state) => state.reducerRadio);
@@ -137,7 +138,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: width * 0.95,
     backgroundColor: '#efefef',
-    borderRadius: 20,
+    borderRadius: 30,
   },
   chatContainer: {
     paddingTop: 15,

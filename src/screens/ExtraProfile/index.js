@@ -8,7 +8,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getExtraProfile, cleanExtraProfile } from '../profile/actionCreator';
+import { getExtraProfile, cleanExtraProfile, getExtraUserPosts } from '../profile/actionCreator';
 import {
   followFirestore, unfollowFirestore, getFollowersByUid, getFollowingsByUid,
 } from '../friends/actionCreator';
@@ -40,6 +40,7 @@ const ExtraProfile = ({ route }) => {
     const getData = async () => {
       setIsLoading(true);
       await dispatch(getExtraProfile(uid));
+      if (profile.extraUserPosts.length === 0) await dispatch(getExtraUserPosts(uid));
       await dispatch(getFollowersByUid(uid));
       await dispatch(getFollowingsByUid(uid));
       setIsLoading(false);
@@ -153,7 +154,7 @@ const ExtraProfile = ({ route }) => {
           </View>
         </View>
         <FlatList
-          data={DATA}
+          data={profile.extraUserPosts}
           renderItem={renderPost}
           keyExtractor={(item) => item.id}
         />
@@ -254,30 +255,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-
-const DATA = [
-  {
-    pid: 'k7tzQyjNtfnSKBrNJBeE',
-    urlAvatar: 'https://i.pinimg.com/564x/f1/40/4c/f1404c87f540b80b5fcf766e4c1f567d.jpg',
-    authorName: 'Valentina Ruiz Carmona',
-    mensaje: 'La música es lo mejor de mi vida',
-    mediaLink: 'https://firebasestorage.googleapis.com/v0/b/klk-messenger.appspot.com/o/posts%2Faudios%2F2%2FAnd%20It%20Was%20So.mp3?alt=media&token=a7301cb3-1bab-4ed6-883d-e18b8421bd31',
-    type: 'audio',
-    timestamp: '24/10/2020',
-    likes: 20,
-    authorId: '1VK5QYny97VrexbCWMCKXtuocKa2',
-  },
-  {
-    pid: 'qmx6YCHCdFo0DVPLv4Yi',
-    urlAvatar: 'https://www.eltiempo.com/files/article_multimedia/uploads/2019/11/07/5dc434e900e5f.jpeg',
-    authorName: 'Sara Sofia Zarama Cifuentes',
-    mensaje: 'Eres lo mejor que me ha pasado en la vida @danielFernandez',
-    mediaLink: 'https://firebasestorage.googleapis.com/v0/b/klk-messenger.appspot.com/o/posts%2Faudios%2F1VK5QYny97VrexbCWMCKXtuocKa2%2FAUD-20201118-WA0021.mp3?alt=media&token=39b916fd-3174-487d-a3ec-ae04821f19c0',
-    type: 'audio',
-    timestamp: '24/10/2020',
-    likes: 20,
-    authorId: '1VK5QYny97VrexbCWMCKXtuocKa2',
-  },
-];
 
 export default ExtraProfile;
