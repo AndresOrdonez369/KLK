@@ -143,7 +143,8 @@ export const cleanExtraProfile = () => ({
 export const getPosts = (uid) => async (dispatch) => {
   const db = firebase.firestore();
   if (uid !== '') {
-    await db.collection('posts').doc(uid).collection('userPosts').limit(20)
+    await db.collection('posts').doc(uid).collection('userPosts').orderBy('createdAt', 'desc')
+      .limit(20)
       .get()
       .then((posts) => {
         posts.forEach(async (post) => {
@@ -177,7 +178,8 @@ export const getPosts = (uid) => async (dispatch) => {
 export const getExtraUserPosts = (uid) => async (dispatch) => {
   const db = firebase.firestore();
   if (uid !== '') {
-    await db.collection('posts').doc(uid).collection('userPosts').limit(20)
+    await db.collection('posts').doc(uid).collection('userPosts').orderBy('createdAt', 'desc')
+      .limit(20)
       .get()
       .then((posts) => {
         posts.forEach(async (post) => {

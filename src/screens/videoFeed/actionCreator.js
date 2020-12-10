@@ -11,6 +11,7 @@ const getPosts = (uid) => async (dispatch) => {
         users.forEach(async (user) => {
           const queryUid = user.data().uid;
           await db.collection('posts').doc(queryUid).collection('userPosts').where('type', '==', 'video')
+            .orderBy('createdAt', 'desc')
             .limit(2)
             .get()
             .then((posts) => {

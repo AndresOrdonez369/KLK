@@ -10,7 +10,8 @@ export const getPosts = (uid) => async (dispatch) => {
       .then((followeds) => {
         followeds.forEach(async (followed) => {
           const queryUid = followed.data().uid;
-          await db.collection('posts').doc(queryUid).collection('userPosts').limit(2)
+          await db.collection('posts').doc(queryUid).collection('userPosts').orderBy('createdAt', 'desc')
+            .limit(2)
             .get()
             .then((posts) => {
               posts.forEach(async (post) => {
