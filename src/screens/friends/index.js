@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Dimensions, StyleSheet, View, FlatList, Platform, Text, ActivityIndicator,
+  Dimensions, StyleSheet, View, FlatList, Platform, Text, ActivityIndicator, TouchableHighlight,
 } from 'react-native';
 import { Button, SearchBar, Overlay } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -125,17 +125,19 @@ const Friends = () => {
     } = item;
     const actualScreen = 'Panas';
     return (
-      <FollowAvatar
-        urlImage={imageURL}
-        name={name}
-        date={`@${userName}`}
-        onPress={() => goSearch(uid, actualScreen)}
-        follow={Following.find((p) => p.uid === uid) === undefined}
-        pressFollow={() => dispatch(followFirestore(
-          profile.uid, uid, imageURL, name, userName,
-        ))}
-        pressUnfollow={() => handleUnfollow(uid, userName)}
-      />
+      <TouchableHighlight underlayColor="#ffc4c4" onPress={() => goSearch(uid, actualScreen)}>
+        <FollowAvatar
+          urlImage={imageURL}
+          name={name}
+          date={`@${userName}`}
+          onPress={() => goSearch(uid, actualScreen)}
+          follow={Following.find((p) => p.uid === uid) === undefined}
+          pressFollow={() => dispatch(followFirestore(
+            profile.uid, uid, imageURL, name, userName,
+          ))}
+          pressUnfollow={() => handleUnfollow(uid, userName)}
+        />
+      </TouchableHighlight>
     );
   };
   let footer = null;
