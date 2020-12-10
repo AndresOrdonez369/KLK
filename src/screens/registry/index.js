@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Dimensions, StyleSheet, View, Text, Image, KeyboardAvoidingView,
+  Dimensions, StyleSheet, View, Text, Image, KeyboardAvoidingView, Linking, TouchableHighlight,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
@@ -38,8 +38,11 @@ const Registry = () => {
     email, password, name, userName,
   } = input;
   // fnc
+  // eslint-disable-next-line no-underscore-dangle
+  const _handleOpenWithLinking = () => {
+    Linking.openURL('https://klkmessenger.norterecords.com/');
+  };
   const { navigate } = useNavigation();
-
   const validate = (value) => {
     if (value !== undefined) setValidation(true); else setValidation(false);
   };
@@ -62,7 +65,7 @@ const Registry = () => {
   if (isLoading) return <Loader message="Registrando..." />;
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#f22' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'silver' }}>
       <View style={styles.container}>
         <KeyboardAvoidingView behavior="padding" style={styles.container}>
           <View style={styles.icon}>
@@ -96,6 +99,7 @@ const Registry = () => {
           />
           <InputBasic
             placeholder="Nombre de usuario"
+            validation="name"
             value={userName}
             changeText={(text, err) => {
               setInput({ ...input, userName: text });
@@ -121,9 +125,11 @@ const Registry = () => {
               email, password, name, userName, error, errorCode, validation,
             )}
           />
-          <Text style={styles.textTerms}>
-            Al registrarte aceptas nuestras Condiciones y Política de privacidad.
-          </Text>
+          <TouchableHighlight onPress={_handleOpenWithLinking} underlayColor="#ffc4c4">
+            <Text style={styles.textTerms}>
+              Al registrarte aceptas nuestras Condiciones y Política de privacidad.
+            </Text>
+          </TouchableHighlight>
         </KeyboardAvoidingView>
       </View>
     </SafeAreaView>

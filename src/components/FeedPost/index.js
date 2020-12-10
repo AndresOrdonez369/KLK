@@ -153,7 +153,7 @@ ${link}`;
           <BasicModal
             type="interactive"
             visible={modal}
-            title="Desea ocultar esta publicación ?"
+            title="¿Desea ocultar esta publicación?"
             onPressCancel={() => setShowModal(false)}
             onPressOk={() => onHidePress()}
             requiredHeight={0.4}
@@ -161,7 +161,7 @@ ${link}`;
           />
         )}
       <View style={headerContainer}>
-        <TouchableHighlight onPress={() => onAvatarPressed()}>
+        <TouchableHighlight underlayColor="#ffc4c4" onPress={() => onAvatarPressed()}>
           <View style={basicInfoContainer}>
             <Avatar size={94} name={authorName} date={timestamp} url={url} />
           </View>
