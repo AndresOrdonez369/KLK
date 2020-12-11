@@ -26,6 +26,7 @@ const Feed = () => {
   const [showStories, setShowStories] = useState(false);
   const [storiesObj, setStoriesObj] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [count, setCount] = useState(0);
   const dispatch = useDispatch();
   const [realData, setRealData] = useState([]);
   const profile = useSelector((state) => state.reducerProfile);
@@ -42,11 +43,17 @@ const Feed = () => {
     setRealData(res);
   };
 
+  useEffect(() => setCount(0), []);
+  useEffect(() => {
+    if (count >= 3) {
+      setIsLoading(false);
+    }
+  }, [count]);
   useEffect(() => {
     const getFeed = async () => {
       setIsLoading(true);
       await dispatch(getHidenPosts(profile.uid));
-      setIsLoading(false);
+      setCount((prev) => prev + 1);
     };
     getFeed();
   }, [profile.uid]);
@@ -54,7 +61,7 @@ const Feed = () => {
     const getFeed = async () => {
       setIsLoading(true);
       if (stories.length === 0) await dispatch(getStories(profile.uid, stories));
-      setIsLoading(false);
+      setCount((prev) => prev + 1);
     };
     getFeed();
   }, [profile.uid, stories]);
@@ -62,7 +69,7 @@ const Feed = () => {
     const getFeed = async () => {
       setIsLoading(true);
       if (postList.length === 0) await dispatch(getPosts(profile.uid));
-      setIsLoading(false);
+      setCount((prev) => prev + 1);
     };
     getFeed();
   }, [profile.uid, postList]);
