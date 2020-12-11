@@ -75,18 +75,18 @@ export const userUploadImagen = (imagenURL, type) => async (dispatch) => {
       .child(userPhothoURL)
       .getDownloadURL();
 
+    const dbh = firebase.firestore();
+    const uidCollection = dbh.collection('users').doc(user.uid);
+
     if (type === 'picture') {
       await user.updateProfile({
         displayName: user.displayName,
         photoURL: url,
       });
+      await uidCollection.update({ imageURL: url });
     }
 
-    if (type === 'cover') {
-      const dbh = firebase.firestore();
-      const uidCollection = dbh.collection('users').doc(user.uid);
-      await uidCollection.update({ coverURL: url });
-    }
+    if (type === 'cover') await uidCollection.update({ coverURL: url });
 
     return dispatch({
       type: type === 'picture' ? Actions.USER_UPDATE_IMAGEN_URL : Actions.USER_UPDATE_COVER_URL,
@@ -139,6 +139,7 @@ export const getExtraProfile = (id, nam) => async (dispatch) => {
       },
     });
   }
+  return null;
 };
 
 export const cleanExtraProfile = () => ({
