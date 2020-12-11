@@ -29,7 +29,7 @@ const ExtraProfile = ({ route }) => {
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.reducerProfile);
   const {
-    description, name, userName, followers, coverURL, imageURL, qFollowers, qFollowings,
+    description, name, userName, followers, coverURL, imageURL, qFollowers, qFollowing,
   } = profile.anotherUser;
   const screen = 'AnotherProfile';
   const userObj = profile.anotherUser;
@@ -48,11 +48,11 @@ const ExtraProfile = ({ route }) => {
   useEffect(() => {
     const getData = async () => {
       setIsLoading(true);
-      if (qFollowings === 0) await dispatch(getFollowingsByUid(uid, 0, qFollowings));
+      if (qFollowing === 0) await dispatch(getFollowingsByUid(uid, 0, qFollowing));
       setCount((prev) => prev + 1);
     };
     if (uid !== undefined) getData();
-  }, [uid, qFollowings]);
+  }, [uid, qFollowing]);
   useEffect(() => {
     const getData = async () => {
       setIsLoading(true);
@@ -159,7 +159,7 @@ const ExtraProfile = ({ route }) => {
               <Text style={styles.category}>seguidores</Text>
             </View>
             <View style={styles.textCategory}>
-              <Text style={styles.numbersInfo}>{qFollowings >= 0 ? qFollowings : 0}</Text>
+              <Text style={styles.numbersInfo}>{qFollowing >= 0 ? qFollowing : 0}</Text>
               <Text style={styles.category}>siguiendo</Text>
             </View>
           </View>

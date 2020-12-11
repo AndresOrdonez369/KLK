@@ -31,7 +31,7 @@ const Profile = () => {
     dataChange, modalType, error, message, user, uid, postList,
   } = profile;
   const {
-    description, name, userName, qFollowers, qFollowings,
+    description, name, userName, qFollowers, qFollowing,
   } = user;
 
   const { navigate } = useNavigation();
@@ -130,7 +130,7 @@ const Profile = () => {
               <Text style={styles.category}>seguidores</Text>
             </View>
             <View style={styles.textCategory}>
-              <Text style={styles.numbersInfo}>{qFollowings >= 0 ? qFollowings : 0}</Text>
+              <Text style={styles.numbersInfo}>{qFollowing >= 0 ? qFollowing : 0}</Text>
               <Text style={styles.category}>siguiendo</Text>
             </View>
           </View>
