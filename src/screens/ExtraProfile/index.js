@@ -24,11 +24,12 @@ const ExtraProfile = ({ route }) => {
   // state
   const [follow, setFollow] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [count, setCount] = useState(0);
   // redux
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.reducerProfile);
   const {
-    description, name, userName, followers, coverURL, imageURL, qFollowers, qFollowings,
+    description, name, userName, followers, coverURL, imageURL, qFollowers, qFollowing,
   } = profile.anotherUser;
   const screen = 'AnotherProfile';
   const userObj = profile.anotherUser;
@@ -39,16 +40,46 @@ const ExtraProfile = ({ route }) => {
   useEffect(() => {
     const getData = async () => {
       setIsLoading(true);
-      await dispatch(getExtraProfile(uid));
       if (profile.extraUserPosts.length === 0) await dispatch(getExtraUserPosts(uid));
-      await dispatch(getFollowersByUid(uid));
-      await dispatch(getFollowingsByUid(uid));
-      setIsLoading(false);
+      setCount((prev) => prev + 1);
     };
     if (uid !== undefined) getData();
-  }, [uid]);
-  useEffect(() => () => {
-    dispatch(cleanExtraProfile());
+  }, [uid, profile.extraUserPosts]);
+  useEffect(() => {
+    const getData = async () => {
+      setIsLoading(true);
+      if (qFollowing === 0) await dispatch(getFollowingsByUid(uid, 0, qFollowing));
+      setCount((prev) => prev + 1);
+    };
+    if (uid !== undefined) getData();
+  }, [uid, qFollowing]);
+  useEffect(() => {
+    const getData = async () => {
+      setIsLoading(true);
+      if (qFollowers === 0) await dispatch(getFollowersByUid(uid, 0, qFollowers));
+      setCount((prev) => prev + 1);
+    };
+    if (uid !== undefined) getData();
+  }, [uid, qFollowers]);
+  useEffect(() => {
+    const getData = async () => {
+      setIsLoading(true);
+      if (name === '') await dispatch(getExtraProfile(uid, name));
+      setCount((prev) => prev + 1);
+    };
+    if (uid !== undefined) getData();
+  }, [uid, name]);
+  useEffect(() => {
+    if (count >= 4) {
+      setIsLoading(false);
+    }
+  }, [count]);
+
+  useEffect(() => {
+    setCount(0);
+    return () => {
+      dispatch(cleanExtraProfile());
+    };
   }, []);
   useEffect(() => {
     const checkFollow = () => {
@@ -131,7 +162,7 @@ const ExtraProfile = ({ route }) => {
               <Text style={styles.category}>seguidores</Text>
             </View>
             <View style={styles.textCategory}>
-              <Text style={styles.numbersInfo}>{qFollowings >= 0 ? qFollowings : 0}</Text>
+              <Text style={styles.numbersInfo}>{qFollowing >= 0 ? qFollowing : 0}</Text>
               <Text style={styles.category}>siguiendo</Text>
             </View>
           </View>

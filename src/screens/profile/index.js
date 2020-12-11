@@ -15,6 +15,7 @@ import {
   updateDescription, hideModalProfile, setDataChange, updateDataUser, getPosts,
 } from './actionCreator';
 import Post from '../../components/FeedPost';
+import Loader from '../../components/Loader';
 
 const { height, width } = Dimensions.get('screen');
 
@@ -22,6 +23,7 @@ const Profile = () => {
   // state
   const [input, showInput] = useState(false);
   const [realData, setRealData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   // redux
   const dispatch = useDispatch();
   const feed = useSelector((state) => state.reducerHome);
@@ -31,7 +33,7 @@ const Profile = () => {
     dataChange, modalType, error, message, user, uid, postList,
   } = profile;
   const {
-    description, name, userName, qFollowers, qFollowings,
+    description, name, userName, qFollowers, qFollowing,
   } = user;
 
   const { navigate } = useNavigation();
@@ -51,10 +53,12 @@ const Profile = () => {
 
   useEffect(() => {
     const getData = async () => {
+      setIsLoading(true);
       if (postList.length === 0) await dispatch(getPosts(uid));
+      setIsLoading(false);
     };
     getData();
-  }, [uid]);
+  }, [uid, postList]);
 
   const dataUpdate = () => {
     if (dataChange) {
@@ -62,7 +66,7 @@ const Profile = () => {
     }
     return null;
   };
-  console.log('postList Perfil', realData);
+
   const inputFnc = (inputActive) => {
     if (inputActive) {
       showInput(false);
@@ -86,6 +90,8 @@ const Profile = () => {
       screen="Perfil"
     />
   );
+
+  if (isLoading) return <Loader message="Obteniendo datos..." />;
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -130,7 +136,7 @@ const Profile = () => {
               <Text style={styles.category}>seguidores</Text>
             </View>
             <View style={styles.textCategory}>
-              <Text style={styles.numbersInfo}>{qFollowings >= 0 ? qFollowings : 0}</Text>
+              <Text style={styles.numbersInfo}>{qFollowing >= 0 ? qFollowing : 0}</Text>
               <Text style={styles.category}>siguiendo</Text>
             </View>
           </View>

@@ -136,12 +136,27 @@ export default (state = STATE_INICIAL, action) => {
               imageURL: action.payload.imageURL,
             },
           },
+          qFollowing: state.user.qFollowing + 1,
+        },
+        anotherUser: {
+          ...state.anotherUser,
+          qFollowers: state.anotherUser.qFollowers + 1,
         },
       };
     case Actions.UNFOLLOW_SOMEONE:
       // eslint-disable-next-line no-param-reassign
       delete state.user.following[action.payload];
-      return { ...state };
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          qFollowing: state.user.qFollowing - 1,
+        },
+        anotherUser: {
+          ...state.anotherUser,
+          qFollowers: state.anotherUser.qFollowers - 1,
+        },
+      };
     case Actions.GET_FOLLOWERS:
       return {
         ...state,
@@ -215,7 +230,7 @@ export default (state = STATE_INICIAL, action) => {
         ...state,
         user: {
           ...state.user,
-          qFollowings: action.payload - 1,
+          qFollowing: action.payload - 1,
         },
       };
     case Actions.SET_FOLLOWINGS:
@@ -223,7 +238,7 @@ export default (state = STATE_INICIAL, action) => {
         ...state,
         anotherUser: {
           ...state.anotherUser,
-          qFollowings: action.payload - 1,
+          qFollowing: action.payload - 1,
         },
       };
     case Actions.SET_FOLLOWERS:
