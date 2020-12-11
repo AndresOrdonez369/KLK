@@ -24,6 +24,7 @@ const ExtraProfile = ({ route }) => {
   // state
   const [follow, setFollow] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [count, setCount] = useState(0);
   // redux
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.reducerProfile);
@@ -39,14 +40,41 @@ const ExtraProfile = ({ route }) => {
   useEffect(() => {
     const getData = async () => {
       setIsLoading(true);
-      await dispatch(getExtraProfile(uid, name));
-      await dispatch(getFollowersByUid(uid, 0, qFollowers));
-      await dispatch(getFollowingsByUid(uid, 0, qFollowings));
       if (profile.extraUserPosts.length === 0) await dispatch(getExtraUserPosts(uid));
-      setIsLoading(false);
+      setCount((prev) => prev + 1);
     };
     if (uid !== undefined) getData();
-  }, [uid, name, qFollowers, qFollowings, profile.extraUserPosts]);
+  }, [uid, profile.extraUserPosts]);
+  useEffect(() => {
+    const getData = async () => {
+      setIsLoading(true);
+      if (qFollowings === 0) await dispatch(getFollowingsByUid(uid, 0, qFollowings));
+      setCount((prev) => prev + 1);
+    };
+    if (uid !== undefined) getData();
+  }, [uid, qFollowings]);
+  useEffect(() => {
+    const getData = async () => {
+      setIsLoading(true);
+      if (qFollowers === 0) await dispatch(getFollowersByUid(uid, 0, qFollowers));
+      setCount((prev) => prev + 1);
+    };
+    if (uid !== undefined) getData();
+  }, [uid, qFollowers]);
+  useEffect(() => {
+    const getData = async () => {
+      setIsLoading(true);
+      if (name === '') await dispatch(getExtraProfile(uid, name));
+      setCount((prev) => prev + 1);
+    };
+    if (uid !== undefined) getData();
+  }, [uid, name]);
+  useEffect(() => {
+    if (count >= 4) {
+      setIsLoading(false);
+    }
+  }, [count]);
+  console.log(count);
   useEffect(() => () => {
     dispatch(cleanExtraProfile());
   }, []);

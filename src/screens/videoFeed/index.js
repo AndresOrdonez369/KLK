@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import getPosts from './actionCreator';
 import Post from '../../components/FeedPost';
 
-const { width,height} = Dimensions.get('screen');
+const { width, height } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
   container: {
@@ -45,7 +45,6 @@ const VideoFeed = () => {
     };
     getData();
   }, [profile.uid, postList]);
-  console.log('video postlist', video.postList);
 
   const renderPost = ({ item }) => (
     <Post
