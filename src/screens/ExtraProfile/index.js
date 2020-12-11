@@ -74,9 +74,12 @@ const ExtraProfile = ({ route }) => {
       setIsLoading(false);
     }
   }, [count]);
-  console.log(count);
-  useEffect(() => () => {
-    dispatch(cleanExtraProfile());
+
+  useEffect(() => {
+    setCount(0);
+    return () => {
+      dispatch(cleanExtraProfile());
+    };
   }, []);
   useEffect(() => {
     const checkFollow = () => {

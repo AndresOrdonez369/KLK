@@ -15,6 +15,7 @@ import {
   updateDescription, hideModalProfile, setDataChange, updateDataUser, getPosts,
 } from './actionCreator';
 import Post from '../../components/FeedPost';
+import Loader from '../../components/Loader';
 
 const { height, width } = Dimensions.get('screen');
 
@@ -22,6 +23,7 @@ const Profile = () => {
   // state
   const [input, showInput] = useState(false);
   const [realData, setRealData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   // redux
   const dispatch = useDispatch();
   const feed = useSelector((state) => state.reducerHome);
@@ -51,7 +53,9 @@ const Profile = () => {
 
   useEffect(() => {
     const getData = async () => {
+      setIsLoading(true);
       if (postList.length === 0) await dispatch(getPosts(uid));
+      setIsLoading(false);
     };
     getData();
   }, [uid, postList]);
@@ -62,7 +66,7 @@ const Profile = () => {
     }
     return null;
   };
-  console.log('postList Perfil', realData);
+
   const inputFnc = (inputActive) => {
     if (inputActive) {
       showInput(false);
@@ -86,6 +90,8 @@ const Profile = () => {
       screen="Perfil"
     />
   );
+
+  if (isLoading) return <Loader message="Obteniendo datos..." />;
 
   return (
     <SafeAreaView style={styles.safeArea}>
