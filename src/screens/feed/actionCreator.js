@@ -69,10 +69,14 @@ export const getStories = (uid, stories) => async (dispatch) => {
           const queryUid = doc.data().uid;
           await db.collection('stories').where('authorID', '==', queryUid).get()
             .then((query) => {
-              query.forEach((ref) => dispatch({
+              const Stories = [];
+              query.forEach((ref) => {
+                Stories.push(ref.data());
+              });
+              return dispatch({
                 type: Actions.GET_STORIES,
-                payload: ref.data(),
-              }));
+                payload: Stories,
+              });
             })
             .catch((error) => {
               dispatch(handleModalFeed(true, 'error', 'Hubo un error trayendo los datos de las historias'));

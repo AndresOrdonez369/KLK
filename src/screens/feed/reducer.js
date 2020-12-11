@@ -35,6 +35,10 @@ export default (state = STATE_INICIAL, action) => {
     case Actions.GET_POSTS:
       return { ...state, postList: [...state.postList, action.payload] };
     case Actions.GET_STORIES:
+      return {
+        ...state,
+        stories: action.payload,
+      };
     case Actions.USER_UPLOAD_STORY:
       return {
         ...state,
