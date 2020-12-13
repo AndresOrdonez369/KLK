@@ -32,7 +32,7 @@ const ExtraProfile = ({ route }) => {
   const profile = useSelector((state) => state.reducerProfile);
   const {
     description, name, userName, followers, coverURL, imageURL,
-    qFollowers, qFollowings, lengthExtraProfilePost,
+    qFollowers, qFollowing, lengthExtraProfilePost,
   } = profile.anotherUser;
   const screen = 'AnotherProfile';
   const userObj = profile.anotherUser;
