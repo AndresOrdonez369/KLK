@@ -1,17 +1,19 @@
 import Actions from '../../redux/actionTypes';
 import firebase from '../../../firebase';
 
-export const submitComment = (comment, uid, name, imageUrl, pid) => async (dispatch) => {
+export const submitComment = (
+  comment, uid, name, authorPost, pid, imageUrl,
+) => async (dispatch) => {
   const createdAt = Date.now();
   const db = firebase.firestore();
+  const docUid = authorPost === uid ? uid : authorPost;
   const data = {
     authorID: uid,
     authorName: name,
-    imageUrl,
     comment,
     createdAt,
   };
-  await db.collection('posts').doc(uid).collection('userPosts').doc(pid)
+  await db.collection('posts').doc(docUid).collection('userPosts').doc(pid)
     .collection('comments')
     .add(data)
     .then((documentReference) => {
@@ -46,10 +48,12 @@ export const getComments = (authorID, pid) => async (dispatch) => {
         const dataComment = comment.data();
         const [hour, minute] = new Date(parseInt(dataComment.createdAt, 10))
           .toLocaleTimeString('en-US').split(/:| /);
+        const pathReference = await firebase.storage().ref(`/Users/profilePhotos/${dataComment.authorID}.png`);
+        const url = await pathReference.getDownloadURL();
         const commentResume = {
           name: dataComment.authorName,
           comment: dataComment.comment,
-          url: dataComment.imageUrl,
+          url,
           hour: `${hour}:${minute}`,
           cid: comment.id,
         };

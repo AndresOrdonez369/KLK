@@ -36,7 +36,6 @@ const ExtraProfile = ({ route }) => {
   } = profile.anotherUser;
   const screen = 'AnotherProfile';
   const userObj = profile.anotherUser;
-
   const { navigate } = useNavigation();
   const { uid, actualScreen } = route.params;
 

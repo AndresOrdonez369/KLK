@@ -64,7 +64,7 @@ const Comments = ({ route }) => {
   );
 
   const submit = () => {
-    dispatch(submitComment(comment, uid, user.name, imageURL, postObject.pid));
+    dispatch(submitComment(comment, uid, user.name, postObject.authorId, postObject.pid, imageURL));
     setComment('');
   };
 
