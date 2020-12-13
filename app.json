@@ -4,7 +4,7 @@
     "slug": "Klk_msn",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/klklogo512.png",
     "splash": {
       "image": "./assets/logo.png",
       "resizeMode": "contain",
