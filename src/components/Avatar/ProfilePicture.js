@@ -63,7 +63,7 @@ const ProfilePicture = ({ type }) => {
     setOverlayVisible(!overlayVisible);
   };
 
-  const { photoURL } = firebase.auth().currentUser;
+  const photoURL = firebase.auth().currentUser ? firebase.auth().currentUser.photoURL : null;
   const { uploadPhotoError } = useSelector((state) => state.reducerProfile);
   const { coverURL } = useSelector((state) => state.reducerProfile.user);
   const imgUser = photoURL ? { uri: photoURL } : requirePhoto;

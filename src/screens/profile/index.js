@@ -84,6 +84,12 @@ const Profile = () => {
       showInput(true);
     }
   };
+  const dataPosts = realData.filter((value, index, self) => {
+    if (value !== undefined && index !== undefined && self !== undefined) {
+      return self.findIndex((p) => p.pid === value.pid) === index;
+    }
+    return null;
+  });
   const renderPost = ({ item }) => (
     <Post
       pid={item.pid}
@@ -176,7 +182,7 @@ const Profile = () => {
           />
         </View>
         <FlatList
-          data={realData}
+          data={dataPosts}
           renderItem={renderPost}
           keyExtractor={(item) => item.pid}
         />

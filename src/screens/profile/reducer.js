@@ -35,6 +35,7 @@ const STATE_INICIAL = {
   },
   postList: [],
   extraUserPosts: [],
+  postCreated: false,
 };
 
 export default (state = STATE_INICIAL, action) => {

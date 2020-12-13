@@ -32,7 +32,8 @@ const Feed = () => {
   const profile = useSelector((state) => state.reducerProfile);
   const feed = useSelector((state) => state.reducerHome);
   const {
-    stories, showModal, modalType, titleModal, heightModal, postList, hidenList, realDataAction,
+    stories, showModal, modalType, titleModal, heightModal,
+    postList, hidenList, realDataAction, postCreated,
   } = feed;
   const { imageURL } = profile;
 
@@ -68,11 +69,11 @@ const Feed = () => {
   useEffect(() => {
     const getFeed = async () => {
       setIsLoading(true);
-      if (postList.length === 0) await dispatch(getPosts(profile.uid));
+      if (postList.length === 0 && postCreated === false) await dispatch(getPosts(profile.uid));
       setCount((prev) => prev + 1);
     };
     getFeed();
-  }, [profile.uid, postList]);
+  }, [profile.uid, postList, postCreated]);
   useEffect(() => {
     if (postList.length > 0 && hidenList.length > 0) renderData();
   }, [postList, hidenList, realDataAction]);
@@ -85,6 +86,13 @@ const Feed = () => {
     return null;
   });
   const bubbleData = uniqueID.filter((story) => story.authorID !== profile.uid);
+  const dataPosts = realData.filter((value, index, self) => {
+    if (value !== undefined && index !== undefined && self !== undefined) {
+      return self.findIndex((p) => p.pid === value.pid) === index;
+    }
+    return null;
+  });
+  console.log(realData, dataPosts);
   // fnc
   const renderPost = ({ item }) => (
     <Post
@@ -180,21 +188,23 @@ const Feed = () => {
           stories={bubbleData}
           pressStory={(uid) => onPressStory(uid)}
         />
-        <View style={styles.createView}>
-          <SimpleAvatar
-            url={imageURL}
-            size={styles.container.height * 0.12}
-          />
-          <Button
-            title="¿klk estás pensando?"
-            onPress={() => navigate('CreatePost')}
-            buttonStyle={styles.buttonCreate}
-          />
-        </View>
         <View style={styles.feedContainer}>
           <FlatList
+            ListHeaderComponent={(
+              <View style={styles.createView}>
+                <SimpleAvatar
+                  url={imageURL}
+                  size={styles.container.height * 0.12}
+                />
+                <Button
+                  title="¿klk estás pensando?"
+                  onPress={() => navigate('CreatePost')}
+                  buttonStyle={styles.buttonCreate}
+                />
+              </View>
+              )}
             contentContainerStyle={{ marginBottom: 100 }}
-            data={realData}
+            data={dataPosts}
             renderItem={renderPost}
             keyExtractor={(item) => item.pid}
           />
