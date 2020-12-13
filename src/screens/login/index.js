@@ -41,9 +41,9 @@ const Login = () => {
       .collection('prueba')
       .add({
         user1: JSON.stringify(user),
-        user2: JSON.stringify(user.email),
-        prueba1: JSON.stringify(user.GoogleIdentity),
+
       });
+
     /*     inputRegistry({ prop: 'email', value: user.user.email });
     inputRegistry({ prop: 'name', value: user.user.name }); */
     navigate('registry');
@@ -56,16 +56,8 @@ const Login = () => {
         .firestore()
         .collection('prueba')
         .add({
-          user0: JSON.stringify(user),
-          user2: JSON.stringify(user.email),
-          prueba2: JSON.stringify(user.GoogleIdentity),
-        });
-      const respuesta = await GoogleSignIn.getCurrentUserAsync();
-      await firebase
-        .firestore()
-        .collection('prueba')
-        .add({
-          prueba1: JSON.stringify(respuesta),
+          user1: JSON.stringify(user),
+
         });
       if (type === 'success') {
         syncUserWithStateAsync();
