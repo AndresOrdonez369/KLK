@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, Image } from 'react-native';
+import {
+  View, Text, Image, Alert,
+} from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SocialIcon } from 'react-native-elements';
+import * as GoogleSignIn from 'expo-google-sign-in';
 import InputBasic from '../../components/InputBasic/inputBasic';
 import ButtonBasic from '../../components/ButtonBasic/ButtonBasic';
 import AlertMessage from '../../components/AlertMessage';
 import Logo from '../../../assets/logo.png';
 import { loginEmailAndPassword } from './actionCreator';
 import styles from './styles';
+import firebase from '../../../firebase';
 import checkErrorType from './helperFirebaseError';
 
 const Login = () => {
@@ -29,6 +33,48 @@ const Login = () => {
     password: '',
   });
   const { email, password } = input;
+
+  const syncUserWithStateAsync = async () => {
+    const { user } = await GoogleSignIn.signInSilentlyAsync();
+    await firebase
+      .firestore()
+      .collection('prueba')
+      .add({
+        user1: JSON.stringify(user),
+        user2: JSON.stringify(user.email),
+        prueba1: JSON.stringify(user.GoogleIdentity),
+      });
+    /*     inputRegistry({ prop: 'email', value: user.user.email });
+    inputRegistry({ prop: 'name', value: user.user.name }); */
+    navigate('registry');
+  };
+  const signInAsync = async () => {
+    try {
+      await GoogleSignIn.askForPlayServicesAsync();
+      const { type, user } = await GoogleSignIn.signInAsync();
+      await firebase
+        .firestore()
+        .collection('prueba')
+        .add({
+          user0: JSON.stringify(user),
+          user2: JSON.stringify(user.email),
+          prueba2: JSON.stringify(user.GoogleIdentity),
+        });
+      const respuesta = await GoogleSignIn.getCurrentUserAsync();
+      await firebase
+        .firestore()
+        .collection('prueba')
+        .add({
+          prueba1: JSON.stringify(respuesta),
+        });
+      if (type === 'success') {
+        syncUserWithStateAsync();
+      }
+    } catch ({ mess }) {
+      Alert.alert('login: askForPlayServicesAsync:', mess);
+      await firebase.firestore().collection('prueba').add({ error: 'entre al error signInAsync' });
+    }
+  };
   // loginEaP
   const logInEaP = async (Email, Password, val) => {
     if (Email.trim() === '' || Password.trim() === '') setAlert({ show: true, message: 'No pueden haber campos vacíos' });
@@ -43,8 +89,12 @@ const Login = () => {
     console.log('loginfb');
   };
   // login google
-  const loginGoogle = () => {
-    console.log('loginGoogle');
+  const loginGoogle = async () => {
+    try {
+      signInAsync();
+    } catch (e) {
+      Alert.alert('loginGoogle:', JSON.stringify(e));
+    }
   };
   // validate
   const validate = (value) => {
