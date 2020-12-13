@@ -8,7 +8,9 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getExtraProfile, cleanExtraProfile, getExtraUserPosts } from '../profile/actionCreator';
+import {
+  getExtraProfile, cleanExtraProfile, getExtraUserPosts, getNumberExtraProfilePosts,
+} from '../profile/actionCreator';
 import {
   followFirestore, unfollowFirestore, getFollowersByUid, getFollowingsByUid,
 } from '../friends/actionCreator';
@@ -29,7 +31,8 @@ const ExtraProfile = ({ route }) => {
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.reducerProfile);
   const {
-    description, name, userName, followers, coverURL, imageURL, qFollowers, qFollowing,
+    description, name, userName, followers, coverURL, imageURL,
+    qFollowers, qFollowings, lengthExtraProfilePost,
   } = profile.anotherUser;
   const screen = 'AnotherProfile';
   const userObj = profile.anotherUser;
@@ -91,6 +94,10 @@ const ExtraProfile = ({ route }) => {
     };
     checkFollow();
   }, [followers]);
+
+  useEffect(() => {
+    dispatch(getNumberExtraProfilePosts(uid));
+  }, [lengthExtraProfilePost, uid]);
 
   const imgUser = imageURL ? { uri: imageURL } : null;
   const imgCover = coverURL ? { uri: coverURL } : requireCover;
@@ -154,7 +161,7 @@ const ExtraProfile = ({ route }) => {
         <View style={styles.generalInfo}>
           <View style={styles.textInfo}>
             <View style={styles.textCategory}>
-              <Text style={styles.numbersInfo}>10</Text>
+              <Text style={styles.numbersInfo}>{lengthExtraProfilePost}</Text>
               <Text style={styles.category}>posts</Text>
             </View>
             <View style={styles.textCategory}>
@@ -269,7 +276,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     color: 'white',
     fontSize: height * 0.015,
-    marginBottom: height * 0.014,
+    marginBottom: height * 0.020,
   },
   cover: {
     width,

@@ -9,7 +9,7 @@ const requirePhoto = require('../../../assets/busyPosition.png');
 const { height, width } = Dimensions.get('screen');
 
 const CommentAvatar = ({
-  url, size = height * 0.08, name, comment, accessory = null, showAccessory = false, onPress,
+  url, size = height * 0.08, name, comment, accessory = null, showAccessory = false, onPress, hour,
 }) => {
   const imgUser = url
     ? { uri: url }
@@ -28,7 +28,11 @@ const CommentAvatar = ({
       <View style={styles.containerText(size)}>
         {name && <Text style={styles.name(size)}>{name}</Text>}
         {comment && <Text style={styles.comment(size)}>{comment}</Text>}
+        <View style={styles.containerHour(size)}>
+          {hour && <Text style={styles.message(size)}>{hour}</Text>}
+        </View>
       </View>
+
     </View>
   );
 };
@@ -48,8 +52,6 @@ const styles = StyleSheet.create({
     marginLeft: width * 0.04,
     marginRight: width * 0.04,
     marginBottom: height * 0.01,
-    textAling: 'center',
-
   }),
   containerText: (size) => ({
     marginTop: size / 4,
@@ -57,9 +59,17 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     width: width * 0.65,
     marginRight: width * 0.08,
-
   }),
-
+  containerHour: (size) => ({
+    marginTop: size / 4,
+    width: size / 1.65,
+    alignItems: 'space-around',
+    marginRight: size / 4,
+  }),
+  message: (size) => ({
+    fontSize: size / 7,
+    color: 'black',
+  }),
 });
 
 export default CommentAvatar;

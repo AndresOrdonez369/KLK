@@ -11,9 +11,10 @@ export default (state = STATE_INICIAL, action) => {
     case Actions.SUBMIT_COMMENT_SUCCESS:
       return {
         ...state,
+        comments: [action.payload, ...state.comments],
         error: false,
         message: action.message,
-        
+
       };
     case Actions.SUBMIT_COMMENT_ERROR:
       return {
@@ -26,10 +27,10 @@ export default (state = STATE_INICIAL, action) => {
         ...state,
         comments: [...state.comments, action.payload],
       };
-    case Actions.UPDATE_DATA_POST:
+    case Actions.UPDATE_CLEAN_COMMNET:
       return {
         ...state,
-        post: action.payload,
+        comments: [],
       };
     default:
       return { ...state };

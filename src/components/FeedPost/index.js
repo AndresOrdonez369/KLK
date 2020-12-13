@@ -15,6 +15,7 @@ import Youtube from '../Youtube';
 import { activateRealPosts, getHidenPosts } from '../../screens/feed/actionCreator';
 import firebase from '../../../firebase';
 import styles from './styles';
+import { updateCleanComments } from '../../screens/comments/actionCreator';
 
 const FeedPost = ({
   authorName, mensaje, mediaLink, likes, type, timestamp, url, pid,
@@ -54,10 +55,11 @@ const FeedPost = ({
     }
   };
 
-  const commentNavigate = () => {
+  const commentNavigate = async () => {
     const postObject = {
       authorName, mensaje, mediaLink, likes, type, timestamp, url, pid, authorId,
     };
+    await dispatch(updateCleanComments);
     navigate('Comments', { screen, postObject });
   };
   useEffect(() => {

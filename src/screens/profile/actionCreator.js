@@ -181,6 +181,39 @@ export const getPosts = (uid) => async (dispatch) => {
       });
   }
 };
+
+export const getNumberPosts = (uid) => async (dispatch) => {
+  const db = firebase.firestore();
+  if (uid !== '') {
+    await db.collection('posts').doc(uid).collection('userPosts')
+      .get()
+      .then((posts) => {
+        const postSize = posts.size;
+        console.log('está entrando a esto');
+        console.log(postSize, 'está entrando aquí?');
+        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+        dispatch({
+          type: Actions.GET_LENGTH_POST,
+          payload: postSize,
+        });
+      });
+  }
+};
+export const getNumberExtraProfilePosts = (uid) => async (dispatch) => {
+  const db = firebase.firestore();
+  if (uid !== '') {
+    await db.collection('posts').doc(uid).collection('userPosts')
+      .get()
+      .then((posts) => {
+        const postSize = posts.size;
+        dispatch({
+          type: Actions.GET_LENGTH_EXTRA_PROFILE_POST,
+          payload: postSize,
+        });
+      });
+  }
+};
+
 export const getExtraUserPosts = (uid) => async (dispatch) => {
   const db = firebase.firestore();
   if (uid !== '') {

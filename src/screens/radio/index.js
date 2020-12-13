@@ -21,8 +21,6 @@ const Radio = () => {
   useEffect(async () => {
     dispatch(LoadMessages());
   }, []);
-
-  console.log('mensaje', messages);
   const { uid, user } = profile;
   const { message } = input;
   const renderItem = ({ item }) => (
