@@ -184,23 +184,25 @@ const Feed = () => {
             requiredHeight={heightModal}
           />
         )}
-        <Bubbles
-          stories={bubbleData}
-          pressStory={(uid) => onPressStory(uid)}
-        />
         <View style={styles.feedContainer}>
           <FlatList
             ListHeaderComponent={(
-              <View style={styles.createView}>
-                <SimpleAvatar
-                  url={imageURL}
-                  size={styles.container.height * 0.12}
+              <View>
+                <Bubbles
+                  stories={bubbleData}
+                  pressStory={(uid) => onPressStory(uid)}
                 />
-                <Button
-                  title="¿klk estás pensando?"
-                  onPress={() => navigate('CreatePost')}
-                  buttonStyle={styles.buttonCreate}
-                />
+                <View style={styles.createView}>
+                  <SimpleAvatar
+                    url={imageURL}
+                    size={styles.container.height * 0.12}
+                  />
+                  <Button
+                    title="¿klk estás pensando?"
+                    onPress={() => navigate('CreatePost')}
+                    buttonStyle={styles.buttonCreate}
+                  />
+                </View>
               </View>
               )}
             contentContainerStyle={{ marginBottom: 100 }}
@@ -262,7 +264,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   feedContainer: {
-    height: height * 0.6,
+    height: height * 0.87,
   },
 });
 
