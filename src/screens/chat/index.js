@@ -133,7 +133,7 @@ const Chat = ({ route, navigation }) => {
     image: item.image,
     video: item.video,
     user: {
-      _id: item.authorID === uid ? 2 : 1,
+      _id: item.userName,
       name: item.userName,
       avatar: item.authorID === uid ? userObj.imageURL : profile.imageURL,
     },
@@ -205,8 +205,7 @@ const Chat = ({ route, navigation }) => {
               <Bubble
                 {...props}
                 wrapperStyle={{
-                  right: [styles.bubbleContainer, { backgroundColor: '#f22' }],
-                  left: styles.bubbleContiner,
+                  right: { backgroundColor: '#f22' },
                 }}
               />
             )}
@@ -219,7 +218,7 @@ const Chat = ({ route, navigation }) => {
               </Send>
             )}
             user={{
-              _id: 1,
+              _id: profile.user.userName,
             }}
             renderInputToolbar={(props) => (
               <View style={styles.inputView}>
@@ -287,20 +286,13 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+    marginTop: 10,
   },
   inputToolbar: {
     width: width * 0.9,
     marginLeft: width * 0.1,
     borderTopWidth: 0,
     height: (height * 0.1) - 1,
-  },
-  bubbleContiner: {
-    position: 'absolute',
-    height: height * 0.85,
-    top: height * 0.05,
-    bottom: (height * 0.1) + 12,
-    left: 0,
-    right: 0,
   },
   overlay: {
     justifyContent: 'center',
