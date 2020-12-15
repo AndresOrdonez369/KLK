@@ -45,7 +45,7 @@ export const getPosts = (uid) => async (dispatch) => {
   }
 };
 
-export const getHidenPosts = (uid) => async (dispatch) => {
+export const getHiddenPosts = (uid) => async (dispatch) => {
   const hidenL = [];
   if (uid !== '') {
     await firebase.firestore().collection('users').doc(uid).collection('hidenPosts')

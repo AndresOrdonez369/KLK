@@ -12,7 +12,7 @@ import BasicModal from '../BasicModal';
 import Avatar from '../Avatar/SimpleAvatar';
 import AudioComponent from '../Audio';
 import Youtube from '../Youtube';
-import { activateRealPosts, getHidenPosts } from '../../screens/feed/actionCreator';
+import { activateRealPosts, getHiddenPosts } from '../../screens/feed/actionCreator';
 import firebase from '../../../firebase';
 import styles from './styles';
 import { updateCleanComments } from '../../screens/comments/actionCreator';
@@ -48,7 +48,7 @@ const FeedPost = ({
       setIsLoading(true);
       const hidenPostPath = await firebase.firestore().collection('users').doc(uid).collection('hidenPosts');
       await hidenPostPath.add({ publication: pid });
-      await dispatch(getHidenPosts(profile.uid));
+      await dispatch(getHiddenPosts(profile.uid));
       dispatch(activateRealPosts(!realDataAction));
       setIsLoading(false);
       setShowModal(false);

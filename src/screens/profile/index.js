@@ -43,7 +43,7 @@ const Profile = () => {
     setRealData(res);
   };
   useEffect(() => {
-    if (postList.length > 0 && hidenList.length > 0) renderData();
+    if (postList.length > 0 && hidenList.length >= 0) renderData();
   }, [postList, hidenList, realDataAction]);
 
   useEffect(() => {

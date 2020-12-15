@@ -155,7 +155,7 @@ export const getPosts = (uid) => async (dispatch) => {
       .then((posts) => {
         posts.forEach(async (post) => {
           const pathReference = await firebase.storage().ref(`/Users/profilePhotos/${post.data().authorID}.png`);
-          const url = await pathReference.getDownloadURL();
+          const url = await pathReference.getDownloadURL().catch((error) => console.log(error));
           const date0 = new Date(post.data().createdAt);
           const date = date0.toLocaleDateString();
           const likes0 = await firebase.firestore().collection('posts').doc(post.data().authorID).collection('userPosts')
@@ -173,6 +173,7 @@ export const getPosts = (uid) => async (dispatch) => {
             likes: likes0.size,
             authorId: post.data().authorID,
           };
+          console.log(post0);
           dispatch({
             type: Actions.GET_POSTS_PROFILE,
             payload: post0,
@@ -189,9 +190,6 @@ export const getNumberPosts = (uid) => async (dispatch) => {
       .get()
       .then((posts) => {
         const postSize = posts.size;
-        console.log('está entrando a esto');
-        console.log(postSize, 'está entrando aquí?');
-        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
         dispatch({
           type: Actions.GET_LENGTH_POST,
           payload: postSize,

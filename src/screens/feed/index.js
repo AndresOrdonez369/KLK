@@ -8,7 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import TimedSlideshow from 'react-native-timed-slideshow';
 import {
-  getStories, handleModalFeed, getPosts, getHidenPosts,
+  getStories, handleModalFeed, getPosts, getHiddenPosts,
 } from './actionCreator';
 import { idUpdate } from '../../components/Audio/audioAppActionCreator';
 import AudioComponent from '../../components/Audio';
@@ -26,6 +26,9 @@ const Feed = () => {
   const [showStories, setShowStories] = useState(false);
   const [storiesObj, setStoriesObj] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [launchGetPosts, setLaunchGetPosts] = useState(true);
+  const [launchGetStories, setLaunchGetStories] = useState(true);
+  const [launchGetHidden, setLaunchGetHidden] = useState(true);
   const [count, setCount] = useState(0);
   const dispatch = useDispatch();
   const [realData, setRealData] = useState([]);
@@ -52,30 +55,39 @@ const Feed = () => {
   }, [count]);
   useEffect(() => {
     const getFeed = async () => {
-      setIsLoading(true);
-      await dispatch(getHidenPosts(profile.uid));
+      if (launchGetHidden) {
+        setIsLoading(true);
+        await dispatch(getHiddenPosts(profile.uid));
+        setLaunchGetHidden(false);
+      }
       setCount((prev) => prev + 1);
     };
     getFeed();
   }, [profile.uid]);
   useEffect(() => {
     const getFeed = async () => {
-      setIsLoading(true);
-      if (stories.length === 0) await dispatch(getStories(profile.uid, stories));
+      if (stories.length === 0 && launchGetStories) {
+        setIsLoading(true);
+        await dispatch(getStories(profile.uid, stories));
+        setLaunchGetStories(false);
+      }
       setCount((prev) => prev + 1);
     };
     getFeed();
   }, [profile.uid, stories]);
   useEffect(() => {
     const getFeed = async () => {
-      setIsLoading(true);
-      if (postList.length === 0 && postCreated === false) await dispatch(getPosts(profile.uid));
+      if (postList.length === 0 && postCreated === false && launchGetPosts) {
+        setIsLoading(true);
+        await dispatch(getPosts(profile.uid));
+        setLaunchGetPosts(false);
+      }
       setCount((prev) => prev + 1);
     };
     getFeed();
   }, [profile.uid, postList, postCreated]);
   useEffect(() => {
-    if (postList.length > 0 && hidenList.length > 0) renderData();
+    if (postList.length > 0 && hidenList.length >= 0) renderData();
   }, [postList, hidenList, realDataAction]);
 
   // data
