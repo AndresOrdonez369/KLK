@@ -55,7 +55,7 @@ const Feed = () => {
   }, [count]);
   useEffect(() => {
     const getFeed = async () => {
-      if (launchGetHidden) {
+      if (launchGetHidden && profile.uid !== '') {
         setIsLoading(true);
         await dispatch(getHiddenPosts(profile.uid));
         setLaunchGetHidden(false);
@@ -63,7 +63,7 @@ const Feed = () => {
       setCount((prev) => prev + 1);
     };
     getFeed();
-  }, [profile.uid]);
+  }, [profile.uid, launchGetHidden]);
   useEffect(() => {
     const getFeed = async () => {
       if (stories.length === 0 && launchGetStories) {
@@ -74,10 +74,10 @@ const Feed = () => {
       setCount((prev) => prev + 1);
     };
     getFeed();
-  }, [profile.uid, stories]);
+  }, [profile.uid, launchGetStories, stories]);
   useEffect(() => {
     const getFeed = async () => {
-      if (postList.length === 0 && postCreated === false && launchGetPosts) {
+      if (postList.length === 0 && postCreated === false && launchGetPosts && profile.uid !== '') {
         setIsLoading(true);
         await dispatch(getPosts(profile.uid));
         setLaunchGetPosts(false);
@@ -85,7 +85,7 @@ const Feed = () => {
       setCount((prev) => prev + 1);
     };
     getFeed();
-  }, [profile.uid, postList, postCreated]);
+  }, [profile.uid, postList, postCreated, launchGetPosts]);
   useEffect(() => {
     if (postList.length > 0 && hidenList.length >= 0) renderData();
   }, [postList, hidenList, realDataAction]);
