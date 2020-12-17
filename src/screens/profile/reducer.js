@@ -125,7 +125,11 @@ export default (state = STATE_INICIAL, action) => {
         },
       };
     case Actions.CLEAN_EXTRA_PROFILE:
-      return { ...state, anotherUser: STATE_INICIAL.anotherUser };
+      return {
+        ...state,
+        anotherUser: STATE_INICIAL.anotherUser,
+        extraUserPosts: STATE_INICIAL.extraUserPosts,
+      };
     case Actions.FOLLOW_SOMEONE:
       return {
         ...state,

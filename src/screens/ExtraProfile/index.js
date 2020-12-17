@@ -19,6 +19,7 @@ import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
 import Loader from '../../components/Loader';
 
 const requireCover = require('../../../assets/defaultCover.png');
+const requirePhoto = require('../../../assets/busyPosition.png');
 
 const { height, width } = Dimensions.get('screen');
 
@@ -27,6 +28,12 @@ const ExtraProfile = ({ route }) => {
   const [follow, setFollow] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [count, setCount] = useState(0);
+  const [launchPost, setLaunchPost] = useState(true);
+  const [launchFollowings, setLaunchFollowings] = useState(true);
+  const [launchFollowers, setlaunchFollowers] = useState(true);
+  const [launchNumberPost, setLaunchNumberPost] = useState(true);
+  const [launchGetExtraProfile, setLaunchGetExtraProfile] = useState(true);
+
   // redux
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.reducerProfile);
@@ -38,38 +45,52 @@ const ExtraProfile = ({ route }) => {
   const userObj = profile.anotherUser;
   const { navigate } = useNavigation();
   const { uid, actualScreen } = route.params;
-
+  console.log(typeof imageURL, 'que pasaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+  console.log('este es algo importante what happened');
   useEffect(() => {
     const getData = async () => {
-      setIsLoading(true);
-      if (profile.extraUserPosts.length === 0) await dispatch(getExtraUserPosts(uid));
-      setCount((prev) => prev + 1);
+      if (profile.extraUserPosts.length === 0 && launchPost) {
+        setIsLoading(true);
+        await dispatch(getExtraUserPosts(uid));
+        setLaunchPost(false);
+        setCount((prev) => prev + 1);
+      }
     };
-    if (uid !== undefined) getData();
-  }, [uid, profile.extraUserPosts]);
+    if (uid !== '') getData();
+  }, [uid, profile.extraUserPosts, launchPost]);
   useEffect(() => {
     const getData = async () => {
-      setIsLoading(true);
-      if (qFollowing === 0) await dispatch(getFollowingsByUid(uid, 0, qFollowing));
-      setCount((prev) => prev + 1);
+      if (qFollowing === 0 && launchFollowings) {
+        setIsLoading(true);
+        await dispatch(getFollowingsByUid(uid, 0, qFollowing));
+        setLaunchFollowings(false);
+        setCount((prev) => prev + 1);
+      }
     };
-    if (uid !== undefined) getData();
-  }, [uid, qFollowing]);
+    if (uid !== '') getData();
+  }, [uid, qFollowing, launchFollowings]);
   useEffect(() => {
     const getData = async () => {
-      setIsLoading(true);
-      if (qFollowers === 0) await dispatch(getFollowersByUid(uid, 0, qFollowers));
-      setCount((prev) => prev + 1);
+      if (qFollowers === 0 && launchFollowers) {
+        setIsLoading(true);
+        await dispatch(getFollowersByUid(uid, 0, qFollowers));
+        setlaunchFollowers(false);
+        setCount((prev) => prev + 1);
+      }
     };
-    if (uid !== undefined) getData();
-  }, [uid, qFollowers]);
+    if (uid !== '') getData();
+  }, [uid, qFollowers, launchFollowers]);
   useEffect(() => {
     const getData = async () => {
-      setIsLoading(true);
-      if (name === '') await dispatch(getExtraProfile(uid, name));
-      setCount((prev) => prev + 1);
+      if (name === '' && launchGetExtraProfile) {
+        setIsLoading(true);
+        console.log('se ejecuta este dispatch usseeffect o nooo?');
+        await dispatch(getExtraProfile(uid, name));
+        setLaunchGetExtraProfile(false);
+        setCount((prev) => prev + 1);
+      }
     };
-    if (uid !== undefined) getData();
+    if (uid !== '') getData();
   }, [uid, name]);
   useEffect(() => {
     if (count >= 4) {
@@ -83,6 +104,11 @@ const ExtraProfile = ({ route }) => {
       dispatch(cleanExtraProfile());
     };
   }, []);
+  const backButton = () =>{
+    dispatch(cleanExtraProfile());
+    navigate(actualScreen);
+  };
+
   useEffect(() => {
     const checkFollow = () => {
       if (Object.keys(followers).find((p) => p === profile.uid) === undefined) {
@@ -95,10 +121,13 @@ const ExtraProfile = ({ route }) => {
   }, [followers]);
 
   useEffect(() => {
-    dispatch(getNumberExtraProfilePosts(uid));
-  }, [lengthExtraProfilePost, uid]);
+    if (launchNumberPost) {
+      dispatch(getNumberExtraProfilePosts(uid));
+      setLaunchNumberPost(false);
+    }
+  }, [lengthExtraProfilePost, uid, launchNumberPost]);
 
-  const imgUser = imageURL ? { uri: imageURL } : null;
+  const imgUser = imageURL != null ? { uri: imageURL } : requirePhoto;
   const imgCover = coverURL ? { uri: coverURL } : requireCover;
 
   const followFnc = async () => {
@@ -141,16 +170,13 @@ const ExtraProfile = ({ route }) => {
             name="arrow-left"
             size={height * 0.04}
             type="font-awesome"
-            onPress={() => navigate(actualScreen)}
+            onPress={() => backButton()}
             color="white"
             iconStyle={styles.coverIcon}
           />
         </ImageBackground>
         <View style={styles.avatarView}>
-          <SimpleAvatar
-            url={imgUser}
-            size={height * 0.14}
-          />
+         
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.userName}>
             @

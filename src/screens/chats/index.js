@@ -17,7 +17,6 @@ const Chats = () => {
   const profile = useSelector((state) => state.reducerProfile);
   const chats = useSelector((state) => state.reducerChats);
   const { chatList } = chats;
-
   const { navigate } = useNavigation();
   useEffect(() => {
     if (chatList.length === 0) {

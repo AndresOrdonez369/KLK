@@ -38,7 +38,7 @@ const PrincipalFlow = () => (
   <Tab.Navigator
     screenOptions={({ route }) => ({
       tabBarIcon: ({ focused, size }) => {
-        const iconColor = focused ? '#F82121' : '#f0edf6';
+        const iconColor = focused ? '#F82121' : '#575757';
         if (route.name === 'Inicio') {
           return <Icon name="home" type="material-community" color={iconColor} size={size} />;
         }
@@ -84,6 +84,4 @@ function AppHide() {
     </Stack.Navigator>
   );
 }
-  <Stack.Screen name="Comments" component={Comments} />;
-
 export default AppHide;

@@ -163,7 +163,7 @@ ${link}`;
           />
         )}
       <View style={headerContainer}>
-        <TouchableHighlight underlayColor="#ffc4c4" onPress={() => onAvatarPressed()}>
+        <TouchableHighlight underlayColor="#ffc4c4" onPress={() => (screen === 'AnotherProfile' ? null : onAvatarPressed())}>
           <View style={basicInfoContainer}>
             <Avatar size={94} name={authorName} date={timestamp} url={url} />
           </View>
