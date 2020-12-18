@@ -54,7 +54,7 @@ const Radio = () => {
         <View style={{ height: height * 0.15, width }}>
           <AudioComponent
             id="radio"
-            link="http://64.37.50.226:8006/stream"
+            link="http://servidor26.brlogic.com:7242/live?type=.m3u"
             radio
             size={70}
           />
