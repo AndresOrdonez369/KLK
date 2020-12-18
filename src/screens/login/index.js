@@ -44,7 +44,7 @@ const Login = () => {
         user1: JSON.stringify(user),
       });
     navigate('Registry', {
-      flag: 'google', nameD: user.displayName, emailU: user.emai, auth: user.auth,
+      flag: 'google', nameD: user.displayName, emailU: user.email, auth: user.auth,
     });
   };
   const signInAsync = async () => {
@@ -56,13 +56,12 @@ const Login = () => {
         .collection('prueba')
         .add({
           user1: JSON.stringify(user),
-
         });
       if (type === 'success') {
         syncUserWithStateAsync();
       }
     } catch ({ mess }) {
-      Alert.alert('login: askForPlayServicesAsync:', mess);
+      Alert.alert('logiiiiin: askForPlayServicesAsync:', mess);
       await firebase.firestore().collection('prueba').add({ error: 'entre al error signInAsync' });
     }
   };
@@ -84,7 +83,7 @@ const Login = () => {
     try {
       signInAsync();
     } catch (e) {
-      Alert.alert('loginGoogle:', JSON.stringify(e));
+      Alert.alert('loginGoogleeee:', JSON.stringify(e));
     }
   };
   // validate
@@ -142,7 +141,12 @@ const Login = () => {
           fontStyle={styles.textButtons}
           onPress={() => loginGoogle()}
         />
-        <Text style={styles.textLogin} onPress={() => navigate('Registry')}>
+        <Text
+          style={styles.textLogin}
+          onPress={() => navigate('Registry', {
+            flag: false, nameD: '', emailU: '', auth: null,
+          })}
+        >
           ¿Aún no tienes cuenta?
         </Text>
       </View>
