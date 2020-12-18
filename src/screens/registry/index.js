@@ -16,7 +16,7 @@ import Logo from '../../../assets/logo.png';
 
 const { height, width } = Dimensions.get('screen');
 
-const Registry = () => {
+const Registry = ({ route }) => {
   // redux
   const dispatch = useDispatch();
   const regitryState = useSelector((state) => state.reducerRegistry);
@@ -28,9 +28,12 @@ const Registry = () => {
     show: false,
     message: 'Hubo un error',
   });
+  const {
+    flag, nameD, emailU, auth,
+  } = route.params;
   const [input, setInput] = useState({
-    email: '',
-    name: '',
+    email: flag ? emailU : '',
+    name: flag ? nameD : '',
     userName: '',
     password: '',
   });
@@ -57,6 +60,21 @@ const Registry = () => {
     if (val === false && !checkEmptyInputs(Email, Password, Name, UserName)) {
       setIsLoading(true);
       await dispatch(register(Email, Password, Name, UserName));
+      setIsLoading(false);
+    }
+    if (err) setAlert({ show: true, message: checkErrorType(ErrorCode) });
+  };
+  const checkEmptyInputsToken = (Email, Token, Name, UserName) => {
+    if (Email.trim() === '' || Token.trim() === ''
+         || Name.trim() === '' || UserName.trim() === '') return true;
+    return false;
+  };
+  const pressRegistryToken = async (Email, Token, Name, UserName, err, ErrorCode, val) => {
+    if (checkEmptyInputsToken(Email, Token, Name, UserName)) setAlert({ show: true, message: 'No pueden haber campos vacíos' });
+    if (val) setAlert({ show: true, message: 'Ingresaste información incorrecta en algún campo' });
+    if (val === false && !checkEmptyInputsToken(Email, Token, Name, UserName)) {
+      setIsLoading(true);
+      await dispatch(register(Email, Token, Name, UserName));
       setIsLoading(false);
     }
     if (err) setAlert({ show: true, message: checkErrorType(ErrorCode) });
@@ -106,24 +124,31 @@ const Registry = () => {
               validate(err);
             }}
           />
-          <InputBasic
-            secureTextEntry
-            placeholder="Contraseña"
-            validation="password"
-            value={password}
-            changeText={(text, err) => {
-              setInput({ ...input, password: text });
-              validate(err);
-            }}
-          />
+          { flag ? null : (
+            <InputBasic
+              secureTextEntry
+              placeholder="Contraseña"
+              validation="password"
+              value={password}
+              changeText={(text, err) => {
+                setInput({ ...input, password: text });
+                validate(err);
+              }}
+            />
+          )}
           {alert.show && <AlertMessage message={alert.message} />}
           <ButtonBasic
             text="Registrarse"
             buttonStyle={styles.buttonStyle}
             textStyle={styles.textButtons}
-            onPress={() => pressRegistry(
-              email, password, name, userName, error, errorCode, validation,
-            )}
+            onPress={() => (
+              flag
+                ? pressRegistryToken(
+                  email, auth.idToken, name, userName, error, errorCode, validation,
+                )
+                : pressRegistry(
+                  email, password, name, userName, error, errorCode, validation,
+                ))}
           />
           <TouchableHighlight onPress={_handleOpenWithLinking} underlayColor="#ffc4c4">
             <Text style={styles.textTerms}>

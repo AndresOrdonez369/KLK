@@ -12,6 +12,7 @@ import ButtonBasic from '../../components/ButtonBasic/ButtonBasic';
 import AlertMessage from '../../components/AlertMessage';
 import Logo from '../../../assets/logo.png';
 import { loginEmailAndPassword } from './actionCreator';
+
 import styles from './styles';
 import firebase from '../../../firebase';
 import checkErrorType from './helperFirebaseError';
@@ -41,12 +42,10 @@ const Login = () => {
       .collection('prueba')
       .add({
         user1: JSON.stringify(user),
-
       });
-
-    /*     inputRegistry({ prop: 'email', value: user.user.email });
-    inputRegistry({ prop: 'name', value: user.user.name }); */
-    navigate('registry');
+    navigate('Registry', {
+      flag: 'google', nameD: user.displayName, emailU: user.emai, auth: user.auth,
+    });
   };
   const signInAsync = async () => {
     try {
