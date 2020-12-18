@@ -104,7 +104,7 @@ const ExtraProfile = ({ route }) => {
       dispatch(cleanExtraProfile());
     };
   }, []);
-  const backButton = () =>{
+  const backButton = () => {
     dispatch(cleanExtraProfile());
     navigate(actualScreen);
   };
@@ -176,7 +176,9 @@ const ExtraProfile = ({ route }) => {
           />
         </ImageBackground>
         <View style={styles.avatarView}>
-         
+          <SimpleAvatar
+            size={height * 0.14}
+          />
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.userName}>
             @
