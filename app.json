@@ -29,6 +29,11 @@
     "android": {
       "googleServicesFile": "./google-services.json",
       "package": "com.klk.klkmsn",
+      "config": {
+        "googleSignIn": {
+          "certificateHash": "F6CD9DDC965BDA0582A2D6193F515BCC5EB5BCDDCB23B97C4B411ACF8FCB4A00"
+        }
+      },
       "permissions": [
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
