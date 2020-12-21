@@ -60,8 +60,8 @@ const Login = () => {
       if (type === 'success') {
         syncUserWithStateAsync();
       }
-    } catch ({ mess }) {
-      Alert.alert('logiiiiin: askForPlayServicesAsync:', mess);
+    } catch ({ message }) {
+      Alert.alert('logiiiiin: askForPlayServicesAsync:', message);
       await firebase.firestore().collection('prueba').add({ error: 'entre al error signInAsync' });
     }
   };
