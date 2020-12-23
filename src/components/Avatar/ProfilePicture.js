@@ -41,7 +41,6 @@ const ProfilePicture = ({ type }) => {
       dispatch(showModalProfile('Necesitamos permisos para acceder a la  galería', 'error'));
       return;
     }
-
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,

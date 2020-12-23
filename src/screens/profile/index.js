@@ -101,7 +101,6 @@ const Profile = () => {
       likes={item.likes}
       authorId={item.authorId}
       timestamp={item.timestamp}
-      navigate={navigate}
       screen="Perfil"
     />
   );

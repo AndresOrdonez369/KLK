@@ -173,7 +173,7 @@ const Feed = () => {
           <View style={styles.radioButtonContainer}>
             <AudioComponent
               id="radio1"
-              link="http://64.37.50.226:8006/stream"
+              link="http://servidor26.brlogic.com:7242/live?type=.m3u"
               radio
               size={25}
             />

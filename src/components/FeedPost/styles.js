@@ -4,15 +4,16 @@ const { height, width } = Dimensions.get('screen');
 
 const styles = StyleSheet.create({
   container: {
-    height: height * 0.49,
+    paddingBottom: height * 0.01,
+    height: height * 0.495,
     width,
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: 'rgba(0,0,0, .4)',
-    shadowOffset: { height: 2, width: 2 },
+    shadowOffset: { height: 1, width: 1 },
     shadowOpacity: 1,
-    shadowRadius: 2,
+    shadowRadius: 1,
     elevation: 4,
     marginTop: 20,
   },
@@ -76,6 +77,7 @@ const styles = StyleSheet.create({
     width,
     backgroundColor: 'white',
     justifyContent: 'flex-end',
+    paddingBottom: height * 0.01,
   },
   iconsContainer: {
     height: height * 0.048,
