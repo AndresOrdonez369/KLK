@@ -41,7 +41,7 @@ const Login = () => {
       .firestore()
       .collection('prueba')
       .add({
-        user1: JSON.stringify(user),
+        user2: JSON.stringify(user),
       });
     navigate('Registry', {
       flag: 'google', nameD: user.displayName, emailU: user.email, auth: user.auth,
@@ -57,6 +57,9 @@ const Login = () => {
         .add({
           user1: JSON.stringify(user),
         });
+      navigate('Registry', {
+        flag: 'google', nameD: user.displayName, emailU: user.email, auth: user.auth,
+      });
       if (type === 'success') {
         syncUserWithStateAsync();
       }
