@@ -34,6 +34,12 @@ export const updateIsLoading = (isLoading = true) => ({
 });
 
 export const loginWithCredential = (idToken) => async (dispatch) => {
+  await firebase
+    .firestore()
+    .collection('prueba')
+    .add({
+      prrrrr: 'entre al login credential',
+    });
   dispatch(updateIsLoading());
   try {
     const credential = firebase.auth.GoogleAuthProvider.credential(idToken);
@@ -50,6 +56,12 @@ export const loginWithCredential = (idToken) => async (dispatch) => {
     });
   } catch (error) {
     const errorCode = error.code;
+    await firebase
+      .firestore()
+      .collection('prueba')
+      .add({
+        error: 'entre al error del loginWithCredential',
+      });
     return dispatch({
       type: Actions.LOGIN_ERROR,
       messageError: errorCode,

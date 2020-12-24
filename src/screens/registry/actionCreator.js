@@ -47,10 +47,29 @@ export const register = (email, password, name, userName) => async (dispatch) =>
 };
 
 export const registerToken = (token, name, userName) => async (dispatch) => {
+  await firebase
+    .firestore()
+    .collection('prueba')
+    .add({
+      pedro: 'entre al registro con token',
+    });
   // .
   dispatch(IsLoading(false));
+
   await loginWithCredential(token);
+  await firebase
+    .firestore()
+    .collection('prueba')
+    .add({
+      pepe: 'pase al login credential',
+    });
   const { uid, photoURL } = await firebase.auth().currentUser;
+  await firebase
+    .firestore()
+    .collection('prueba')
+    .add({
+      usuariioooooo: uid,
+    });
   const dbh = firebase.firestore();
   const usersCollection = dbh.collection('users');
   const followingCollection = dbh.collection('following');
