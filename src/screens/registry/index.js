@@ -32,8 +32,8 @@ const Registry = ({ route }) => {
     flag, nameD, emailU, auth,
   } = route.params;
   const [input, setInput] = useState({
-    email: flag ? emailU : '',
-    name: flag ? nameD : '',
+    email: flag === 'google' ? emailU : '',
+    name: flag === 'google' ? nameD : '',
     userName: '',
     password: '',
   });
@@ -124,7 +124,7 @@ const Registry = ({ route }) => {
               validate(err);
             }}
           />
-          { flag ? null : (
+          { flag === 'google' ? null : (
             <InputBasic
               secureTextEntry
               placeholder="Contraseña"
@@ -142,7 +142,7 @@ const Registry = ({ route }) => {
             buttonStyle={styles.buttonStyle}
             textStyle={styles.textButtons}
             onPress={() => (
-              flag
+              flag === 'google'
                 ? pressRegistryToken(
                   email, auth.idToken, name, userName, error, errorCode, validation,
                 )
