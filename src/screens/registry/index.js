@@ -6,7 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
-import { register } from './actionCreator';
+import { register, registerToken } from './actionCreator';
 import checkErrorType from './helperFirebaseError';
 import InputBasic from '../../components/InputBasic/inputBasic';
 import ButtonBasic from '../../components/ButtonBasic/ButtonBasic';
@@ -74,7 +74,7 @@ const Registry = ({ route }) => {
     if (val) setAlert({ show: true, message: 'Ingresaste información incorrecta en algún campo' });
     if (val === false && !checkEmptyInputsToken(Email, Token, Name, UserName)) {
       setIsLoading(true);
-      await dispatch(register(Email, Token, Name, UserName));
+      await dispatch(registerToken(Token, Name, UserName));
       setIsLoading(false);
     }
     if (err) setAlert({ show: true, message: checkErrorType(ErrorCode) });
