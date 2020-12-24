@@ -40,7 +40,6 @@ export const loginWithCredential = (idToken) => async (dispatch) => {
     .add({
       prrrrr: 'entre al login credential',
     });
-  dispatch(updateIsLoading());
   try {
     const credential = firebase.auth.GoogleAuthProvider.credential(idToken);
     const result = await firebase.auth().signInWithCredential(credential);

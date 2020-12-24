@@ -52,6 +52,7 @@ export const registerToken = (token, name, userName) => async (dispatch) => {
     .collection('prueba')
     .add({
       pedro: 'entre al registro con token',
+      tokem: token,
     });
   // .
   dispatch(IsLoading(false));
