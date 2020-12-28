@@ -144,7 +144,7 @@ const Registry = ({ route }) => {
             onPress={() => (
               flag === 'google'
                 ? pressRegistryToken(
-                  email, auth.idToken, name, userName, error, errorCode, validation,
+                  email, auth.accessToken, name, userName, error, errorCode, validation,
                 )
                 : pressRegistry(
                   email, password, name, userName, error, errorCode, validation,

@@ -47,30 +47,10 @@ export const register = (email, password, name, userName) => async (dispatch) =>
 };
 
 export const registerToken = (token, name, userName) => async (dispatch) => {
-  await firebase
-    .firestore()
-    .collection('prueba')
-    .add({
-      pedro: 'entre al registro con token',
-      tokem: token,
-    });
   // .
   dispatch(IsLoading(false));
-
-  await loginWithCredential(token);
-  await firebase
-    .firestore()
-    .collection('prueba')
-    .add({
-      pepe: 'pase al login credential',
-    });
+  await dispatch(loginWithCredential(token));
   const { uid, photoURL } = await firebase.auth().currentUser;
-  await firebase
-    .firestore()
-    .collection('prueba')
-    .add({
-      usuariioooooo: uid,
-    });
   const dbh = firebase.firestore();
   const usersCollection = dbh.collection('users');
   const followingCollection = dbh.collection('following');
@@ -79,7 +59,7 @@ export const registerToken = (token, name, userName) => async (dispatch) => {
   await followingCollection.doc(uid).collection('userFollowing').doc(uid).set({ uid });
   await postsCollection.doc(uid).set({ uid });
   await usersCollection.doc(uid).set({
-    name, userName, coverURL: '', description: '', uid, imageURL: photoURL,
+    name, userName, coverURL: '', description: '', uid, imageURL: photoURL, aMethod: 'google',
   })
     .catch((error) => {
       const errorCode = error.code;

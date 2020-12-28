@@ -37,12 +37,7 @@ const Login = () => {
 
   const syncUserWithStateAsync = async () => {
     const { user } = await GoogleSignIn.signInSilentlyAsync();
-    await firebase
-      .firestore()
-      .collection('prueba')
-      .add({
-        user2: JSON.stringify(user),
-      });
+    // loginConCredencial ??
     navigate('Registry', {
       flag: 'google', nameD: user.displayName, emailU: user.email, auth: user.auth,
     });

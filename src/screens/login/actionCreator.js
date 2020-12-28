@@ -34,22 +34,24 @@ export const updateIsLoading = (isLoading = true) => ({
 });
 
 export const loginWithCredential = (idToken) => async (dispatch) => {
-  await firebase
-    .firestore()
-    .collection('prueba')
-    .add({
-      prrrrr: 'entre al login credential',
-    });
   try {
-    const credential = firebase.auth.GoogleAuthProvider.credential(idToken);
-    const result = await firebase.auth().signInWithCredential(credential);
-    if (Object.prototype.hasOwnProperty.call(result, 'type')) {
-      return dispatch({
-        type: Actions.LOGIN_ERROR,
-        messageError: 'unknownError',
-        isLoading: false,
-      });
-    }
+    const credential = firebase.auth.GoogleAuthProvider.credential(null, idToken);
+    await firebase.auth().signInWithCredential(credential).catch((error) => {
+      console.log('entreeeee al error');
+      // Handle Errors here.
+      const errorCode = error.code;
+      // const errorMessage = error.message;
+      // The email of the user's account used.
+      // const { email } = error;
+      // The firebase.auth.AuthCredential type that was used.
+      // const { credential } = error;
+      if (errorCode === 'auth/account-exists-with-different-credential') {
+        console.log('Email already associated with another account.');
+        // Handle account linking here, if using.
+      } else {
+        console.error(error);
+      }
+    });
     return dispatch({
       type: Actions.LOGIN_SUCCESS,
     });
