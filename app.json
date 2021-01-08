@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Klk_msn",
-    "slug": "Klk_msn",
-    "version": "2.0.0",
+    "name": "klkmsn",
+    "slug": "klkmsn",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/klklogo512.png",
     "splash": {
@@ -19,9 +19,9 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "usesIcloudStorage": true,
       "bundleIdentifier": "com.klk.klkmsn",
-      "buildNumber": "1.0.0"
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "buildNumber": "1"
     },
     "web": {
       "favicon": "./assets/favicon.png"
