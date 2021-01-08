@@ -29,7 +29,7 @@ export default styles = StyleSheet.create({
   }),
   textLogin: {
     fontSize: 18,
-    marginTop: height * 0.05,
+    marginTop: height * 0.03,
     color: '#2672FF',
   },
   buttonStyle: {

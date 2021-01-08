@@ -288,6 +288,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     marginTop: 10,
+    backgroundColor: 'white',
   },
   inputToolbar: {
     width: width * 0.9,
