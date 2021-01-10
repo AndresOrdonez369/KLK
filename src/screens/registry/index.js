@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Dimensions, StyleSheet, View, Text, Image, KeyboardAvoidingView, Linking, TouchableHighlight,
+  Dimensions, StyleSheet, View, Text, Image, ScrollView, Linking, TouchableHighlight,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
@@ -84,79 +84,77 @@ const Registry = ({ route }) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'silver' }}>
-      <View style={styles.container}>
-        <KeyboardAvoidingView behavior="padding" style={styles.container}>
-          <View style={styles.icon}>
-            <Icon
-              name="arrow-left"
-              type="font-awesome"
-              onPress={() => navigate('Login')}
-              color="#f22"
-              size={35}
-            />
-          </View>
-          <Image source={Logo} style={styles.logo} />
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.icon}>
+          <Icon
+            name="arrow-left"
+            type="font-awesome"
+            onPress={() => navigate('Login')}
+            color="#f22"
+            size={35}
+          />
+        </View>
+        <Image source={Logo} style={styles.logo} />
+        <InputBasic
+          keyboardType="email-address"
+          placeholder="Correo electrónico"
+          validation="email"
+          value={email}
+          changeText={(text, err) => {
+            setInput({ ...input, email: text });
+            validate(err);
+          }}
+        />
+        <InputBasic
+          placeholder="Nombre completo"
+          validation="name"
+          value={name}
+          changeText={(text, err) => {
+            setInput({ ...input, name: text });
+            validate(err);
+          }}
+        />
+        <InputBasic
+          placeholder="Nombre de usuario"
+          validation="name"
+          value={userName}
+          changeText={(text, err) => {
+            setInput({ ...input, userName: text });
+            validate(err);
+          }}
+        />
+        { flag === 'google' ? null : (
           <InputBasic
-            keyboardType="email-address"
-            placeholder="Correo electrónico"
-            validation="email"
-            value={email}
+            secureTextEntry
+            placeholder="Contraseña"
+            validation="password"
+            value={password}
             changeText={(text, err) => {
-              setInput({ ...input, email: text });
+              setInput({ ...input, password: text });
               validate(err);
             }}
           />
-          <InputBasic
-            placeholder="Nombre completo"
-            validation="name"
-            value={name}
-            changeText={(text, err) => {
-              setInput({ ...input, name: text });
-              validate(err);
-            }}
-          />
-          <InputBasic
-            placeholder="Nombre de usuario"
-            validation="name"
-            value={userName}
-            changeText={(text, err) => {
-              setInput({ ...input, userName: text });
-              validate(err);
-            }}
-          />
-          { flag === 'google' ? null : (
-            <InputBasic
-              secureTextEntry
-              placeholder="Contraseña"
-              validation="password"
-              value={password}
-              changeText={(text, err) => {
-                setInput({ ...input, password: text });
-                validate(err);
-              }}
-            />
-          )}
-          {alert.show && <AlertMessage message={alert.message} />}
-          <ButtonBasic
-            text="Registrarse"
-            buttonStyle={styles.buttonStyle}
-            textStyle={styles.textButtons}
-            onPress={() => (
-              flag === 'google'
-                ? pressRegistryToken(
-                  email, auth.accessToken, name, userName, error, errorCode, validation,
-                )
-                : pressRegistry(
-                  email, password, name, userName, error, errorCode, validation,
-                ))}
-          />
-          <TouchableHighlight onPress={_handleOpenWithLinking} underlayColor="#ffc4c4">
-            <Text style={styles.textTerms}>
-              Al registrarte aceptas nuestras Condiciones y Política de privacidad.
-            </Text>
-          </TouchableHighlight>
-        </KeyboardAvoidingView>
-      </View>
+        )}
+        {alert.show && <AlertMessage message={alert.message} />}
+        <ButtonBasic
+          text="Registrarse"
+          buttonStyle={styles.buttonStyle}
+          textStyle={styles.textButtons}
+          onPress={() => (
+            flag === 'google'
+              ? pressRegistryToken(
+                email, auth.accessToken, name, userName, error, errorCode, validation,
+              )
+              : pressRegistry(
+                email, password, name, userName, error, errorCode, validation,
+              ))}
+        />
+        <TouchableHighlight onPress={_handleOpenWithLinking} underlayColor="#ffc4c4">
+          <Text style={styles.textTerms}>
+            Al registrarte aceptas nuestras Condiciones y Política de privacidad.
+          </Text>
+        </TouchableHighlight>
+      </ScrollView>
     </SafeAreaView>
   );
 };
