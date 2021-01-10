@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#ffffff',
     width,
-    height,
+    height: height * 0.9,
     marginTop: StatusBar.currentHeight || 0,
   },
   title: {
