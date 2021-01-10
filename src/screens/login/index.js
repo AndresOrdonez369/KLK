@@ -11,7 +11,7 @@ import InputBasic from '../../components/InputBasic/inputBasic';
 import ButtonBasic from '../../components/ButtonBasic/ButtonBasic';
 import AlertMessage from '../../components/AlertMessage';
 import Logo from '../../../assets/logo.png';
-import { loginEmailAndPassword } from './actionCreator';
+import { loginEmailAndPassword, loginWithCredential } from './actionCreator';
 
 import styles from './styles';
 import firebase from '../../../firebase';
@@ -36,11 +36,9 @@ const Login = () => {
   const { email, password } = input;
 
   const syncUserWithStateAsync = async () => {
-    const { user } = await GoogleSignIn.signInSilentlyAsync();
+    const { user: { auth } } = await GoogleSignIn.signInSilentlyAsync();
     // loginConCredencial ??
-    navigate('Registry', {
-      flag: 'google', nameD: user.displayName, emailU: user.email, auth: user.auth,
-    });
+    dispatch(loginWithCredential(auth.accessToken));
   };
   const signInAsync = async () => {
     try {
