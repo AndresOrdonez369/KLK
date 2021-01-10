@@ -23,6 +23,8 @@ export default (state = STATE_INICIAL, action) => {
       return { ...state, realDataAction: action.payload };
     case Actions.GET_HIDEN_LIST:
       return { ...state, hidenList: action.payload };
+    case Actions.ADD_HIDDEN_POST:
+      return { ...state, hidenList: [...state.hidenList, action.payload] };
     case Actions.HPOST_MODAL:
       return { ...state, hidePostModal: action.payload };
     case Actions.MODAL_FEED:

@@ -60,6 +60,11 @@ export const getHiddenPosts = (uid) => async (dispatch) => {
   });
 };
 
+export const hiddePost = (pid) => (dispatch) => dispatch({
+  type: Actions.ADD_HIDDEN_POST,
+  payload: pid,
+});
+
 export const getStories = (uid, stories) => async (dispatch) => {
   if (stories.length === 0) {
     const followingCollection = db.collection('following').doc(uid).collection('userFollowing');
