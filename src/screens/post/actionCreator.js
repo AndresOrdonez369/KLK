@@ -34,7 +34,7 @@ export const submitPost = (
           mensaje: body,
           mediaLink: mediaURL,
           type: uploaded,
-          timestamp: date,
+          timestamp: Number(date),
           likes: 0,
           authorId: uid,
           urlAvatar,
