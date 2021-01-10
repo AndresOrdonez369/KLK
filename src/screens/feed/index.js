@@ -175,10 +175,10 @@ const Feed = () => {
               id="radio1"
               link="http://servidor26.brlogic.com:7242/live?type=.m3u"
               radio
-              size={25}
+              size={styles.container.width * 0.042}
             />
           </View>
-          <Image source={klkmsn} style={{ marginLeft: 50, height: 45, width: 45 }} />
+          <Image source={klkmsn} style={styles.logoSize} />
           <Text style={styles.title}>
             klk msn
           </Text>
@@ -235,10 +235,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#DBDDE2',
   },
+  logoSize: {
+    marginLeft: 50,
+    height: height * 0.045,
+    width: width * 0.088,
+  },
   title: {
-    fontSize: 24,
+    fontSize: height * 0.025,
     textAlign: 'center',
-    marginLeft: 20,
+    marginLeft: 18,
     fontWeight: '700',
     color: '#0667FF',
   },
