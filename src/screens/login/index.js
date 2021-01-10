@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  View, Text, Image, Alert,
+  View, Text, Image, Alert, Platform,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
@@ -119,14 +119,16 @@ const Login = () => {
           textStyle={styles.textButtons}
           onPress={() => logInEaP(email, password, validation)}
         />
-        <SocialIcon
-          title="Iniciar con Google"
-          button
-          type="google"
-          style={styles.socialStyle}
-          fontStyle={styles.textButtons}
-          onPress={() => loginGoogle()}
-        />
+        {Platform.OS === 'android' && (
+          <SocialIcon
+            title="Iniciar con Google"
+            button
+            type="google"
+            style={styles.socialStyle}
+            fontStyle={styles.textButtons}
+            onPress={() => loginGoogle()}
+          />
+        )}
         <Text
           style={styles.textLogin}
           onPress={() => navigate('Registry', {
