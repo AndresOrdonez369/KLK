@@ -12,6 +12,7 @@ const STATE_INICIAL = {
   heightModal: 0,
   hidePostModal: false,
   realDataAction: false,
+  postCreated: false,
 };
 
 export default (state = STATE_INICIAL, action) => {
@@ -60,6 +61,7 @@ export default (state = STATE_INICIAL, action) => {
     case Actions.SET_NEW_POST:
       return {
         ...state,
+        postCreated: true,
         postList: [...state.postList, action.payload],
       };
     default:

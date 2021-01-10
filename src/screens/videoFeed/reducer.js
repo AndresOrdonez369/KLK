@@ -2,6 +2,7 @@ import Actions from '../../redux/actionTypes';
 
 const STATE_INICIAL = {
   postList: [],
+  postCreated: false,
 };
 
 export default (state = STATE_INICIAL, action) => {
@@ -11,6 +12,7 @@ export default (state = STATE_INICIAL, action) => {
     case Actions.SET_NEW_VIDEOPOST:
       return {
         ...state,
+        postCreated: true,
         postList: [...state.postList, action.payload],
       };
     default:

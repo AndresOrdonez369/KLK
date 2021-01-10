@@ -28,23 +28,31 @@ const VideoFeed = () => {
   const feed = useSelector((state) => state.reducerHome);
   const profile = useSelector((state) => state.reducerProfile);
   const video = useSelector((state) => state.reducerVideoFeed);
-  const { postList } = video;
+  const { postList, postCreated } = video;
   const { hidenList, realDataAction } = feed;
 
   const renderData = () => {
     const res = postList.filter((post) => !hidenList.includes(post.pid));
     setRealData(res);
   };
+
   useEffect(() => {
-    if (postList.length > 0 && hidenList.length > 0) renderData();
+    if (postList.length > 0 && hidenList.length >= 0) renderData();
   }, [postList, hidenList, realDataAction]);
 
   useEffect(() => {
     const getData = async () => {
-      if (postList.length === 0) await dispatch(getPosts(profile.uid));
+      if (postList.length === 0 && postCreated === false) await dispatch(getPosts(profile.uid));
     };
     getData();
-  }, [profile.uid, postList]);
+  }, [profile.uid, postList, postCreated]);
+
+  const dataPosts = realData.filter((value, index, self) => {
+    if (value !== undefined && index !== undefined && self !== undefined) {
+      return self.findIndex((p) => p.pid === value.pid) === index;
+    }
+    return null;
+  });
 
   const renderPost = ({ item }) => (
     <Post
@@ -66,7 +74,7 @@ const VideoFeed = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f22' }}>
       <View style={container}>
         <FlatList
-          data={realData}
+          data={dataPosts}
           renderItem={renderPost}
           keyExtractor={(item) => item.pid}
         />

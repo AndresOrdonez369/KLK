@@ -12,9 +12,10 @@ import BasicModal from '../BasicModal';
 import Avatar from '../Avatar/SimpleAvatar';
 import AudioComponent from '../Audio';
 import Youtube from '../Youtube';
-import { activateRealPosts, getHidenPosts } from '../../screens/feed/actionCreator';
+import { activateRealPosts, getHiddenPosts } from '../../screens/feed/actionCreator';
 import firebase from '../../../firebase';
 import styles from './styles';
+import { updateCleanComments } from '../../screens/comments/actionCreator';
 
 const FeedPost = ({
   authorName, mensaje, mediaLink, likes, type, timestamp, url, pid,
@@ -47,17 +48,18 @@ const FeedPost = ({
       setIsLoading(true);
       const hidenPostPath = await firebase.firestore().collection('users').doc(uid).collection('hidenPosts');
       await hidenPostPath.add({ publication: pid });
-      await dispatch(getHidenPosts(profile.uid));
+      await dispatch(getHiddenPosts(profile.uid));
       dispatch(activateRealPosts(!realDataAction));
       setIsLoading(false);
       setShowModal(false);
     }
   };
 
-  const commentNavigate = () => {
+  const commentNavigate = async () => {
     const postObject = {
       authorName, mensaje, mediaLink, likes, type, timestamp, url, pid, authorId,
     };
+    await dispatch(updateCleanComments);
     navigate('Comments', { screen, postObject });
   };
   useEffect(() => {
@@ -161,7 +163,7 @@ ${link}`;
           />
         )}
       <View style={headerContainer}>
-        <TouchableHighlight underlayColor="#ffc4c4" onPress={() => onAvatarPressed()}>
+        <TouchableHighlight underlayColor="#ffc4c4" onPress={() => (screen === 'AnotherProfile' ? null : onAvatarPressed())}>
           <View style={basicInfoContainer}>
             <Avatar size={94} name={authorName} date={timestamp} url={url} />
           </View>

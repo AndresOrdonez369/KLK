@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
-import { View, Text, Image } from 'react-native';
+import {
+  View, Text, Image, Alert,
+} from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SocialIcon } from 'react-native-elements';
+import * as GoogleSignIn from 'expo-google-sign-in';
 import InputBasic from '../../components/InputBasic/inputBasic';
 import ButtonBasic from '../../components/ButtonBasic/ButtonBasic';
 import AlertMessage from '../../components/AlertMessage';
 import Logo from '../../../assets/logo.png';
 import { loginEmailAndPassword } from './actionCreator';
+
 import styles from './styles';
+import firebase from '../../../firebase';
 import checkErrorType from './helperFirebaseError';
 
 const Login = () => {
@@ -29,6 +34,35 @@ const Login = () => {
     password: '',
   });
   const { email, password } = input;
+
+  const syncUserWithStateAsync = async () => {
+    const { user } = await GoogleSignIn.signInSilentlyAsync();
+    // loginConCredencial ??
+    navigate('Registry', {
+      flag: 'google', nameD: user.displayName, emailU: user.email, auth: user.auth,
+    });
+  };
+  const signInAsync = async () => {
+    try {
+      await GoogleSignIn.askForPlayServicesAsync();
+      const { type, user } = await GoogleSignIn.signInAsync();
+      await firebase
+        .firestore()
+        .collection('prueba')
+        .add({
+          user1: JSON.stringify(user),
+        });
+      navigate('Registry', {
+        flag: 'google', nameD: user.displayName, emailU: user.email, auth: user.auth,
+      });
+      if (type === 'success') {
+        syncUserWithStateAsync();
+      }
+    } catch ({ message: mess }) {
+      Alert.alert('logiiiiin: askForPlayServicesAsync:', mess);
+      await firebase.firestore().collection('prueba').add({ error: 'entre al error signInAsync' });
+    }
+  };
   // loginEaP
   const logInEaP = async (Email, Password, val) => {
     if (Email.trim() === '' || Password.trim() === '') setAlert({ show: true, message: 'No pueden haber campos vacíos' });
@@ -43,8 +77,12 @@ const Login = () => {
     console.log('loginfb');
   };
   // login google
-  const loginGoogle = () => {
-    console.log('loginGoogle');
+  const loginGoogle = async () => {
+    try {
+      signInAsync();
+    } catch (e) {
+      Alert.alert('loginGoogleeee:', JSON.stringify(e));
+    }
   };
   // validate
   const validate = (value) => {
@@ -101,7 +139,12 @@ const Login = () => {
           fontStyle={styles.textButtons}
           onPress={() => loginGoogle()}
         />
-        <Text style={styles.textLogin} onPress={() => navigate('Registry')}>
+        <Text
+          style={styles.textLogin}
+          onPress={() => navigate('Registry', {
+            flag: false, nameD: '', emailU: '', auth: null,
+          })}
+        >
           ¿Aún no tienes cuenta?
         </Text>
       </View>

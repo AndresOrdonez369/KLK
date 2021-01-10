@@ -12,7 +12,7 @@ import InputBasic from '../../components/InputBasic/inputBasic';
 import BasicModal from '../../components/BasicModal';
 import ProfilePicture from '../../components/Avatar/ProfilePicture';
 import {
-  updateDescription, hideModalProfile, setDataChange, updateDataUser, getPosts,
+  updateDescription, hideModalProfile, setDataChange, updateDataUser, getPosts, getNumberPosts,
 } from './actionCreator';
 import Post from '../../components/FeedPost';
 import Loader from '../../components/Loader';
@@ -30,7 +30,7 @@ const Profile = () => {
   const profile = useSelector((state) => state.reducerProfile);
   const { hidenList, realDataAction } = feed;
   const {
-    dataChange, modalType, error, message, user, uid, postList,
+    dataChange, modalType, error, message, user, uid, postList, lengthPost,
   } = profile;
   const {
     description, name, userName, qFollowers, qFollowing,
@@ -42,14 +42,23 @@ const Profile = () => {
     const res = postList.filter((post) => !hidenList.includes(post.pid));
     setRealData(res);
   };
-
   useEffect(() => {
-    if (postList.length > 0 && hidenList.length > 0) renderData();
+    if (postList.length > 0 && hidenList.length >= 0) renderData();
   }, [postList, hidenList, realDataAction]);
 
   useEffect(() => {
     dataUpdate();
   }, [dataChange]);
+  useEffect(() => {
+    dispatch(getNumberPosts(uid));
+  }, [lengthPost, uid]);
+
+  /* useEffect(() => {
+    const getLengthPost = async () => {
+      await dispatch(getNumberPosts());
+    };
+    getLengthPost();
+  }, [lengthPost]); */
 
   useEffect(() => {
     const getData = async () => {
@@ -75,6 +84,12 @@ const Profile = () => {
       showInput(true);
     }
   };
+  const dataPosts = realData.filter((value, index, self) => {
+    if (value !== undefined && index !== undefined && self !== undefined) {
+      return self.findIndex((p) => p.pid === value.pid) === index;
+    }
+    return null;
+  });
   const renderPost = ({ item }) => (
     <Post
       pid={item.pid}
@@ -86,7 +101,6 @@ const Profile = () => {
       likes={item.likes}
       authorId={item.authorId}
       timestamp={item.timestamp}
-      navigate={navigate}
       screen="Perfil"
     />
   );
@@ -128,7 +142,7 @@ const Profile = () => {
         <View style={styles.generalInfo}>
           <View style={styles.textInfo}>
             <View style={styles.textCategory}>
-              <Text style={styles.numbersInfo}>10</Text>
+              <Text style={styles.numbersInfo}>{lengthPost}</Text>
               <Text style={styles.category}>posts</Text>
             </View>
             <View style={styles.textCategory}>
@@ -167,7 +181,7 @@ const Profile = () => {
           />
         </View>
         <FlatList
-          data={realData}
+          data={dataPosts}
           renderItem={renderPost}
           keyExtractor={(item) => item.pid}
         />
@@ -245,12 +259,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: height * 0.023,
     fontWeight: 'bold',
+    marginTop: height * 0.001,
   },
   userName: {
     alignSelf: 'center',
     color: 'white',
     fontSize: height * 0.015,
-    marginBottom: height * 0.014,
+    marginBottom: height * 0.022,
   },
 });
 

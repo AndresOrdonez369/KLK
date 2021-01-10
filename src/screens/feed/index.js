@@ -8,7 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import TimedSlideshow from 'react-native-timed-slideshow';
 import {
-  getStories, handleModalFeed, getPosts, getHidenPosts,
+  getStories, handleModalFeed, getPosts, getHiddenPosts,
 } from './actionCreator';
 import { idUpdate } from '../../components/Audio/audioAppActionCreator';
 import AudioComponent from '../../components/Audio';
@@ -26,13 +26,17 @@ const Feed = () => {
   const [showStories, setShowStories] = useState(false);
   const [storiesObj, setStoriesObj] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [launchGetPosts, setLaunchGetPosts] = useState(true);
+  const [launchGetStories, setLaunchGetStories] = useState(true);
+  const [launchGetHidden, setLaunchGetHidden] = useState(true);
   const [count, setCount] = useState(0);
   const dispatch = useDispatch();
   const [realData, setRealData] = useState([]);
   const profile = useSelector((state) => state.reducerProfile);
   const feed = useSelector((state) => state.reducerHome);
   const {
-    stories, showModal, modalType, titleModal, heightModal, postList, hidenList, realDataAction,
+    stories, showModal, modalType, titleModal, heightModal,
+    postList, hidenList, realDataAction, postCreated,
   } = feed;
   const { imageURL } = profile;
 
@@ -51,30 +55,39 @@ const Feed = () => {
   }, [count]);
   useEffect(() => {
     const getFeed = async () => {
-      setIsLoading(true);
-      await dispatch(getHidenPosts(profile.uid));
+      if (launchGetHidden && profile.uid !== '') {
+        setIsLoading(true);
+        await dispatch(getHiddenPosts(profile.uid));
+        setLaunchGetHidden(false);
+      }
       setCount((prev) => prev + 1);
     };
     getFeed();
-  }, [profile.uid]);
+  }, [profile.uid, launchGetHidden]);
   useEffect(() => {
     const getFeed = async () => {
-      setIsLoading(true);
-      if (stories.length === 0) await dispatch(getStories(profile.uid, stories));
+      if (stories.length === 0 && launchGetStories) {
+        setIsLoading(true);
+        await dispatch(getStories(profile.uid, stories));
+        setLaunchGetStories(false);
+      }
       setCount((prev) => prev + 1);
     };
     getFeed();
-  }, [profile.uid, stories]);
+  }, [profile.uid, launchGetStories, stories]);
   useEffect(() => {
     const getFeed = async () => {
-      setIsLoading(true);
-      if (postList.length === 0) await dispatch(getPosts(profile.uid));
+      if (postList.length === 0 && postCreated === false && launchGetPosts && profile.uid !== '') {
+        setIsLoading(true);
+        await dispatch(getPosts(profile.uid));
+        setLaunchGetPosts(false);
+      }
       setCount((prev) => prev + 1);
     };
     getFeed();
-  }, [profile.uid, postList]);
+  }, [profile.uid, postList, postCreated, launchGetPosts]);
   useEffect(() => {
-    if (postList.length > 0 && hidenList.length > 0) renderData();
+    if (postList.length > 0 && hidenList.length >= 0) renderData();
   }, [postList, hidenList, realDataAction]);
 
   // data
@@ -85,6 +98,13 @@ const Feed = () => {
     return null;
   });
   const bubbleData = uniqueID.filter((story) => story.authorID !== profile.uid);
+  const dataPosts = realData.filter((value, index, self) => {
+    if (value !== undefined && index !== undefined && self !== undefined) {
+      return self.findIndex((p) => p.pid === value.pid) === index;
+    }
+    return null;
+  });
+  console.log(realData, dataPosts);
   // fnc
   const renderPost = ({ item }) => (
     <Post
@@ -153,7 +173,7 @@ const Feed = () => {
           <View style={styles.radioButtonContainer}>
             <AudioComponent
               id="radio1"
-              link="http://64.37.50.226:8006/stream"
+              link="http://servidor26.brlogic.com:7242/live?type=.m3u"
               radio
               size={25}
             />
@@ -176,25 +196,29 @@ const Feed = () => {
             requiredHeight={heightModal}
           />
         )}
-        <Bubbles
-          stories={bubbleData}
-          pressStory={(uid) => onPressStory(uid)}
-        />
-        <View style={styles.createView}>
-          <SimpleAvatar
-            url={imageURL}
-            size={styles.container.height * 0.12}
-          />
-          <Button
-            title="¿klk estás pensando?"
-            onPress={() => navigate('CreatePost')}
-            buttonStyle={styles.buttonCreate}
-          />
-        </View>
         <View style={styles.feedContainer}>
           <FlatList
+            ListHeaderComponent={(
+              <View>
+                <Bubbles
+                  stories={bubbleData}
+                  pressStory={(uid) => onPressStory(uid)}
+                />
+                <View style={styles.createView}>
+                  <SimpleAvatar
+                    url={imageURL}
+                    size={styles.container.height * 0.12}
+                  />
+                  <Button
+                    title="¿klk estás pensando?"
+                    onPress={() => navigate('CreatePost')}
+                    buttonStyle={styles.buttonCreate}
+                  />
+                </View>
+              </View>
+              )}
             contentContainerStyle={{ marginBottom: 100 }}
-            data={realData}
+            data={dataPosts}
             renderItem={renderPost}
             keyExtractor={(item) => item.pid}
           />
@@ -252,7 +276,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   feedContainer: {
-    height: height * 0.6,
+    height: height * 0.87,
   },
 });
 

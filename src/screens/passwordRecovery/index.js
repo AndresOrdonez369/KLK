@@ -51,7 +51,7 @@ const PassRecovery = () => {
             textStyle={styles.textButtons}
             onPress={() => pressRecovery(input.user)}
           />
-          <Text style={styles.textDiv}>-----------------------o-----------------------</Text>
+          <Text style={styles.textDiv}>---------------------o---------------------</Text>
         </View>
       </View>
     </SafeAreaView>

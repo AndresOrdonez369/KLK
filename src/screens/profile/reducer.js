@@ -11,6 +11,7 @@ const STATE_INICIAL = {
     qFollowers: 0,
     qFollowing: 0,
   },
+  lengthPost: 0,
   imageURL: '',
   uploadPhotoError: '',
   isLoading: '',
@@ -30,9 +31,11 @@ const STATE_INICIAL = {
     followers: '',
     qFollowers: 0,
     qFollowing: 0,
+    lengthExtraProfilePost: 0,
   },
   postList: [],
   extraUserPosts: [],
+  postCreated: false,
 };
 
 export default (state = STATE_INICIAL, action) => {
@@ -122,7 +125,11 @@ export default (state = STATE_INICIAL, action) => {
         },
       };
     case Actions.CLEAN_EXTRA_PROFILE:
-      return { ...state, anotherUser: STATE_INICIAL.anotherUser };
+      return {
+        ...state,
+        anotherUser: STATE_INICIAL.anotherUser,
+        extraUserPosts: STATE_INICIAL.extraUserPosts,
+      };
     case Actions.FOLLOW_SOMEONE:
       return {
         ...state,
@@ -254,6 +261,19 @@ export default (state = STATE_INICIAL, action) => {
       return {
         ...state,
         postList: [...state.postList, action.payload],
+      };
+    case Actions.GET_LENGTH_POST:
+      return {
+        ...state,
+        lengthPost: action.payload,
+      };
+    case Actions.GET_LENGTH_EXTRA_PROFILE_POST:
+      return {
+        ...state,
+        anotherUser: {
+          ...state.anotherUser,
+          lengthExtraProfilePost: action.payload,
+        },
       };
     default:
       return { ...state };

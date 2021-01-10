@@ -36,7 +36,7 @@ export const submitPost = (
           type: uploaded,
           timestamp: date,
           likes: 0,
-          authorID: uid,
+          authorId: uid,
           urlAvatar,
         };
         if (uploaded !== 'video') {

@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: size / 5,
-    width: flag ? size / 1.18 : size / 1.50,
+    width: flag ? size / 1.15 : size / 1.3,
     borderRadius: 4,
     backgroundColor: flag ? '#F0F0F0' : '#f22',
     borderWidth: 0.3,
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   }),
   textButtons: (size, flag) => ({
     color: flag ? 'black' : 'white',
-    fontSize: size / 8.7,
+    fontSize: size / 9,
     fontWeight: 'bold',
   }),
   name: (size) => ({

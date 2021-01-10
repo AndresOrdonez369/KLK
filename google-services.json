@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "867379790697",
+    "firebase_url": "https://klk-messenger.firebaseio.com",
+    "project_id": "klk-messenger",
+    "storage_bucket": "klk-messenger.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:867379790697:android:557b3297116710012ef3f8",
+        "android_client_info": {
+          "package_name": "com.klk.klkmsn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "867379790697-inla639e0jv4v0vne88410sft8039qdv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.klk.klkmsn",
+            "certificate_hash": "28af10c91101e5eef676941e7eb56d67b9751ade"
+          }
+        },
+        {
+          "client_id": "867379790697-uk6sb1145kdkd1qi1t00fq3q2d0d2j4p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQU3baesmc0-vg8VOSdHl_uxCzPw497Kc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "867379790697-uk6sb1145kdkd1qi1t00fq3q2d0d2j4p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
