@@ -73,9 +73,7 @@ const Login = () => {
     if (error) setAlert({ show: true, message: checkErrorType(message) });
   };
   // login fb
-  const loginFacebook = () => {
-    console.log('loginfb');
-  };
+
   // login google
   const loginGoogle = async () => {
     try {
@@ -122,14 +120,6 @@ const Login = () => {
           buttonStyle={styles.buttonStyle}
           textStyle={styles.textButtons}
           onPress={() => logInEaP(email, password, validation)}
-        />
-        <SocialIcon
-          title="Iniciar con Facebook"
-          button
-          type="facebook"
-          style={styles.socialStyle}
-          fontStyle={styles.textButtons}
-          onPress={() => loginFacebook()}
         />
         <SocialIcon
           title="Iniciar con Google"
