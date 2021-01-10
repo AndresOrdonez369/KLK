@@ -1,31 +1,393 @@
-import React, { PureComponent } from 'react';
-import { Dimensions, StyleSheet, View, Text } from 'react-native';
-    
+import React, { useState, useEffect } from 'react';
+import {
+  Dimensions, StyleSheet, View, FlatList, Platform, Text, ActivityIndicator, TouchableHighlight,
+} from 'react-native';
+import { Button, SearchBar, Overlay } from 'react-native-elements';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import {
+  searcherFirestore, cleanSearch, followFirestore,
+  unfollowFirestore, getFollowersByUid, getFollowingsByUid,
+} from './actionCreator';
+import BasicModal from '../../components/BasicModal';
+import SimpleAvatar from '../../components/Avatar/SimpleAvatar';
+import FollowAvatar from '../../components/Avatar/FollowAvatar';
+
 const { height, width } = Dimensions.get('screen');
-    
-class Friends extends PureComponent {
-    
-    render() {
-        return (
-            <View style={styles.container}>
-                <Text style={styles.title}> 
-                    Friends Start
-                </Text> 
+
+const Friends = () => {
+  // state
+  const [renderData, setRenderData] = useState(Followers);
+  const [buttonSelected, setButtonSelected] = useState('followers');
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [loadingOverlay, setLoadingOverlay] = useState(false);
+  const [search, setSearch] = useState('');
+  const [modal, setModal] = useState({
+    showModal: false,
+    modalType: '',
+    title: '',
+    pressOk: null,
+  });
+  const [pagination, setPagination] = useState(0);
+
+  // redux
+  const dispatch = useDispatch();
+  const profile = useSelector((state) => state.reducerProfile);
+  const friends = useSelector((state) => state.reducerFriends);
+  const {
+    error, message, searchResult, errorFollow, messageError,
+  } = friends;
+  const {
+    followers, following, qFollowings, qFollowers,
+  } = profile.user;
+
+  const { navigate } = useNavigation();
+
+  // data
+  const Followers = followers ? Object.keys(followers).map((item) => ({
+    uid: item,
+    name: followers[item].name,
+    userName: followers[item].userName,
+    imageURL: followers[item].imageURL,
+  })) : [];
+  const Following = following ? Object.keys(following).map((item) => ({
+    uid: item,
+    name: following[item].name,
+    userName: following[item].userName,
+    imageURL: following[item].imageURL,
+  })) : [];
+  const follows = Following.length;
+  const follower = Followers.length;
+
+  // fnc
+  useEffect(() => {
+    setButtonSelected('followers');
+    setRenderData(Followers);
+  }, []);
+  useEffect(() => {
+    const operationFail = () => {
+      if (errorFollow) {
+        handleModal(true, 'error', messageError);
+      }
+    };
+    operationFail();
+  }, [errorFollow, messageError]);
+  const doSearch = async (string) => {
+    if (string.length > 0) {
+      dispatch(cleanSearch());
+      setShowOverlay(true);
+      setLoadingOverlay(true);
+      await dispatch(searcherFirestore(string));
+      setLoadingOverlay(false);
+    }
+  };
+  const goSearch = (uid, actualScreen) => {
+    setShowOverlay(false);
+    navigate('AnotherProfile', { uid, actualScreen });
+  };
+  const handleModal = (showModal, modalType = 'error', title = '', pressOk = null) => {
+    setModal({
+      showModal, modalType, title, pressOk,
+    });
+  };
+  const handleUnfollow = (anotherUid, anotherUsername) => {
+    handleModal(
+      true,
+      'interactive',
+      `¿Deseas dejar de seguir a @${anotherUsername}?`,
+      async () => {
+        await dispatch(unfollowFirestore(profile.uid, anotherUid));
+        handleModal(false);
+      },
+    );
+  };
+
+  // components
+  const renderAvatar = ({ item }) => {
+    const {
+      uid, name, imageURL, userName,
+    } = item;
+    const actualScreen = 'Panas';
+    return (
+      <SimpleAvatar
+        size={height * 0.1}
+        url={imageURL}
+        name={name}
+        date={`@${userName}`}
+        onPress={() => goSearch(String(uid), actualScreen)}
+      />
+    );
+  };
+  const renderFollow = ({ item }) => {
+    const {
+      uid, name, imageURL, userName,
+    } = item;
+    const actualScreen = 'Panas';
+    return (
+      <TouchableHighlight underlayColor="#ffc4c4" onPress={() => goSearch(uid, actualScreen)}>
+        <FollowAvatar
+          urlImage={imageURL}
+          name={name}
+          date={`@${userName}`}
+          onPress={() => goSearch(uid, actualScreen)}
+          follow={Following.find((p) => p.uid === uid) === undefined}
+          pressFollow={() => dispatch(followFirestore(
+            profile.uid, uid, imageURL, name, userName,
+          ))}
+          pressUnfollow={() => handleUnfollow(uid, userName)}
+        />
+      </TouchableHighlight>
+    );
+  };
+  let footer = null;
+  if ((buttonSelected === 'followers' && ((pagination === 0 && follower >= 30) || (pagination !== 0 && qFollowers > pagination)))
+    || (buttonSelected === 'following' && ((pagination === 0 && follows >= 30) || (pagination !== 0 && qFollowings > pagination)))) {
+    footer = (
+      <View>
+        <Button
+          title="Ver más seguidores"
+          buttonStyle={styles.buttonSubmit}
+          onPress={() => {
+            setPagination((prev) => (prev === 0 ? prev + 31 : prev + 30));
+            if (buttonSelected === 'followers') {
+              dispatch(getFollowersByUid(profile.uid, pagination));
+            } else {
+              dispatch(getFollowingsByUid(profile.uid, pagination));
+            }
+          }}
+        />
+      </View>
+    );
+  }
+  const header = (
+    <View style={styles.headerContainer}>
+      <SearchBar
+        placeholder="Busca usuarios por su nick..."
+        onChangeText={(text) => setSearch(text)}
+        searchIcon={{
+          color: '#f22',
+          onPress: () => doSearch(search),
+          size: styles.headerContainer.width * 0.08,
+        }}
+        value={search}
+        containerStyle={styles.containerSearch}
+        inputContainerStyle={styles.search}
+        cancelIcon={Platform.OS === 'android'}
+        showCancel={Platform.OS === 'ios'}
+        lightTheme
+        onCancel={() => setSearch('')}
+      />
+      <View style={styles.iconContainer}>
+        <Button
+          title={`${follower} seguidores`}
+          buttonStyle={styles.buttonRender(buttonSelected === 'followers')}
+          onPress={() => {
+            setRenderData(Followers);
+            setButtonSelected('followers');
+          }}
+          titleStyle={styles.titleButton}
+        />
+        <Button
+          title={`${follows} seguidos`}
+          buttonStyle={styles.buttonRender(buttonSelected === 'following')}
+          onPress={() => {
+            setRenderData(Following);
+            setButtonSelected('following');
+          }}
+          titleStyle={styles.titleButton}
+        />
+      </View>
+    </View>
+  );
+  let overlayContent;
+  if (loadingOverlay) {
+    overlayContent = (
+      <ActivityIndicator size="large" color="#f22" />
+    );
+  }
+  if (error) {
+    overlayContent = (
+      <Text style={styles.info}>{message}</Text>
+    );
+  }
+  if (searchResult.length < 1) {
+    overlayContent = (
+      <Text style={styles.info}>No se encontraron resultados para tu búsqueda</Text>
+    );
+  } else {
+    overlayContent = (
+      <View styles={styles.overlayContent}>
+        <SearchBar
+          placeholder="Busca usuarios por su nick..."
+          onChangeText={(text) => setSearch(text)}
+          searchIcon={{
+            color: '#f22',
+            onPress: () => doSearch(search),
+            size: styles.headerContainer.width * 0.08,
+          }}
+          value={search}
+          containerStyle={styles.containerSearch}
+          inputContainerStyle={styles.search}
+          cancelIcon={Platform.OS === 'android'}
+          showCancel={Platform.OS === 'ios'}
+          lightTheme
+          onCancel={() => setSearch('')}
+        />
+        <FlatList
+          data={searchResult}
+          renderItem={renderAvatar}
+          keyExtractor={(item) => item.uid}
+        />
+      </View>
+    );
+  }
+
+  if (buttonSelected === 'followers' && Followers.length < 1) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+          {header}
+          <View style={styles.centeredView}>
+            <Text style={styles.info}>No tienes seguidores de momento</Text>
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  } if (buttonSelected === 'following' && Following.length < 1) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+          {header}
+          <View style={styles.centeredView}>
+            <Text style={styles.info}>
+              No estás siguiendo a nadie, ¡encuentra a tus amigos en el buscador!
+            </Text>
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        {showOverlay
+        && (
+          <Overlay
+            isVisible={showOverlay}
+            style={styles.overlay}
+            onBackdropPress={() => setShowOverlay(false)}
+          >
+            <View style={styles.centeredViewOverlay}>
+              {overlayContent}
             </View>
-        );
-    }
-}
-    
+          </Overlay>
+        )}
+        {modal.showModal && (
+          <BasicModal
+            visible={modal.showModal}
+            type={modal.modalType}
+            requiredHeight={0.25}
+            title={modal.title}
+            onPressCancel={() => handleModal(false)}
+            onPressOk={modal.pressOk}
+          />
+        )}
+        <FlatList
+          data={renderData}
+          ListHeaderComponent={header}
+          renderItem={renderFollow}
+          keyExtractor={(item) => item.uid}
+          ListFooterComponent={footer}
+        />
+      </View>
+    </SafeAreaView>
+  );
+};
+
 const styles = StyleSheet.create({
-    container: {
-        height,
-        width,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    title: {
-        fontSize: 24,
-    }
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#f22',
+  },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
+  headerContainer: {
+    width,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+  },
+  buttonRender: (value) => ({
+    backgroundColor: 'transparent',
+    borderBottomWidth: value ? 2 : 0,
+    borderBottomColor: 'grey',
+    margin: 5,
+    height: height * 0.05,
+  }),
+  iconContainer: {
+    flexDirection: 'row',
+    height: height * 0.05 + 6,
+    width,
+    borderBottomWidth: 1,
+    borderBottomColor: 'gray',
+    justifyContent: 'center',
+  },
+  titleButton: {
+    color: 'black',
+  },
+  containerSearch: {
+    width,
+    backgroundColor: 'transparent',
+    borderColor: '#f22',
+    height: 65,
+  },
+  search: {
+    backgroundColor: 'white',
+    borderBottomWidth: 2,
+    borderBottomColor: '#f22',
+  },
+  info: {
+    flexWrap: 'wrap',
+    fontSize: 18,
+    color: '#2F4575',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  overlay: {
+    backgroundColor: 'white',
+    alignItems: 'center',
+    width,
+    justifyContent: 'flex-end',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
+  centeredViewOverlay: {
+    width,
+    height,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  overlayContent: {
+    alignItems: 'flex-start',
+  },
+  buttonSubmit: {
+    backgroundColor: '#f22',
+    borderRadius: 20,
+    width: width * 0.6,
+    alignSelf: 'center',
+    marginTop: height * 0.04,
+  },
 });
-    
+
 export default Friends;

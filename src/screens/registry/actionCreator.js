@@ -1,6 +1,74 @@
 import Actions from '../../redux/actionTypes';
-    
-export const RegistryInputUpdate = ({ prop, value }) => ({
-type: Actions.ACTUALIZARINPUT,
-payload: { prop, value },
+import firebase from '../../../firebase';
+import { loginEmailAndPassword, loginWithCredential } from '../login/actionCreator';
+
+export const IsLoading = (isLoading = true) => ({
+  type: Actions.SET_LOADER_REGISTRY,
+  isLoading,
 });
+
+export const register = (email, password, name, userName) => async (dispatch) => {
+  dispatch(IsLoading(true));
+  await firebase.auth().createUserWithEmailAndPassword(email, password)
+    .catch((error) => {
+    // Handle Errors here.
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      dispatch(IsLoading(false));
+      return dispatch({
+        type: Actions.REGISTER_ERROR,
+        payload: { errorCode, errorMessage },
+      });
+    // ...
+    }).then(async ({ user }) => {
+      dispatch(IsLoading(false));
+      const { uid, photoURL } = await firebase.auth().currentUser;
+      const dbh = firebase.firestore();
+      const usersCollection = dbh.collection('users');
+      const followingCollection = dbh.collection('following');
+      const postsCollection = dbh.collection('posts');
+      await followingCollection.doc(user.uid).set({ lastUpdate: Date.now() });
+      await followingCollection.doc(user.uid).collection('userFollowing').doc(user.uid).set({ uid: user.uid });
+      await postsCollection.doc(user.uid).set({ uid: user.uid });
+      await usersCollection.doc(user.uid).set({
+        name, userName, coverURL: '', description: '', uid, imageURL: photoURL,
+      })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          return dispatch({
+            type: Actions.REGISTER_ERROR,
+            payload: { errorCode, errorMessage },
+          });
+        });
+    })
+    .then(dispatch(loginEmailAndPassword(email, password)));
+  await firebase.auth().currentUser.updateProfile({ displayName: name });
+};
+
+export const registerToken = (token, name, userName) => async (dispatch) => {
+  // .
+  dispatch(IsLoading(false));
+  await dispatch(loginWithCredential(token)).then(async () => {
+    const { uid, photoURL } = await firebase.auth().currentUser;
+    const dbh = firebase.firestore();
+    const usersCollection = dbh.collection('users');
+    const followingCollection = dbh.collection('following');
+    const postsCollection = dbh.collection('posts');
+    await followingCollection.doc(uid).set({ lastUpdate: Date.now() });
+    await followingCollection.doc(uid).collection('userFollowing').doc(uid).set({ uid });
+    await postsCollection.doc(uid).set({ uid });
+    await usersCollection.doc(uid).set({
+      name, userName, coverURL: '', description: '', uid, imageURL: photoURL, aMethod: 'google',
+    })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        return dispatch({
+          type: Actions.REGISTER_ERROR,
+          payload: { errorCode, errorMessage },
+        });
+      });
+    await firebase.auth().currentUser.updateProfile({ displayName: name });
+  });
+};

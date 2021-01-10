@@ -1,43 +1,87 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { Icon } from 'react-native-elements';
 import Feed from '../screens/feed';
 import Perfil from '../screens/profile';
 import Friends from '../screens/friends';
 import Videos from '../screens/videoFeed';
 import Radio from '../screens/radio';
-    
+import Post from '../screens/post';
+import Chats from '../screens/chats';
+import Settings from '../screens/settings';
+import AnotherProfile from '../screens/ExtraProfile';
+import Chat from '../screens/chat';
+import Comments from '../screens/comments';
+
 const Tab = createBottomTabNavigator();
-    
-export default PrincipalFlow = () => {
-    return(
-        <Tab.Navigator
-            screenOptions={({ route }) => ({
-                tabBarIcon: ({ focused, size }) => {
-                    const iconColor = focused ? 'silver' : '#f0edf6';
-                    if (route.name === 'Inicio') {
-                        return <Icon name={"home"} type={"material-community"} color={iconColor} size={size} />;
-                    }
-                    if (route.name === 'Perfil') {
-                        return <Icon name={'account'} type={'material-community'} color={iconColor} size={size} />;
-                    }if (route.name === 'Panas') {
-                        return <Icon name={'account-group'} type={'material-community'} color={iconColor} size={size} />;
-                    }if (route.name === 'Videos') {
-                        return <Icon name={'video-vintage'} type={'material-community'} color={iconColor} size={size} />;
-                    }
-                    return(
-                         <Icon name={'radio'} type={'material-community'} color={iconColor} size={size} />
-                    );
-                },
-            })}
-            initialRouteName={"Inicio"}
-            headerMode='none'
-        >
-            <Tab.Screen name={"Inicio"} component={Feed} />
-            <Tab.Screen name={'Perfil'} component={Perfil} />
-            <Tab.Screen name={'Panas'} component={Friends} />
-            <Tab.Screen name={'Videos'} component={Videos} />
-            <Tab.Screen name={'Radio'} component={Radio} />
-        </Tab.Navigator>
-    );
+const Stack = createStackNavigator();
+
+function FeedStack() {
+  return (
+    <Stack.Navigator headerMode="none">
+      <Stack.Screen name="Feed" component={Feed} />
+    </Stack.Navigator>
+  );
 }
+
+function profileStack() {
+  return (
+    <Stack.Navigator headerMode="none">
+      <Stack.Screen name="PerfilStack" component={Perfil} />
+      <Stack.Screen name="Configuraciones" component={Settings} />
+    </Stack.Navigator>
+  );
+}
+
+const PrincipalFlow = () => (
+  <Tab.Navigator
+    screenOptions={({ route }) => ({
+      tabBarIcon: ({ focused, size }) => {
+        const iconColor = focused ? '#F82121' : '#575757';
+        if (route.name === 'Inicio') {
+          return <Icon name="home" type="material-community" color={iconColor} size={size} />;
+        }
+        if (route.name === 'Perfil') {
+          return <Icon name="account" type="material-community" color={iconColor} size={size} />;
+        } if (route.name === 'Panas') {
+          return <Icon name="account-group" type="material-community" color={iconColor} size={size} />;
+        } if (route.name === 'Videos') {
+          return <Icon name="video-vintage" type="material-community" color={iconColor} size={size} />;
+        }
+        return (
+          <Icon name="radio" type="material-community" color={iconColor} size={size} />
+        );
+      },
+    })}
+    initialRouteName="Inicio"
+    headerMode="none"
+    tabBarOptions={{ showLabel: false }}
+
+  >
+    <Tab.Screen name="Inicio" component={FeedStack} />
+    <Tab.Screen name="Perfil" component={profileStack} />
+    <Tab.Screen name="Panas" component={Friends} />
+    <Tab.Screen name="Videos" component={Videos} />
+    <Tab.Screen name="Radio" component={Radio} />
+  </Tab.Navigator>
+);
+
+function AppHide() {
+  return (
+    <Stack.Navigator
+      headerMode="none"
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="PrincipalFlow" component={PrincipalFlow} />
+      <Stack.Screen name="CreatePost" component={Post} />
+      <Stack.Screen name="AnotherProfile" component={AnotherProfile} />
+      <Stack.Screen name="Chat" component={Chat} />
+      <Stack.Screen name="Chats" component={Chats} />
+      <Stack.Screen name="Comments" component={Comments} />
+    </Stack.Navigator>
+  );
+}
+export default AppHide;

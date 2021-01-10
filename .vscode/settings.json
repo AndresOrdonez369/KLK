@@ -1,0 +1,9 @@
+{
+    "files.eol": "\n",
+    "[javascript]": {
+        "files.eol": "\n"
+    },
+    "[shellscript]": {
+        "files.eol": "\n"
+    }
+}

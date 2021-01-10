@@ -1,15 +1,16 @@
 {
   "expo": {
-    "name": "Klk_msn",
-    "slug": "Klk_msn",
+    "name": "klkmsn",
+    "slug": "klkmsn",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/klklogo512.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "scheme": "klkmsn",
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -17,10 +18,26 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.klk.klkmsn",
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "buildNumber": "1"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "android": {
+      "googleServicesFile": "./google-services.json",
+      "package": "com.klk.klkmsn",
+      "config": {
+        "googleSignIn": {
+          "certificateHash": "F6CD9DDC965BDA0582A2D6193F515BCC5EB5BCDDCB23B97C4B411ACF8FCB4A00"
+        }
+      },
+      "permissions": [
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
     }
   }
 }
