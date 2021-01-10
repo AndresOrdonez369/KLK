@@ -95,7 +95,7 @@ export const uploadVideo = (video, uid, type = 'posts') => async (dispatch) => {
   try {
     const random = Math.random().toString(36).substring(2)
       .concat(Math.random().toString(36).substring(2));
-    const userVideoURL = `/${type}/videos/${uid}/${random}.avi`;
+    const userVideoURL = `/${type}/videos/${uid}/${random}.mp4`;
     const storage = firebase.storage().ref();
     const imagePath = storage.child(userVideoURL);
     const response = await fetch(video);
