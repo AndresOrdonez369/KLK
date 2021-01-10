@@ -54,6 +54,16 @@ const FeedPost = ({
       setShowModal(false);
     }
   };
+  const deletePost = async () => {
+    if (uid !== '') {
+      setIsLoading(true);
+      const postPath = firebase.firestore().collection('posts').doc(profile.uid).collection('userPosts')
+        .doc(pid);
+      await postPath.delete();
+      setIsLoading(false);
+      setShowModal(false);
+    }
+  };
 
   const commentNavigate = async () => {
     const postObject = {
@@ -90,10 +100,10 @@ const FeedPost = ({
   const onSharePress = async () => {
     const link = Linking.makeUrl(`post/${authorId}/${pid}`);
     const message = `Mira esta publicacion de KLK msn,
-si no tienes la aplicacion la puedes descargar 
-Link de descarga: ...
-Si ya tienes el app instalada puedes ver la publicacion aqui 
-${link}`;
+      si no tienes la aplicacion la puedes descargar 
+      Link de descarga: ...
+      Si ya tienes el app instalada puedes ver la publicacion aqui 
+      ${link}`;
     await Share.share({
       message,
     });
@@ -139,6 +149,7 @@ ${link}`;
       );
     }
     if (type === 'youtube') {
+      // eslint-disable-next-line no-useless-escape
       const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
       let videoId = mediaLink.match(regExp);
       videoId = videoId.pop();
@@ -155,11 +166,13 @@ ${link}`;
           <BasicModal
             type="interactive"
             visible={modal}
-            title="¿Desea ocultar esta publicación?"
+            title={authorId === profile.uid ? '¿Desea eliminar esta publicación?' : '¿Desea ocultar esta publicación?'}
             onPressCancel={() => setShowModal(false)}
-            onPressOk={() => onHidePress()}
+            onPressOk={() => {
+              if (authorId !== profile.uid) onHidePress(); else deletePost();
+            }}
             requiredHeight={0.4}
-            component={isLoading ? <ActivityIndicator /> : null}
+            component={isLoading && <ActivityIndicator />}
           />
         )}
       <View style={headerContainer}>
