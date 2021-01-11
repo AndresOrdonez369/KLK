@@ -50,12 +50,12 @@ const Login = () => {
         .add({
           user1: JSON.stringify(user),
         });
-      navigate('Registry', {
-        flag: 'google', nameD: user.displayName, emailU: user.email, auth: user.auth,
-      });
       if (type === 'success') {
         syncUserWithStateAsync();
       }
+      navigate('Registry', {
+        flag: 'google', nameD: user.displayName, emailU: user.email, auth: user.auth,
+      });
     } catch ({ message: mess }) {
       Alert.alert('logiiiiin: askForPlayServicesAsync:', mess);
       await firebase.firestore().collection('prueba').add({ error: 'entre al error signInAsync' });
