@@ -42,7 +42,7 @@ const Login = () => {
       .add({
         entre: 'entre en el silent ',
       });
-    const { user } = await GoogleSignIn.signInSilentlyAsync();
+    const user = await GoogleSignIn.signInSilentlyAsync();
     // loginConCredencial ??
     await firebase
       .firestore()
