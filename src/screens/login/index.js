@@ -36,15 +36,21 @@ const Login = () => {
   const { email, password } = input;
 
   const syncUserWithStateAsync = async () => {
-    const { user: { auth } } = await GoogleSignIn.signInSilentlyAsync();
+    await firebase
+      .firestore()
+      .collection('prueba')
+      .add({
+        entre: 'entre en el silent ',
+      });
+    const { user } = await GoogleSignIn.signInSilentlyAsync();
     // loginConCredencial ??
     await firebase
       .firestore()
       .collection('prueba')
       .add({
-        auuuuth: JSON.stringify(auth),
+        auuuuth: JSON.stringify(user),
       });
-    await dispatch(loginWithCredential(String(auth.accessToken)));
+    // await dispatch(loginWithCredential(String(auth.accessToken)));
     const { uid } = await firebase.auth().currentUser;
     await firebase
       .firestore()
