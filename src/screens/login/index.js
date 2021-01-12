@@ -39,13 +39,6 @@ const Login = () => {
     const user = await GoogleSignIn.signInSilentlyAsync();
     // loginConCredencial ??
     await dispatch(loginWithCredential(user.auth.accessToken));
-    const { uid } = await firebase.auth().currentUser;
-    await firebase
-      .firestore()
-      .collection('prueba')
-      .add({
-        auuii: uid,
-      });
   };
   const signInAsync = async () => {
     try {
