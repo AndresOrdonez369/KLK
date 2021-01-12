@@ -36,21 +36,9 @@ const Login = () => {
   const { email, password } = input;
 
   const syncUserWithStateAsync = async () => {
-    await firebase
-      .firestore()
-      .collection('prueba')
-      .add({
-        entre: 'entre en el silent ',
-      });
     const user = await GoogleSignIn.signInSilentlyAsync();
     // loginConCredencial ??
-    await firebase
-      .firestore()
-      .collection('prueba')
-      .add({
-        auuuuth: JSON.stringify(user),
-      });
-    // await dispatch(loginWithCredential(String(auth.accessToken)));
+    await dispatch(loginWithCredential(user.auth.accessToken));
     const { uid } = await firebase.auth().currentUser;
     await firebase
       .firestore()
@@ -58,18 +46,11 @@ const Login = () => {
       .add({
         auuii: uid,
       });
-    navigate('PrincipalFlow');
   };
   const signInAsync = async () => {
     try {
       await GoogleSignIn.askForPlayServicesAsync();
       const { type, user } = await GoogleSignIn.signInAsync();
-      await firebase
-        .firestore()
-        .collection('prueba')
-        .add({
-          user1: JSON.stringify(user),
-        });
       if (type === 'success') {
         syncUserWithStateAsync();
       } else {
