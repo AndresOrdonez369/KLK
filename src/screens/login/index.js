@@ -50,12 +50,13 @@ const Login = () => {
   const signInAsync = async () => {
     try {
       await GoogleSignIn.askForPlayServicesAsync();
-      const { type, user } = await GoogleSignIn.signInAsync();
-      if (type === 'success') {
+      const { user } = await GoogleSignIn.signInAsync();
+      const userauth = await firebase.firestore().collection('users').where('uidg', '==', user.uid).get();
+      if (userauth.size > 0) {
         syncUserWithStateAsync();
       } else {
         navigate('Registry', {
-          flag: 'google', nameD: user.displayName, emailU: user.email, auth: user.auth,
+          flag: 'google', nameD: user.displayName, emailU: user.email, auth: user.auth, uid: user.uid,
         });
       }
     } catch ({ message: mess }) {

@@ -46,7 +46,7 @@ export const register = (email, password, name, userName) => async (dispatch) =>
   await firebase.auth().currentUser.updateProfile({ displayName: name });
 };
 
-export const registerToken = (token, name, userName) => async (dispatch) => {
+export const registerToken = (token, name, userName, uidg) => async (dispatch) => {
   // .
   dispatch(IsLoading(false));
   await dispatch(loginWithCredential(token)).then(async () => {
@@ -59,7 +59,7 @@ export const registerToken = (token, name, userName) => async (dispatch) => {
     await followingCollection.doc(uid).collection('userFollowing').doc(uid).set({ uid });
     await postsCollection.doc(uid).set({ uid });
     await usersCollection.doc(uid).set({
-      name, userName, coverURL: '', description: '', uid, imageURL: photoURL, aMethod: 'google',
+      name, userName, coverURL: '', description: '', uid, imageURL: photoURL, aMethod: 'google', uidg,
     })
       .catch((error) => {
         const errorCode = error.code;

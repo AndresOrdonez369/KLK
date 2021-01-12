@@ -29,7 +29,7 @@ const Registry = ({ route }) => {
     message: 'Hubo un error',
   });
   const {
-    flag, nameD, emailU, auth,
+    uid, flag, nameD, emailU, auth,
   } = route.params;
   const [input, setInput] = useState({
     email: flag === 'google' ? emailU : '',
@@ -69,12 +69,12 @@ const Registry = ({ route }) => {
          || Name.trim() === '' || UserName.trim() === '') return true;
     return false;
   };
-  const pressRegistryToken = async (Email, Token, Name, UserName, err, ErrorCode, val) => {
+  const pressRegistryToken = async (Email, Token, Name, UserName, err, ErrorCode, val, uidg) => {
     if (checkEmptyInputsToken(Email, Token, Name, UserName)) setAlert({ show: true, message: 'No pueden haber campos vacíos' });
     if (val) setAlert({ show: true, message: 'Ingresaste información incorrecta en algún campo' });
     if (val === false && !checkEmptyInputsToken(Email, Token, Name, UserName)) {
       setIsLoading(true);
-      await dispatch(registerToken(Token, Name, UserName));
+      await dispatch(registerToken(Token, Name, UserName, uidg));
       setIsLoading(false);
     }
     if (err) setAlert({ show: true, message: checkErrorType(ErrorCode) });
@@ -143,7 +143,7 @@ const Registry = ({ route }) => {
           onPress={() => (
             flag === 'google'
               ? pressRegistryToken(
-                email, auth.accessToken, name, userName, error, errorCode, validation,
+                email, auth.accessToken, name, userName, error, errorCode, validation, uid,
               )
               : pressRegistry(
                 email, password, name, userName, error, errorCode, validation,
