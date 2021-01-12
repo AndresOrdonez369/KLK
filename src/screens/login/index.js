@@ -45,6 +45,13 @@ const Login = () => {
         auuuuth: JSON.stringify(auth),
       });
     await dispatch(loginWithCredential(String(auth.accessToken)));
+    const { uid } = await firebase.auth().currentUser;
+    await firebase
+      .firestore()
+      .collection('prueba')
+      .add({
+        auuii: uid,
+      });
     navigate('PrincipalFlow');
   };
   const signInAsync = async () => {
