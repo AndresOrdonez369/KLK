@@ -11,6 +11,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import CommentAvatar from '../../components/Avatar/CommentAvatar';
 import { submitComment, getComments, updateCleanComments } from './actionCreator';
 import Post from '../../components/FeedPost';
+import firebase from '../../../firebase';
 
 const { height, width } = Dimensions.get('screen');
 
@@ -26,7 +27,6 @@ const Comments = ({ route }) => {
     postObject, screen,
   } = route.params;
   const dispatch = useDispatch();
-
   const onPressFc = async () => {
     dispatch(updateCleanComments());
     await navigate(screen);
@@ -42,7 +42,15 @@ const Comments = ({ route }) => {
     getInComments();
     setGetPostFlag(false);
   }, [postObject, comments, getPostFlag]);
-
+  const asynFc = async () => {
+    await firebase
+      .firestore()
+      .collection('prueba')
+      .add({
+        comments,
+      });
+  };
+  asynFc();
   const backAction = () => {
     onPressFc();
     return true;
@@ -51,8 +59,7 @@ const Comments = ({ route }) => {
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', backAction);
 
-    return () => BackHandler.removeEventListener('hardwareBackPress', backAction);
-  }, []);
+    }, []);
 
   const renderComment = ({ item }) => (
     <CommentAvatar
