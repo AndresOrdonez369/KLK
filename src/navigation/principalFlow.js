@@ -13,6 +13,7 @@ import Settings from '../screens/settings';
 import AnotherProfile from '../screens/ExtraProfile';
 import Chat from '../screens/chat';
 import Comments from '../screens/comments';
+import Searcher from '../components/SearchResult';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -81,6 +82,7 @@ function AppHide() {
       <Stack.Screen name="Chat" component={Chat} />
       <Stack.Screen name="Chats" component={Chats} />
       <Stack.Screen name="Comments" component={Comments} />
+      <Stack.Screen name="Searcher" component={Searcher} />
     </Stack.Navigator>
   );
 }
